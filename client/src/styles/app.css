@@ -1,0 +1,65 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #2a2530;
+  background: #fff7f7;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: linear-gradient(180deg, #fff7f7 0%, #fff0f2 100%); color: #2a2530; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; }
+button { cursor: pointer; border: 0; }
+input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border: 1px solid #e8d8dc; background: white; }
+
+.centered-page { min-height: 100vh; display: grid; place-items: center; padding: 2rem; }
+.login-card { width: min(460px, 100%); padding: 2rem; }
+.card { background: rgba(255,255,255,0.95); border: 1px solid #f0dfe4; border-radius: 24px; box-shadow: 0 20px 40px rgba(121, 84, 96, 0.08); padding: 1.25rem; }
+.pin-display { background: #fff; border: 1px dashed #ddb8c1; border-radius: 18px; min-height: 64px; display: grid; place-items: center; font-size: 2rem; letter-spacing: 0.35rem; margin: 1rem 0; }
+.pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+.pin-button { background: #fff; border: 1px solid #ebd2d8; border-radius: 18px; padding: 1rem; }
+.pin-button.ghost { background: #fff7f8; }
+.primary-button, .secondary-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.85rem 1.2rem; border-radius: 999px; }
+.primary-button { background: #d36a6a; color: white; }
+.secondary-button { background: #f4e4e8; color: #7d4a55; }
+.ghost-link { background: transparent; color: #7d4a55; }
+.primary-button.inline, .secondary-button.inline { width: auto; }
+.primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.app-shell { padding: 2rem; max-width: 1280px; margin: 0 auto; }
+.topbar { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
+.topbar-right { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+.eyebrow { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08rem; color: #b17584; }
+.subtle { color: #7e6b72; }
+.error-text { color: #b00020; }
+.success-text { color: #1a7f4b; }
+.pill { background: #fbecef; color: #9b5d6e; border-radius: 999px; padding: 0.55rem 0.9rem; font-size: 0.92rem; }
+.page-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.stat-grid, .quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.quick-grid { margin-top: 1rem; }
+.quick-grid.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.quick-link { min-height: 128px; display: grid; place-items: center; text-align: center; font-size: 1.1rem; font-weight: 600; }
+.stat-card h3 { margin: 0.35rem 0 0; font-size: 1.6rem; }
+.stat-label { margin: 0; color: #8b7078; }
+.split-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; align-items: start; }
+.menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.menu-item { background: #fff7f8; border: 1px solid #f0d8dd; border-radius: 18px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+.menu-item.selected { outline: 2px solid #d36a6a; }
+.checkbox-list { display: grid; gap: 0.6rem; margin: 1rem 0; }
+.checkbox-row { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; }
+.cart-list { display: grid; gap: 0.8rem; }
+.cart-item { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #f1e5e8; }
+.inline-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.field { display: grid; gap: 0.4rem; margin-bottom: 0.8rem; }
+.field span { color: #7e6b72; }
+.form-card { min-width: 320px; }
+.table-wrap { overflow: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.9rem 0.8rem; border-bottom: 1px solid #f1e5e8; text-align: left; }
+tr:hover { background: #fff8fa; }
+.empty-cell { text-align: center; color: #8b7078; }
+
+@media (max-width: 960px) {
+  .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; }
+  .app-shell { padding: 1rem; }
+}
