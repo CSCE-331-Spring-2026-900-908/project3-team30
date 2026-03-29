@@ -37,6 +37,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .stat-grid, .quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .quick-grid { margin-top: 1rem; }
 .quick-grid.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.quick-grid.three-col { grid-template-columns: repeat(3, minmax(0, 1fr));}
 .quick-link { min-height: 128px; display: grid; place-items: center; text-align: center; font-size: 1.1rem; font-weight: 600; }
 .stat-card h3 { margin: 0.35rem 0 0; font-size: 1.6rem; }
 .stat-label { margin: 0; color: #8b7078; }
@@ -58,8 +59,13 @@ th, td { padding: 0.9rem 0.8rem; border-bottom: 1px solid #f1e5e8; text-align: l
 tr:hover { background: #fff8fa; }
 .empty-cell { text-align: center; color: #8b7078; }
 
+/*This is where I'm adding my stuff - Jade*/
+.portal-stack { display: grid; gap: 1.5rem; margin-top: 2rem;}
+
+.portal-bottom { max-width: 840px; margin: 0 auto; width: 100%;} /*so all buttons the same size*/
+
 @media (max-width: 960px) {
-  .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col { grid-template-columns: 1fr; }
+  .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col, .quick-grid.three-col { grid-template-columns: 1fr; }
   .topbar { flex-direction: column; }
   .app-shell { padding: 1rem; }
 }

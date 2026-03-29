@@ -79,3 +79,15 @@ export default function App() {
     </Routes>
   );
 }
+
+
+/*
+------------------------------------- BELOW THIS LINE IS TO DEBUG A SINGLE FILE/PAGE -------------------------------------
+simply change the import w the file name and path as well as the return in the App() and comment the code above this line
+*/
+
+// import PortalPage from './pages/PortalPage';
+
+// export default function App() {
+//   return <PortalPage />;
+// }
