@@ -62,7 +62,7 @@ tr:hover { background: #fff8fa; }
 /*This is where I'm adding my stuff - Jade*/
 .portal-stack { display: grid; gap: 1.5rem; margin-top: 2rem;}
 
-.portal-bottom { max-width: 840px; margin: 0 auto; width: 100%;} /*so all buttons the same size*/
+.portal-bottom { margin: 0 auto; width: min(65%, 840px);} /*so all buttons the same size*/
 
 @media (max-width: 960px) {
   .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col, .quick-grid.three-col { grid-template-columns: 1fr; }

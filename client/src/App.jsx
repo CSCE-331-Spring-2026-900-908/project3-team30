@@ -1,5 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import PortalPage from './pages/PortalPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
+import ManagerLoginPage from './pages/ManagerLoginPage';
 import ManagerDashboardPage from './pages/ManagerDashboardPage';
 import CashierDashboardPage from './pages/CashierDashboardPage';
 import MenuPage from './pages/MenuPage';
@@ -13,13 +16,15 @@ import SalesReportPage from './pages/SalesReportPage';
 import XReportPage from './pages/XReportPage';
 import ZReportPage from './pages/ZReportPage';
 import RestockReportPage from './pages/RestockReportPage';
-import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/home" element={<PortalPage />} />
+      <Route path="/" element={<Navigate to="/home" replace />} />
+
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/manager-login" element={<ManagerLoginPage />} />
 
       <Route
         path="/manager"
@@ -83,11 +88,26 @@ export default function App() {
 
 /*
 ------------------------------------- BELOW THIS LINE IS TO DEBUG A SINGLE FILE/PAGE -------------------------------------
-simply change the import w the file name and path as well as the return in the App() and comment the code above this line
+simply change the import(s) w the file(s) name and path as well as the return in the App() and comment the code above this line
 */
 
+// import { Navigate, Route, Routes } from 'react-router-dom';
+
+// /* ----- These are the file(s) you want to test ----- */
 // import PortalPage from './pages/PortalPage';
+// import ProtectedRoute from './components/ProtectedRoute';
+// import ManagerLoginPage from './pages/ManagerLoginPage';
+// import ManagerDashboardPage from './pages/ManagerDashboardPage';
 
 // export default function App() {
-//   return <PortalPage />;
+//   return (
+//     <Routes>
+//       <Route path="/home" element={<PortalPage />} />
+//       <Route path="/" element={<Navigate to="/home" replace />} />
+
+//       <Route path="/login" element={<ManagerLoginPage />} />
+
+//       <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerDashboardPage/></ProtectedRoute>} />
+//     </Routes>
+//   );
 // }
