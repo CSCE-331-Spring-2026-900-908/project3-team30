@@ -68,4 +68,5 @@ tr:hover { background: #fff8fa; }
   .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col, .quick-grid.three-col { grid-template-columns: 1fr; }
   .topbar { flex-direction: column; }
   .app-shell { padding: 1rem; }
+  .portal-bottom { width: 100%; }
 }
