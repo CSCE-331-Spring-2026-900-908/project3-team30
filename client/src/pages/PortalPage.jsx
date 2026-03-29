@@ -35,6 +35,11 @@ export default function PortalPage() {
 
     //the handleLogin in cashier and kitchen need to change once those logins are made
     //customer and menu should not have logins?
+
+    const handleCashierLogin = () => {
+        navigate('/cashier-login');
+    }
+
     return (
         <main className="app-shell portal-page">
             <p className="eyebrow">PROJECT 3 GUI</p>
@@ -44,7 +49,7 @@ export default function PortalPage() {
             <div className="portal-stack">
                 <section className="quick-grid three-col">
                 <button className="quick-link card" to="/manager" onClick={handleManagerLogin}>Manager</button>
-                <button className="quick-link card" to="/cashier" onClick={handleLogin}>Cashier</button>
+                <button className="quick-link card" to="/cashier" onClick={handleCashierLogin}>Cashier</button>
                 <button className="quick-link card" to="/Customer">Customer</button>
                 </section>
 

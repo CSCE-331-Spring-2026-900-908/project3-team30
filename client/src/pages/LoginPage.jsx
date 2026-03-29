@@ -18,6 +18,14 @@ export default function LoginPage() {
     try {
       setError('');
       const user = await login(pin);
+
+      const isCashierRoute = location.pathname.includes('cashier');
+      if (isCashierRoute && user.role !== 'cashier') {
+        setError('Cashier access only');
+        setPin('');
+        return;
+      }
+      
       const fallback = user.role === 'manager' ? '/manager' : '/cashier';
       navigate(location.state?.from?.pathname || fallback, { replace: true });
     } catch (err) {

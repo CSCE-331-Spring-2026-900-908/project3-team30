@@ -23,7 +23,7 @@ export default function App() {
       <Route path="/home" element={<PortalPage />} />
       <Route path="/" element={<Navigate to="/home" replace />} />
 
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/cashier-login" element={<LoginPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
 
       <Route
