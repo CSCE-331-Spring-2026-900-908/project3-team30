@@ -47,7 +47,7 @@ export default function MenuPage() {
     <PageShell
       title="Menu"
       subtitle="Cashier ordering flow converted from menu.fxml and modifications.fxml"
-      actions={<Link className="primary-button inline" to="/cashier/checkout">Checkout ({items.length})</Link>}
+      actions={<Link className="primary-button inline" to="/customer/checkout">Checkout ({items.length})</Link>}
     >
       <div className="split-layout">
         <div className="card">
