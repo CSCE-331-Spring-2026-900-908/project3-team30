@@ -6,10 +6,10 @@ export const users = [
 ];
 
 export const menuItems = [
-  { id: 1, name: 'Classic Milk Tea', price: 4.5, category: 'Milk Tea' },
-  { id: 2, name: 'Taro Slush', price: 5.25, category: 'Slush' },
-  { id: 3, name: 'Mango Green Tea', price: 4.95, category: 'Fruit Tea' },
-  { id: 4, name: 'Thai Tea', price: 4.75, category: 'Milk Tea' },
+  { id: 1, name: 'Classic Milk Tea', price: 4.5, category: 'Milk Tea', image: '/images/classic_milk_tea.png' },
+  { id: 2, name: 'Taro Slush', price: 5.25, category: 'Slush', image: '/images/taro_slush.png' },
+  { id: 3, name: 'Mango Green Tea', price: 4.95, category: 'Fruit Tea', image: '/images/mango_green_tea.png' },
+  { id: 4, name: 'Thai Tea', price: 4.75, category: 'Milk Tea', image: '/images/thai_tea.png' },
 ];
 
 export const ingredientMap = {
@@ -28,7 +28,7 @@ export const ingredientMap = {
   ],
   'Thai Tea': [
     { ingredient: 'Thai Tea Mix', quantityUsed: 1 },
-    { ingredient: 'Creamer', quantityUsed: 1 },
+    { ingredient: 'Creamer', quantityUsed: 1,  },
   ],
 };
 

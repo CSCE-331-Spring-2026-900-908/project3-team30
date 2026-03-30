@@ -215,3 +215,11 @@ tr:hover { background: #fff8fa; }
   font-size: 2.2rem;
   color: #b86a6a;
 }
+/* for customer menu */
+.menu-item-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+}
