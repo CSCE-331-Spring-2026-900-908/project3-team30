@@ -50,9 +50,6 @@ export default function PortalPage() {
         navigate('/kitchen-login');
     }
 
-    const handleMenuBoard = () => {
-        navigate('/menu-board');
-    }
 
     return (
         <main className="app-shell portal-page">
