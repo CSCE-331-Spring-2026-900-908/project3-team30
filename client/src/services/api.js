@@ -8,7 +8,7 @@ let localInventory = [...inventoryItems];
 let localIngredientMap = structuredClone(ingredientMap);
 
 function formatRole(role) {
-  return role === 'manager' ? 'manager' : 'cashier';
+  return role === 'manager' || 'kitchen' ? 'manager' : 'cashier';
 }
 
 export const api = {
@@ -16,7 +16,7 @@ export const api = {
     await sleep();
     const user = localUsers.find((entry) => String(entry.code) === String(pin));
     if (!user) throw new Error('Invalid PIN');
-    return { user: { ...user, role: formatRole(user.role) } };
+    return { user: { ...user } };
   },
   async getManagerSummary() {
     await sleep();

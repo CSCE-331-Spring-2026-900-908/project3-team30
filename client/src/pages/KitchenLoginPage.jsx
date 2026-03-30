@@ -32,8 +32,8 @@ export default function LoginPage() {
     <div className="centered-page">
       <div className="login-card card">
         {/* <p className="eyebrow">JavaFX → React</p> */}
-        <h1>Manager Login</h1>
-        <p className="subtle">Use mock PIN 1111 (manager), 2222 (cashier), or 3333 (cashier).</p>
+        <h1>Kitchen Login</h1>
+        <p className="subtle">Use mock PIN 1111 (manager), 2222 (cashier), 3333 (cashier), or 4444 (kitchen).</p>
         <div className="pin-display">{pin || '••••'}</div>
         {error ? <p className="error-text">{error}</p> : <p className="subtle">Enter your 4-digit manager PIN.</p>}
         <div className="pin-grid">

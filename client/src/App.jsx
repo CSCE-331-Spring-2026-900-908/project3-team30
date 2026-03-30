@@ -19,6 +19,8 @@ import RestockReportPage from './pages/RestockReportPage';
 import MenuBoardPage from './pages/MenuBoardPage';
 import CustomerPage from './pages/CustomerPage';
 import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
+import KitchenLoginPage from './pages/KitchenLoginPage';
+import KitchenDashboardPage from './pages/KitchenDashboardPage';
 
 export default function App() {
   return (
@@ -28,8 +30,7 @@ export default function App() {
 
       <Route path="/cashier-login" element={<LoginPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
-
-      <Route path="/menu-board" element={<MenuBoardPage />} />
+      <Route path="/kitchen-login" element={<KitchenLoginPage />} />
 
       <Route
         path="/manager"
@@ -93,7 +94,12 @@ export default function App() {
         element={<CustomerCheckoutPage />}
       />
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route
+        path="/kitchen"
+        element={<ProtectedRoute role="kitchen"><KitchenDashboardPage /></ProtectedRoute>}
+      />
+
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }
