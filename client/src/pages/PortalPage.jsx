@@ -42,6 +42,9 @@ export default function PortalPage() {
     const handleCustomer = () => {
         navigate('/customer');
     }
+    const handleMenuBoard = () => {
+        navigate('/menu-board');
+    }
 
     const handleKitchenLogin = () => {
         navigate('/kitchen-login');
