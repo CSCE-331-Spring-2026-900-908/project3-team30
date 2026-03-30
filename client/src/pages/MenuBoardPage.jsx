@@ -25,9 +25,7 @@ export default function MenuBoardPage() {
     loadData();
   }, []);
 
-  // Group menu items by category (excluding toppings)
   const groupedItems = menuItems
-    .filter(item => item.category !== 'topping')
     .reduce((acc, item) => {
       if (!acc[item.category]) {
         acc[item.category] = [];
@@ -37,7 +35,7 @@ export default function MenuBoardPage() {
     }, {});
 
   // Get toppings from inventory
-  const toppings = inventory.filter(item => item.category === 'topping');
+  const toppings = inventory.filter(item => item.category === 'Topping');
 
   if (loading) {
     return (
