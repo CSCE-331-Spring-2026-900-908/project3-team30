@@ -31,6 +31,7 @@ export default function App() {
       <Route path="/cashier-login" element={<LoginPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
       <Route path="/kitchen-login" element={<KitchenLoginPage />} />
+      <Route path="/menu-board" element={<MenuBoardPage />} />
 
       <Route
         path="/manager"
