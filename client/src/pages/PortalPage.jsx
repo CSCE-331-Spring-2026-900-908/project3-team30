@@ -42,6 +42,9 @@ export default function PortalPage() {
     const handleCustomer = () => {
         navigate('/customer');
     }
+    const handleMenuBoard = () => {
+        navigate('/menu-board');
+    }
 
     return (
         <main className="app-shell portal-page">
@@ -57,7 +60,7 @@ export default function PortalPage() {
                 </section>
 
                 <section className="quick-grid two-col portal-bottom">
-                <button className="quick-link card" to="/Menu">Menu</button>
+                <button className="quick-link card" to="/menu-board" onClick={handleMenuBoard}>Menu</button>
                 <button className="quick-link card" to="/Kitchen" onClick={handleLogin}>Kitchen</button>
                 </section>
             </div>
