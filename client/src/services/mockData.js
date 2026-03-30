@@ -2,6 +2,7 @@ export const users = [
   { code: 1111, firstName: 'Alice', lastName: 'Manager', role: 'manager' },
   { code: 2222, firstName: 'Ben', lastName: 'Cashier', role: 'cashier' },
   { code: 3333, firstName: 'Cara', lastName: 'Cashier', role: 'cashier' },
+  { code: 4444, firstName: 'Kevin', lastName: 'Kitchen', role: 'kitchen' },
 ];
 
 export const menuItems = [

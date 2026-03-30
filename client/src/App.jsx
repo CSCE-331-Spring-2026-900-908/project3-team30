@@ -17,6 +17,8 @@ import XReportPage from './pages/XReportPage';
 import ZReportPage from './pages/ZReportPage';
 import RestockReportPage from './pages/RestockReportPage';
 import MenuBoardPage from './pages/MenuBoardPage';
+import CustomerPage from './pages/CustomerPage';
+import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 
 export default function App() {
   return (
@@ -81,6 +83,14 @@ export default function App() {
       <Route
         path="/cashier/checkout"
         element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/customer"
+        element={<CustomerPage />}
+      />
+      <Route
+        path="/customer/checkout"
+        element={<CustomerCheckoutPage />}
       />
 
       <Route path="*" element={<Navigate to="/login" replace />} />
