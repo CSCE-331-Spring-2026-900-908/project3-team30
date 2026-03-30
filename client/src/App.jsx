@@ -16,6 +16,7 @@ import SalesReportPage from './pages/SalesReportPage';
 import XReportPage from './pages/XReportPage';
 import ZReportPage from './pages/ZReportPage';
 import RestockReportPage from './pages/RestockReportPage';
+import MenuBoardPage from './pages/MenuBoardPage';
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
 
       <Route path="/cashier-login" element={<LoginPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
+
+      <Route path="/menu-board" element={<MenuBoardPage />} />
 
       <Route
         path="/manager"
