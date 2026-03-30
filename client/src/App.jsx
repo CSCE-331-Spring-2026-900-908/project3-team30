@@ -16,6 +16,8 @@ import SalesReportPage from './pages/SalesReportPage';
 import XReportPage from './pages/XReportPage';
 import ZReportPage from './pages/ZReportPage';
 import RestockReportPage from './pages/RestockReportPage';
+import KitchenLoginPage from './pages/KitchenLoginPage';
+import KitchenDashboardPage from './pages/KitchenDashboardPage';
 
 export default function App() {
   return (
@@ -25,6 +27,7 @@ export default function App() {
 
       <Route path="/cashier-login" element={<LoginPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
+      <Route path="/kitchen-login" element={<KitchenLoginPage />} />
 
       <Route
         path="/manager"
@@ -80,7 +83,12 @@ export default function App() {
         element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
       />
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route
+        path="/kitchen"
+        element={<ProtectedRoute role="kitchen"><KitchenDashboardPage /></ProtectedRoute>}
+      />
+
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }

@@ -40,6 +40,10 @@ export default function PortalPage() {
         navigate('/cashier-login');
     }
 
+    const handleKitchenLogin = () => {
+        navigate('/kitchen-login');
+    }
+
     return (
         <main className="app-shell portal-page">
             <p className="eyebrow">PROJECT 3 GUI</p>
@@ -55,7 +59,7 @@ export default function PortalPage() {
 
                 <section className="quick-grid two-col portal-bottom">
                 <button className="quick-link card" to="/Menu">Menu</button>
-                <button className="quick-link card" to="/Kitchen" onClick={handleLogin}>Kitchen</button>
+                <button className="quick-link card" to="/Kitchen" onClick={handleKitchenLogin}>Kitchen</button>
                 </section>
             </div>
         </main>
