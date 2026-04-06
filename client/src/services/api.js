@@ -16,8 +16,8 @@ const API_BASE_URL =
 
 export const api = {
   async login(pin) {
-    //const res = await fetch(`http://localhost:8080/api/login?pin=${encodeURIComponent(pin)}`);
-    const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
+    const res = await fetch(`http://localhost:8080/api/login?pin=${encodeURIComponent(pin)}`);
+    // const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
 
     const data = await res.json();
 
