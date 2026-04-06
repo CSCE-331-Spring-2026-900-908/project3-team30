@@ -21,7 +21,7 @@ export default function LoginPage() {
       if (user.role !== 'manager') {
         throw new Error('Manager access only');
       }
-      navigate('/kitchen', { replace: true });
+      navigate(location.state?.from?.pathname || '/kitchen', { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed');
       setPin('');

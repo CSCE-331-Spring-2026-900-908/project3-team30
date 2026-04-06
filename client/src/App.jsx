@@ -97,7 +97,8 @@ export default function App() {
 
       <Route
         path="/kitchen"
-        element={<ProtectedRoute role="kitchen"><KitchenDashboardPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={["kitchen", "manager"]}><KitchenDashboardPage /></ProtectedRoute>}
+        //changed role to roles to include kitchen AND manager access to the kitchen dashboard
       />
 
       <Route path="*" element={<Navigate to="/home" replace />} />

@@ -1,15 +1,15 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function ProtectedRoute({ children, role }) {
+export default function ProtectedRoute({ children, roles }) { //changed from role to roles to allow for multiple role access
   const { user } = useAuth();
   const location = useLocation();
 
   if (!user) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate to="/home" replace state={{ from: location }} />; //was originally /login but changed to /home for portal page to handle redirection
   }
 
-  if (role && user.role !== role) {
+  if (roles && !roles.includes(user.role)) {
     return <Navigate to={user.role === 'manager' ? '/manager' : '/cashier'} replace />;
   }
 
