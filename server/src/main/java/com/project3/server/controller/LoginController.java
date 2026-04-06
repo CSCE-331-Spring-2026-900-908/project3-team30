@@ -24,7 +24,7 @@ public class LoginController {
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam String pin) {
         try {
-            LoginResponseeee response = loginService.login(pin);
+            LoginResponse response = loginService.login(pin);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
