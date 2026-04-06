@@ -16,10 +16,16 @@ const API_BASE_URL =
 
 export const api = {
   async login(pin) {
-    await sleep();
-    const user = localUsers.find((entry) => String(entry.code) === String(pin));
-    if (!user) throw new Error('Invalid PIN');
-    return { user: { ...user } };
+    //const res = await fetch(`http://localhost:8080/api/login?pin=${encodeURIComponent(pin)}`);
+    const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return data;
   },
   async getManagerSummary() {
     const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
