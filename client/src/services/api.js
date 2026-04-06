@@ -19,12 +19,18 @@ export const api = {
     return { user: { ...user } };
   },
   async getManagerSummary() {
-    await sleep();
-    return salesSummary;
+    const res = await fetch('http://localhost:8080/api/manager-summary');
+    if (!res.ok) {
+      throw new Error('Failed to load manager summary');
+    }
+    return res.json();
   },
   async getUsers() {
     await sleep();
     return [...localUsers];
+  //   const res = await fetch("http://localhost:8080/api/employees");
+  // if (!res.ok) throw new Error("Failed to load users");
+  // return res.json();
   },
   async saveUser(payload) {
     await sleep();
