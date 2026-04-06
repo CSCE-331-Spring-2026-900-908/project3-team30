@@ -11,6 +11,9 @@ function formatRole(role) {
   return role === 'manager' || 'kitchen' ? 'manager' : 'cashier';
 }
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+
 export const api = {
   async login(pin) {
     await sleep();
@@ -19,7 +22,7 @@ export const api = {
     return { user: { ...user } };
   },
   async getManagerSummary() {
-    const res = await fetch('http://localhost:8080/api/manager-summary');
+    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
