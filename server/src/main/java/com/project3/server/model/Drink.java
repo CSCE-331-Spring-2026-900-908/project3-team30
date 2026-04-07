@@ -15,25 +15,26 @@ public class Drink {
     private String name;
     private double basePrice;
     private List<Modification> modifications = new ArrayList<>();
-
+    private String image;
     /**
      * Creates a drink with a name and price
      * @param name
      * @param basePrice
+     * @param image
      */
-    public Drink(String name, double basePrice) {
+    public Drink(String name, double basePrice, String image) {
         this.name = name;
         this.basePrice = basePrice;
+        this.image = image;
     }
 
     /**
-     * Adds a mofidication to this Drink's list of modifications
+     * Adds a modification to this Drink's list of modifications
      * @param mod
      */
     public void addModification(Modification mod) {
         modifications.add(mod);
     }
-
 
     /**
      * Gets this Drink's modifications
@@ -41,6 +42,14 @@ public class Drink {
      */
     public List<Modification> getModifications() {
         return modifications;
+    }
+
+    /**
+     * Returns the image file path
+     * @return
+     */
+    public String getImage(){
+        return image;
     }
 
     /**
