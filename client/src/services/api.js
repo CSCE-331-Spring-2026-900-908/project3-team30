@@ -54,13 +54,26 @@ export const api = {
       },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error("Failed to load users");
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to save user");
+    }
     return;
   },
   async deleteUser(code) {
-    await sleep();
-    localUsers = localUsers.filter((user) => user.code !== code);
-    return true;
+    // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code })
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to delete user");
+    }
+    return;
   },
   async getMenuItems() {
     await sleep();
