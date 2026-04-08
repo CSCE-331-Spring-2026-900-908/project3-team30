@@ -175,7 +175,14 @@ export const api = {
 
     return res.json();;
   },
-  async getXReport(){},
+  async getXReport(){
+    const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load X report");
+    }
+    return res.json();;
+  },
   async getZReport(){},
   
   async processOrder(order) {

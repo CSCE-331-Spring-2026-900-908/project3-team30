@@ -7,10 +7,28 @@ import { currency } from '../utils/format';
 
 export default function XReportPage() {
   const [report, setReport] = useState(null);
-  useEffect(() => { api.getReports().then((data) => setReport(data.xReport)); }, []);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    api.getXReport()
+      .then((data) => {
+        console.log('X report data:', data);
+        setReport(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load X report:', err);
+        setError(err.message);
+      });
+  }, []);
 
   return (
-    <PageShell title="X Report" subtitle={`Last run: ${report?.lastRun ?? 'Loading…'}`} actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}>
+    <PageShell
+      title="X Report"
+      subtitle="Current shift summary"
+      actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
+    >
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
       <section className="stat-grid">
         <StatCard label="Total Cash" value={report ? currency(report.totalCash) : '—'} />
         <StatCard label="Total Card" value={report ? currency(report.totalCard) : '—'} />
