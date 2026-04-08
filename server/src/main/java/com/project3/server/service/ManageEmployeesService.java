@@ -72,7 +72,8 @@ public class ManageEmployeesService {
                 ps.setInt(1, employee.getCode());
                 ps.setString(2, employee.getFirstName());
                 ps.setString(3, employee.getLastName());
-                ps.setBoolean(4, employee.getRole().equals("manager"));
+                // ps.setBoolean(4, employee.getRole().equals("manager"));
+                ps.setBoolean(4, "manager".equals(employee.getRole()));
 
                 ps.executeUpdate();
                 System.out.println("Added user " + employee.getCode());
@@ -100,7 +101,7 @@ public class ManageEmployeesService {
             try (PreparedStatement ps = conn.prepareStatement(updateUser)) {
                 ps.setString(1, employee.getFirstName());
                 ps.setString(2, employee.getLastName());
-                ps.setBoolean(3, employee.getRole().equals("manager"));
+                ps.setBoolean(3, "manager".equals(employee.getRole()));
                 ps.setInt(4, employee.getCode());
 
                 int updated = ps.executeUpdate();
@@ -119,14 +120,8 @@ public class ManageEmployeesService {
     
     public void deleteEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            if (employee == null
-                || employee.getCode() == 0
-                || employee.getFirstName() == null
-                || employee.getFirstName().trim().isEmpty()
-                || employee.getLastName() == null
-                || employee.getLastName().trim().isEmpty()) {
-            
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All fields are required.");
+            if (employee == null || employee.getCode() == 0){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code field is required.");
             }
 
             String deleteUser = "DELETE FROM users WHERE code = ?";
