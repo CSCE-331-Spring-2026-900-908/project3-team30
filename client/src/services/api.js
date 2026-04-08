@@ -34,11 +34,10 @@ export const api = {
     return res.json();
   },
   async getUsers() {
-    await sleep();
-    return [...localUsers];
-  //   const res = await fetch("http://localhost:8080/api/employees");
-  // if (!res.ok) throw new Error("Failed to load users");
-  // return res.json();
+    // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    if (!res.ok) throw new Error("Failed to load users");
+    return res.json();
   },
   async saveUser(payload) {
     await sleep();
