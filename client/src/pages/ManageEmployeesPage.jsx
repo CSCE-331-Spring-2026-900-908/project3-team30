@@ -16,7 +16,7 @@ export default function ManageEmployeesPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
-    if (!form.code.trim()) {
+    if (!String(form.code.trim())) {
       setStatus("Enter a code before saving an employee.");
       return;
     }
@@ -56,7 +56,7 @@ export default function ManageEmployeesPage() {
   };
 
   const remove = async () => {
-    if (!form.code.trim()) {
+    if (!String(form.code.trim())) {
       setStatus("Enter a code before removing an employee.");
       return;
     }
@@ -82,7 +82,14 @@ export default function ManageEmployeesPage() {
             { key: 'role', label: 'Role' },
           ]}
           rows={users}
-          onRowClick={(row) => setForm({ code: row.code, firstName: row.firstName, lastName: row.lastName, role: row.role })}
+          onRowClick={(row) =>
+            setForm({
+              code: String(row.code), //this was the only thing I changed, to make sure it's seen as a string
+              firstName: row.firstName,
+              lastName: row.lastName,
+              role: row.role
+            })
+          }
         />
         <div className="card form-card">
           <h2>Employee Form</h2>
