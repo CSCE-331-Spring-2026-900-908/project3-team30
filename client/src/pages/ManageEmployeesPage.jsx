@@ -16,21 +16,20 @@ export default function ManageEmployeesPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
-    // if (!form.code.trim()) {
-    //   setStatus("Enter a code before saving an employee.");
-    //   return;
-    // }
+    if (!form.code.trim()) {
+      setStatus("Enter a code before saving an employee.");
+      return;
+    }
 
-    // if (!form.firstName.trim()) {
-    //   setStatus("Enter a first name before saving an employee.");
-    //   return;
-    // }
+    if (!form.firstName.trim()) {
+      setStatus("Enter a first name before saving an employee.");
+      return;
+    }
 
-    // if (!form.lastName.trim()) {
-    //   setStatus("Enter a last name before saving an employee.");
-    //   return;
-    // }
-
+    if (!form.lastName.trim()) {
+      setStatus("Enter a last name before saving an employee.");
+      return;
+    }
     try {
       await api.addUser(form);
       setStatus(`Saved employee ${form.code}.`);
@@ -43,10 +42,20 @@ export default function ManageEmployeesPage() {
   };
 
   const remove = async () => {
-    // if (!form.code.trim()) {
-    //   setStatus("Enter a code before removing an employee.");
-    //   return;
-    // }
+    if (!form.code.trim()) {
+      setStatus("Enter a code before removing an employee.");
+      return;
+    }
+
+    if (!form.firstName.trim()) {
+      setStatus("Enter a first name before removing an employee.");
+      return;
+    }
+
+    if (!form.lastName.trim()) {
+      setStatus("Enter a last name before removing an employee.");
+      return;
+    }
     try {
       await api.deleteUser(Number(form.code));
       setStatus(`Removed employee ${form.code}.`);
