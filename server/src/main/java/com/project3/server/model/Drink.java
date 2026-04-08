@@ -44,12 +44,26 @@ public class Drink {
         return modifications;
     }
 
+     /**
+     * Allows frontend JSON to set the modifications list.
+     */
+    public void setModifications(List<Modification> modifications) {
+        this.modifications = modifications != null ? modifications : new ArrayList<>();
+    }
+
     /**
      * Returns the image file path
      * @return
      */
     public String getImage(){
         return image;
+    }
+
+    /**
+     * Allows backend/frontend JSON mapping to set image.
+     */
+    public void setImage(String image) {
+        this.image = image;
     }
 
     /**
@@ -71,4 +85,30 @@ public class Drink {
     public String getName() {
         return name;
     }
+
+    /**
+     * Gets the price of this Drink
+     * @return Drink price
+     */
+    public double getBasePrice() {
+        return basePrice;
+    }
+    public double getPrice() {
+        return basePrice;
+    }
+
+     /**
+     * Allows frontend JSON to set base price.
+     */
+    public void setBasePrice(double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    /**
+     * Allows frontend JSON to set name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
