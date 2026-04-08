@@ -39,13 +39,23 @@ export const api = {
     if (!res.ok) throw new Error("Failed to load users");
     return res.json();
   },
-  async saveUser(payload) {
-    await sleep();
-    const index = localUsers.findIndex((user) => user.code === Number(payload.code));
-    const normalized = { ...payload, code: Number(payload.code), role: payload.role };
-    if (index >= 0) localUsers[index] = normalized;
-    else localUsers.push(normalized);
-    return normalized;
+  async addUser(payload) {
+    // await sleep();
+    // const index = localUsers.findIndex((user) => user.code === Number(payload.code));
+    // const normalized = { ...payload, code: Number(payload.code), role: payload.role };
+    // if (index >= 0) localUsers[index] = normalized;
+    // else localUsers.push(normalized);
+    // return normalized;
+    // const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Failed to load users");
+    return;
   },
   async deleteUser(code) {
     await sleep();

@@ -16,10 +16,15 @@ export default function ManageEmployeesPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
-    await api.saveUser(form);
-    setStatus(`Saved employee ${form.code}.`);
-    setForm(emptyForm);
-    load();
+    try {
+      await api.addUser(form);
+      setStatus(`Saved employee ${form.code}.`);
+      setForm(emptyForm);
+      load();
+    } catch (error) {
+      console.error(error);
+      setStatus("Failed to save employee.");
+    }
   };
 
   const remove = async () => {
