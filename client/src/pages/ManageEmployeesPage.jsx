@@ -47,7 +47,7 @@ export default function ManageEmployeesPage() {
         setStatus(`Updated employee ${form.code}.`);
       }
       setForm(emptyForm);
-      load();
+      await load();
       
     } catch (error) {
       console.error(error);
@@ -60,21 +60,11 @@ export default function ManageEmployeesPage() {
       setStatus("Enter a code before removing an employee.");
       return;
     }
-
-    if (!form.firstName.trim()) {
-      setStatus("Enter a first name before removing an employee.");
-      return;
-    }
-
-    if (!form.lastName.trim()) {
-      setStatus("Enter a last name before removing an employee.");
-      return;
-    }
     try {
       await api.deleteUser(Number(form.code));
       setStatus(`Removed employee ${form.code}.`);
       setForm(emptyForm);
-      load();
+      await load();
     } catch (error) {
       console.error(error);
       setStatus(error.message || "Failed to remove employee.");
