@@ -31,10 +31,24 @@ export default function ManageEmployeesPage() {
       return;
     }
     try {
-      await api.addUser(form);
-      setStatus(`Saved employee ${form.code}.`);
+      const codeNumber = Number(form.code);
+      const payload = {
+        code: codeNumber,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        role: form.role
+      };
+      const existingUser = users.find((user) => user.code === codeNumber);
+      if (!existingUser) {
+        await api.addUser(payload);
+        setStatus(`Saved employee ${form.code}.`);
+      } else {
+        await api.updateUser(payload);
+        setStatus(`Updated employee ${form.code}.`);
+      }
       setForm(emptyForm);
       load();
+      
     } catch (error) {
       console.error(error);
       setStatus(error.message ||"Failed to save employee.");
