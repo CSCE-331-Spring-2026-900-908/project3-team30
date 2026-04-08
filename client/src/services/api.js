@@ -60,6 +60,20 @@ export const api = {
     }
     return;
   },
+  async updateUser(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to update user");
+    }
+    return;
+  },
   async deleteUser(code) {
     // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
     const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {

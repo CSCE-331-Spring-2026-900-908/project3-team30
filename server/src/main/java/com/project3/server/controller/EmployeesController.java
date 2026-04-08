@@ -32,10 +32,10 @@ public class EmployeesController {
         manageEmployeesService.addEmployee(employee);
     }
 
-    // @PutMapping("/manage-employees/update") //this is what will go in Api.js
-    // public void updateEmployee(@RequestBody ManageEmployees employee) throws Exception {
-    //     manageEmployeesService.updateEmployee(employee);
-    // }
+    @PutMapping("/manage-employees/update") //this is what will go in Api.js
+    public void updateEmployee(@RequestBody ManageEmployees employee) throws Exception {
+        manageEmployeesService.updateEmployee(employee);
+    }
 
     @DeleteMapping("/manage-employees/remove") //this is what will go in Api.js
     public void removeEmployee(@RequestBody ManageEmployees employee) throws Exception {
