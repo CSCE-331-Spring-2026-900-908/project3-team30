@@ -24,11 +24,26 @@ public class Modification {
      * @return Modification name
      */
     public String getName() { return name; }
+
+    /**
+     * Sets the modification name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Gets the price of this modification
      * @return Modfication additional price
      */
     public double getPrice() { return price; }
+
+    /**
+     * Sets the modification price.
+     */
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     @Override
     public String toString() {
