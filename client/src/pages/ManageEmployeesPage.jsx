@@ -16,6 +16,21 @@ export default function ManageEmployeesPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
+    // if (!form.code.trim()) {
+    //   setStatus("Enter a code before saving an employee.");
+    //   return;
+    // }
+
+    // if (!form.firstName.trim()) {
+    //   setStatus("Enter a first name before saving an employee.");
+    //   return;
+    // }
+
+    // if (!form.lastName.trim()) {
+    //   setStatus("Enter a last name before saving an employee.");
+    //   return;
+    // }
+
     try {
       await api.addUser(form);
       setStatus(`Saved employee ${form.code}.`);
@@ -23,15 +38,24 @@ export default function ManageEmployeesPage() {
       load();
     } catch (error) {
       console.error(error);
-      setStatus("Failed to save employee.");
+      setStatus(error.message ||"Failed to save employee.");
     }
   };
 
   const remove = async () => {
-    await api.deleteUser(Number(form.code));
-    setStatus(`Removed employee ${form.code}.`);
-    setForm(emptyForm);
-    load();
+    // if (!form.code.trim()) {
+    //   setStatus("Enter a code before removing an employee.");
+    //   return;
+    // }
+    try {
+      await api.deleteUser(Number(form.code));
+      setStatus(`Removed employee ${form.code}.`);
+      setForm(emptyForm);
+      load();
+    } catch (error) {
+      console.error(error);
+      setStatus(error.message || "Failed to remove employee.");
+    }
   };
 
   return (
@@ -60,7 +84,7 @@ export default function ManageEmployeesPage() {
           </FormField>
           <div className="inline-actions">
             <button className="primary-button inline" onClick={save}>Add / Update</button>
-            <button className="secondary-button inline" onClick={remove} disabled={!form.code}>Remove</button>
+            <button className="secondary-button inline" onClick={remove}>Remove</button>
           </div>
           {status ? <p className="success-text">{status}</p> : null}
         </div>

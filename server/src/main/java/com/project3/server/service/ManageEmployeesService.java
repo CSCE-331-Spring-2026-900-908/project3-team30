@@ -3,6 +3,8 @@ package com.project3.server.service;
 import com.project3.server.model.ManageEmployees;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,9 +56,14 @@ public class ManageEmployeesService {
 
     public void addEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            if (employee.getCode() == 0) {
-                System.err.println("Code field is required.");
-                return;
+            if (employee == null
+                || employee.getCode() == 0
+                || employee.getFirstName() == null
+                || employee.getFirstName().trim().isEmpty()
+                || employee.getLastName() == null
+                || employee.getLastName().trim().isEmpty()) {
+            
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All fields are required.");
             }
 
             String addUser = "INSERT INTO users (code, first_name, last_name, is_manager) VALUES (?, ?, ?, ?)";
@@ -73,6 +80,35 @@ public class ManageEmployeesService {
             } catch (Exception e) {
                 System.err.println("Error executing add user query: " + e.getMessage()); 
                 throw e; // Rethrow the exception to be handled by the controller
+            }
+        }
+    }
+
+    public void deleteEmployee(ManageEmployees employee) throws Exception {
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            if (employee == null
+                || employee.getCode() == 0
+                || employee.getFirstName() == null
+                || employee.getFirstName().trim().isEmpty()
+                || employee.getLastName() == null
+                || employee.getLastName().trim().isEmpty()) {
+            
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All fields are required.");
+            }
+            
+            String deleteUser = "DELETE FROM users WHERE code = ?";
+            try (PreparedStatement ps = conn.prepareStatement(deleteUser)) {
+                ps.setInt(1, employee.getCode());
+                int deleted = ps.executeUpdate();
+                if (deleted == 0){
+                    // System.err.println("No user found with code " + employee.getCode());
+                    // throw new Exception("No user found with code " + employee.getCode());
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No employee found with code " + employee.getCode());
+                }
+                System.out.println("Deleted user " + employee.getCode());
+            } catch (Exception e) {
+                System.err.println("Error executing delete user query: " + e.getMessage()); 
+                throw e;
             }
         }
     }
