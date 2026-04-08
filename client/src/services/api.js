@@ -8,7 +8,7 @@ let localInventory = [...inventoryItems];
 let localIngredientMap = structuredClone(ingredientMap);
 
 function formatRole(role) {
-  return role === 'manager' || 'kitchen' ? 'manager' : 'cashier';
+  return role === 'manager' || role === 'kitchen' ? 'manager' : 'cashier';
 }
 
 const API_BASE_URL =
@@ -156,14 +156,28 @@ export const api = {
     await sleep();
     return alterations;
   },
+
   async getReports() {
-    await sleep();
-    return reports;
+    return {
+      sales: null,
+      xReport: null,
+      zReport: null,
+      restock: null,
+    };
   },
-  async getRestockItems() {
-    await sleep();
-    return localInventory.filter((item) => item.amtInStock < item.minStockNeeded);
+  async getRestockReport(){},
+  async getSalesReport(startDate, endDate){
+    const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load sales report");
+    }
+
+    return res.json();;
   },
+  async getXReport(){},
+  async getZReport(){},
+  
   async processOrder(order) {
     await sleep();
     return {
