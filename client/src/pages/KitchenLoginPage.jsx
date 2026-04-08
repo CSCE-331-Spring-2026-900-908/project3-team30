@@ -18,8 +18,8 @@ export default function LoginPage() {
     try {
       setError('');
       const user = await login(pin);
-      if (user.role !== 'kitchen') {
-        throw new Error('Kitchen access only');
+      if (user.role !== 'manager') {
+        throw new Error('Manager access only');
       }
       navigate(location.state?.from?.pathname || '/kitchen', { replace: true });
     } catch (err) {

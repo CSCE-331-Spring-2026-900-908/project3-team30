@@ -197,3 +197,29 @@ tr:hover { background: #fff8fa; }
   .app-shell { padding: 1rem; }
   .portal-bottom { width: 100%; }
 }
+
+.portal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-card:hover {
+  transform: translateY(-4px);
+}
+
+.portal-icon {
+  font-size: 2.2rem;
+  color: #b86a6a;
+}
+/* for customer menu */
+.menu-item-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+}

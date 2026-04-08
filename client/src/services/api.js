@@ -8,36 +8,86 @@ let localInventory = [...inventoryItems];
 let localIngredientMap = structuredClone(ingredientMap);
 
 function formatRole(role) {
-  return role === 'manager' || 'kitchen' ? 'manager' : 'cashier';
+  return role === 'manager' || role === 'kitchen' ? 'manager' : 'cashier';
 }
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 export const api = {
   async login(pin) {
-    await sleep();
-    const user = localUsers.find((entry) => String(entry.code) === String(pin));
-    if (!user) throw new Error('Invalid PIN');
-    return { user: { ...user } };
+    const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return data;
   },
   async getManagerSummary() {
-    await sleep();
-    return salesSummary;
+    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
+    if (!res.ok) {
+      throw new Error('Failed to load manager summary');
+    }
+    return res.json();
   },
   async getUsers() {
-    await sleep();
-    return [...localUsers];
+    // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    if (!res.ok) throw new Error("Failed to load users");
+    return res.json();
   },
-  async saveUser(payload) {
-    await sleep();
-    const index = localUsers.findIndex((user) => user.code === Number(payload.code));
-    const normalized = { ...payload, code: Number(payload.code), role: payload.role };
-    if (index >= 0) localUsers[index] = normalized;
-    else localUsers.push(normalized);
-    return normalized;
+  async addUser(payload) {
+    // await sleep();
+    // const index = localUsers.findIndex((user) => user.code === Number(payload.code));
+    // const normalized = { ...payload, code: Number(payload.code), role: payload.role };
+    // if (index >= 0) localUsers[index] = normalized;
+    // else localUsers.push(normalized);
+    // return normalized;
+    // const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to save user");
+    }
+    return;
+  },
+  async updateUser(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to update user");
+    }
+    return;
   },
   async deleteUser(code) {
-    await sleep();
-    localUsers = localUsers.filter((user) => user.code !== code);
-    return true;
+    // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code })
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to delete user");
+    }
+    return;
   },
   async getMenuItems() {
     await sleep();
@@ -106,14 +156,28 @@ export const api = {
     await sleep();
     return alterations;
   },
+
   async getReports() {
-    await sleep();
-    return reports;
+    return {
+      sales: null,
+      xReport: null,
+      zReport: null,
+      restock: null,
+    };
   },
-  async getRestockItems() {
-    await sleep();
-    return localInventory.filter((item) => item.amtInStock < item.minStockNeeded);
+  async getRestockReport(){},
+  async getSalesReport(startDate, endDate){
+    const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load sales report");
+    }
+
+    return res.json();;
   },
+  async getXReport(){},
+  async getZReport(){},
+  
   async processOrder(order) {
     await sleep();
     return {

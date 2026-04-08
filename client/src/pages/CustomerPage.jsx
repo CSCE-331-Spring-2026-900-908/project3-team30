@@ -45,8 +45,8 @@ export default function MenuPage() {
 
   return (
     <PageShell
-      title="Menu"
-      subtitle="Cashier ordering flow converted from menu.fxml and modifications.fxml"
+      title="Boba Shop"
+      subtitle="Place your order"
       actions={<Link className="primary-button inline" to="/customer/checkout">Checkout ({items.length})</Link>}
     >
       <div className="split-layout">
@@ -55,14 +55,24 @@ export default function MenuPage() {
           <div className="menu-grid">
             {menuItems.map((item) => (
               <button key={item.id} className={`menu-item ${selectedItem?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedItem(item)}>
-                <span>{item.name}</span>
-                <strong>{currency(item.price)}</strong>
+                {/* <span>{item.name}</span>
+                <strong>{currency(item.price)}</strong> */}
+                <div className="menu-item-content">
+                    <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="menu-item-image"
+                    />
+
+                    <span>{item.name}</span>
+                    <strong>{currency(item.price)}</strong>
+                </div>
               </button>
             ))}
           </div>
         </div>
-
-        <div className="card">
+{/* TODO: make this a separate page?? */}
+        <div className="card"> 
           <h2>Customize Drink</h2>
           {!selectedItem ? <p className="subtle">Select a menu item to add modifications.</p> : (
             <>

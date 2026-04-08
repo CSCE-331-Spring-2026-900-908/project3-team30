@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
+import { useAuth } from '../context/AuthContext';
 
 // Hardcoded orders for MVP
 const initialOrders = [
@@ -31,15 +33,6 @@ const initialOrders = [
       { name: 'Taro Slush', quantity: 1, alterations: ['0% Sugar'] },
     ],
   },
-  {
-    id: 4,
-    timestamp: '09:45 AM',
-    completed: false,
-    items: [
-      { name: 'Thai Tea', quantity: 1, alterations: [] },
-      { name: 'Classic Milk Tea', quantity: 1, alterations: ['No Ice'] },
-    ],
-  },
 ];
 
 export default function KitchenDashboardPage() {
@@ -47,12 +40,20 @@ export default function KitchenDashboardPage() {
   const [page, setPage] = useState(0);
   const ORDERS_PER_PAGE = 2;
 
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const toggleCompleted = (id) => {
     setOrders((prev) =>
       prev.map((order) =>
         order.id === id ? { ...order, completed: !order.completed } : order
       )
     );
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/home'); // Redirect back to portal page
   };
 
   const paginatedOrders = orders.slice(page * ORDERS_PER_PAGE, (page + 1) * ORDERS_PER_PAGE);
@@ -65,7 +66,11 @@ export default function KitchenDashboardPage() {
   };
 
   return (
-    <PageShell title="Kitchen Dashboard" subtitle="Check off orders as you prepare them">
+    <PageShell
+      title="Kitchen Dashboard"
+      subtitle="Check off orders as you prepare them"
+      actions={<button className="secondary-button" onClick={handleLogout}>Log out</button>}
+    >
       <section className="orders-section">
         {paginatedOrders.length === 0 ? (
           <p>No orders</p>
@@ -83,9 +88,7 @@ export default function KitchenDashboardPage() {
                       {item.alterations.length > 0 && (
                         <div className="alterations">
                           {item.alterations.map((alt, i) => (
-                            <span key={i} className="alteration">
-                              {alt}
-                            </span>
+                            <span key={i} className="alteration">{alt}</span>
                           ))}
                         </div>
                       )}
@@ -105,18 +108,9 @@ export default function KitchenDashboardPage() {
       </section>
 
       <div className="pagination">
-        <button onClick={prevPage} disabled={page === 0}>
-          Previous
-        </button>
-        <span>
-          Page {page + 1} of {Math.ceil(orders.length / ORDERS_PER_PAGE)}
-        </span>
-        <button
-          onClick={nextPage}
-          disabled={(page + 1) * ORDERS_PER_PAGE >= orders.length}
-        >
-          Next
-        </button>
+        <button onClick={prevPage} disabled={page === 0}>Previous</button>
+        <span>Page {page + 1} of {Math.ceil(orders.length / ORDERS_PER_PAGE)}</span>
+        <button onClick={nextPage} disabled={(page + 1) * ORDERS_PER_PAGE >= orders.length}>Next</button>
       </div>
 
       <style>{`

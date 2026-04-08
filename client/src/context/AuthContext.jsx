@@ -14,8 +14,8 @@ export function AuthProvider({ children }) {
       setLoading(true);
       try {
         const result = await api.login(pin);
-        setUser(result.user);
-        return result.user;
+        setUser(result);
+        return result;
       } finally {
         setLoading(false);
       }
