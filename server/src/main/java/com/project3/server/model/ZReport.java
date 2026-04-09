@@ -1,6 +1,7 @@
 package com.project3.server.model;
 
 import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * This is a model class that represents an X report, which includes the necessary fields for the X report
  * @author Jade Azahar
@@ -15,7 +16,9 @@ public class ZReport {
     private int numCancelled;
     private int numVoided;
     private Timestamp runAt;
-    private boolean isNew;
+    
+    @JsonProperty("newlyGenerated")
+    private boolean newlyGenerated;
 
     /**
      * Constructor for XReport
@@ -28,9 +31,9 @@ public class ZReport {
      * @param numCancelled
      * @param numVoided
      * @param runAt
-     * @param isNew
+     * @param newlyGenerated
      */
-    public ZReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided, Timestamp runAt, boolean isNew) {
+    public ZReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided, Timestamp runAt, boolean newlyGenerated) {
         this.totalCash = totalCash;
         this.totalCard = totalCard;
         this.subtotal = subtotal;
@@ -40,10 +43,11 @@ public class ZReport {
         this.numCancelled = numCancelled;
         this.numVoided = numVoided;
         this.runAt = runAt;
+        this.newlyGenerated = newlyGenerated;
     }
     
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return double for cash, card, etc.
      */
     public double getTotalCash() {
@@ -51,7 +55,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return double for card sales
      */
     public double getTotalCard() {
@@ -59,7 +63,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return double for subtotal of cash and card sales
      */
     public double getSubtotal() {
@@ -67,7 +71,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return double for tax amount
      */
     public double getTax() {
@@ -75,7 +79,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return double for net total (subtotal + tax)
      */
     public double getNetTotal() {
@@ -83,7 +87,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return int for number of sales, cancelled transactions, voided transactions
      */
     public int getNumSales() {
@@ -91,7 +95,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return int for number of cancelled transactions
      */
     public int getNumCancelled() {
@@ -99,7 +103,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return int for number of voided transactions
      */ 
     public int getNumVoided() {
@@ -107,7 +111,7 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return Timestamp of when the report was run
      */
     public Timestamp getRunAt() {
@@ -115,10 +119,11 @@ public class ZReport {
     }
 
     /**
-     * Getters for XReport fields
+     * Getters for ZReport fields
      * @return boolean indicating if the report is new
      */
-    public boolean isNew() {
-        return isNew;
+    @JsonProperty("newlyGenerated")
+    public boolean getNewlyGenerated() {
+        return newlyGenerated;
     }
 }

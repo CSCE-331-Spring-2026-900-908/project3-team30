@@ -272,7 +272,7 @@ public class ReportsService {
                 // if not, build snapshot, save it, then return it
                 Timestamp now = new Timestamp(System.currentTimeMillis());
                 XReport xReport = buildXReportData(conn, lastRunTime);
-                saveZReport(conn, xReport);
+                saveZReport(conn, xReport, now);
                  return new ZReport(
                     xReport.getTotalCash(),
                     xReport.getTotalCard(),
@@ -303,20 +303,20 @@ public class ReportsService {
      * This method saves the Z report data to the database
      * @param conn
      * @param xReport
+     * @param runAt
      * @throws Exception
      */
-    private void  saveZReport(Connection conn, XReport xReport) throws Exception{
-        //
+    private void saveZReport(Connection conn, XReport xReport, Timestamp runAt) throws Exception {
         String insertZReport = """
-                    INSERT INTO z_report_totals (
-                        total_cash,
-                        total_card,
-                        num_sales,
-                        num_cancelled,
-                        num_voided,
-                        run_at
-                    ) VALUES (?, ?, ?, ?, ?, NOW())
-                """;
+            INSERT INTO z_report_totals (
+                total_cash,
+                total_card,
+                num_sales,
+                num_cancelled,
+                num_voided,
+                run_at
+            ) VALUES (?, ?, ?, ?, ?, ?)
+        """;
 
         try (PreparedStatement ps = conn.prepareStatement(insertZReport)) {
             ps.setDouble(1, xReport.getTotalCash());
@@ -324,6 +324,7 @@ public class ReportsService {
             ps.setInt(3, xReport.getNumSales());
             ps.setInt(4, xReport.getNumCancelled());
             ps.setInt(5, xReport.getNumVoided());
+            ps.setTimestamp(6, runAt);
 
             ps.executeUpdate();
         } catch (Exception e) {
@@ -377,5 +378,25 @@ public class ReportsService {
         } 
         System.out.println("Error loading existing ZReport data: " + lastRunTime);
         throw new Exception("Error loading existing ZReport data");
+    }
+
+    /**
+     * This method gets the latest Z report
+     * @return the latest Z report data
+     * @throws Exception
+     */
+    public ZReport getLatestZReport() throws Exception {
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            Timestamp lastRunTime = getLastZReportTimestamp(conn);
+
+            if (lastRunTime == null) {
+                return null;
+            }
+
+            return loadExistingZReport(conn, lastRunTime);
+        } catch (Exception e) {
+            System.out.println("Error loading latest ZReport: " + e.getMessage());
+            throw new Exception("Error loading latest ZReport", e);
+        }
     }
 }

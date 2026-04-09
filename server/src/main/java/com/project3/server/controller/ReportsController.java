@@ -66,4 +66,14 @@ public class ReportsController {
     public ZReport getZReport() throws Exception {
         return reportsService.getZReport();
     }
+
+    /**
+     * This method gets the latest Z report
+     * @return the latest Z report data
+     * @throws Exception
+     */
+    @GetMapping("/reports/ZReport/latest")
+    public ZReport getLatestZReport() throws Exception {
+        return reportsService.getLatestZReport();
+    }
 }
