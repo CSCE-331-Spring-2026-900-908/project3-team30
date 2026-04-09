@@ -9,6 +9,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * This is a service that handles the business logic for logging in to the application
+ * @author Karla Sanchez
+ */
 @Service
 public class LoginService {
 
