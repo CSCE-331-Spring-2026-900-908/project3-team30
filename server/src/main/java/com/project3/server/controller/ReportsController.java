@@ -3,6 +3,7 @@ package com.project3.server.controller;
 import com.project3.server.model.RestockReport;
 import com.project3.server.model.SalesReport;
 import com.project3.server.model.XReport;
+import com.project3.server.model.ZReport;
 import com.project3.server.service.ReportsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,5 +55,15 @@ public class ReportsController {
     @GetMapping("/reports/restockReport")
     public List<RestockReport> getRestockReport() throws Exception {
         return reportsService.getRestockReport();
+    }
+
+    /**
+     * This method gets the Z report for the current day
+     * @return ZReport object with all the parameters needed for the Z report (numSales, totalRevenue, etc.)
+     * @throws Exception
+     */
+    @GetMapping("/reports/ZReport")
+    public ZReport getZReport() throws Exception {
+        return reportsService.getZReport();
     }
 }
