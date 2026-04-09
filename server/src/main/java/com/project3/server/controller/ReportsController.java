@@ -1,5 +1,6 @@
 package com.project3.server.controller;
 
+import com.project3.server.model.RestockReport;
 import com.project3.server.model.SalesReport;
 import com.project3.server.model.XReport;
 import com.project3.server.service.ReportsService;
@@ -42,5 +43,16 @@ public class ReportsController {
     @GetMapping("/reports/XReport")
     public XReport getXReport() throws Exception {
         return reportsService.getXReport();
+    }
+
+    /**
+     * This method gets the restock report, which includes all items that are below their minimum stock level
+     * @return a list of restock report objects containing item name, amount in stock, and minimum stock needed for each item that is below the minimum stock level
+     * @throws Exception
+     */
+
+    @GetMapping("/reports/restockReport")
+    public List<RestockReport> getRestockReport() throws Exception {
+        return reportsService.getRestockReport();
     }
 }

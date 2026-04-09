@@ -1,5 +1,6 @@
 package com.project3.server.service;
 
+import com.project3.server.model.RestockReport;
 import com.project3.server.model.SalesReport;
 import com.project3.server.model.XReport;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,6 +122,50 @@ public class ReportsService {
             throw new Exception("Error generating XReport", e);
         }
     }
+    
+    /**
+     * This method gets the restock report, which includes all items that are below their minimum stock level
+     * @return a list of restock report objects containing item name, amount in stock, and minimum stock needed for each item that is below the minimum stock level
+     * @throws Exception
+     */
+    public List<RestockReport> getRestockReport() throws Exception {
+    try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        String getRestockData = """
+            SELECT
+                sku,
+                name,
+                amt_in_stock,
+                min_stock_needed
+            FROM ingredients_alterations
+            WHERE amt_in_stock < min_stock_needed
+            ORDER BY name
+        """;
+
+        List<RestockReport> data = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(getRestockData);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                data.add(new RestockReport(
+                    rs.getString("sku"),
+                    rs.getString("name"),
+                    rs.getDouble("amt_in_stock"),
+                    rs.getDouble("min_stock_needed")
+                ));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error processing restock report data: " + e.getMessage());
+            throw new Exception("Error processing restock report data", e);
+        }
+
+        return data;
+    } catch (Exception e) {
+        System.out.println("Error executing restock report query: " + e.getMessage());
+        throw new Exception("Error executing restock report query", e);
+    }
+}
 
     /**
      * This method calculates the total sales for a given payment type (CASH or CARD) since the last time the X report was run
