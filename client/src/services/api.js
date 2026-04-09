@@ -201,7 +201,15 @@ export const api = {
     };
   },
   
-  async getRestockReport(){},
+  // async getRestockReport(){},
+  async getRestockReport() {
+    const res = await fetch(`${API_BASE_URL}/api/reports/restockReport`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to load restock report");
+    }
+    return res.json();
+  },
 
   /**
    * This method gets the sales report for a given date range

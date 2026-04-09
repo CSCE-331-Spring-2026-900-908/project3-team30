@@ -6,10 +6,28 @@ import { api } from '../services/api';
 
 export default function RestockReportPage() {
   const [rows, setRows] = useState([]);
-  useEffect(() => { api.getRestockItems().then(setRows); }, []);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    api.getRestockReport()
+      .then((data) => {
+        console.log('Restock report data:', data);
+        setRows(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load restock report:', err);
+        setError(err.message);
+      });
+  }, []);
 
   return (
-    <PageShell title="Restock Report" subtitle="Items below minimum stock threshold" actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}>
+    <PageShell
+      title="Restock Report"
+      subtitle="Items below minimum stock threshold"
+      actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
+    >
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
       <DataTable
         columns={[
           { key: 'sku', label: 'SKU' },
