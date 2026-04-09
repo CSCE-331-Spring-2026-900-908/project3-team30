@@ -202,6 +202,12 @@ export const api = {
   },
   
   // async getRestockReport(){},
+  /**
+   * This method gets the restock report data for all inventory items that are below their minimum stock needed
+   * @throws an error if the request fails
+   * @returns the restock report data for all inventory items that are below their minimum stock needed
+   * takes no parameters since the restock report is always for all items below minimum stock needed
+   */
   async getRestockReport() {
     const res = await fetch(`${API_BASE_URL}/api/reports/restockReport`);
     if (!res.ok) {
@@ -242,7 +248,21 @@ export const api = {
     }
     return res.json();;
   },
-  async getZReport(){},
+
+  /**
+   * This method gets the Z report for the current day
+   * @returns the Z report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the Z report is always for the current day
+   */
+  async getZReport(){
+    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load Z report");
+    }
+    return res.json();;
+  },
   
   async processOrder(order) {
     await sleep();

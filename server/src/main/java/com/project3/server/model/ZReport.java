@@ -1,10 +1,11 @@
 package com.project3.server.model;
+
 import java.sql.Timestamp;
 /**
  * This is a model class that represents an X report, which includes the necessary fields for the X report
  * @author Jade Azahar
  */
-public class XReport {
+public class ZReport {
     private double totalCash;
     private double totalCard;
     private double subtotal;
@@ -14,6 +15,7 @@ public class XReport {
     private int numCancelled;
     private int numVoided;
     private Timestamp runAt;
+    private boolean isNew;
 
     /**
      * Constructor for XReport
@@ -26,8 +28,9 @@ public class XReport {
      * @param numCancelled
      * @param numVoided
      * @param runAt
+     * @param isNew
      */
-    public XReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided, Timestamp runAt) {
+    public ZReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided, Timestamp runAt, boolean isNew) {
         this.totalCash = totalCash;
         this.totalCard = totalCard;
         this.subtotal = subtotal;
@@ -38,7 +41,7 @@ public class XReport {
         this.numVoided = numVoided;
         this.runAt = runAt;
     }
-
+    
     /**
      * Getters for XReport fields
      * @return double for cash, card, etc.
@@ -105,9 +108,17 @@ public class XReport {
 
     /**
      * Getters for XReport fields
-     * @return Timestamp for when the report was generated
+     * @return Timestamp of when the report was run
      */
     public Timestamp getRunAt() {
         return runAt;
+    }
+
+    /**
+     * Getters for XReport fields
+     * @return boolean indicating if the report is new
+     */
+    public boolean isNew() {
+        return isNew;
     }
 }
