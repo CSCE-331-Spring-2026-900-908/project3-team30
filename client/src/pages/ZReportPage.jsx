@@ -39,7 +39,7 @@ export default function ZReportPage() {
       title="Z Report"
       subtitle={
         report
-          ? `${report.isNew ? 'NEW REPORT' : 'OLD REPORT'} (generated at: ${formatTime(report.runAt)})`
+          ? `Report generated at: ${formatTime(report.runAt)}`
           : 'Loading...'
       }
       actions={
