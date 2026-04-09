@@ -8,30 +8,58 @@ import { currency } from '../utils/format';
 export default function ZReportPage() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isFresh, setIsFresh] = useState(false);
 
-  const loadZReport = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const data = await api.getZReport();
-
-      setReport(data);
-      setIsFresh(true); // THIS tells us it's newly generated
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   const formatTime = (ts) => {
     if (!ts) return '';
     return new Date(ts).toLocaleString();
   };
 
+  const loadLatestZReport = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setMessage('');
+
+      const data = await api.getLatestZReport();
+      setReport(data);
+    } catch (err) {
+      console.error('Failed to load latest Z report:', err);
+      setError(err.message || 'Failed to load latest Z report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateZReport = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setMessage('');
+
+      const data = await api.getZReport();
+
+      console.log('Z report response:', data);
+
+      setReport(data);
+
+      if (data?.newlyGenerated) {
+        setMessage('Z report generated successfully');
+      } else {
+        setMessage('Unable to generate: Z report has already been generated for today');
+      }
+
+    } catch (err) {
+      console.error('Failed to generate Z report:', err);
+      setError(err.message || 'Failed to generate Z report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    loadZReport();
+    loadLatestZReport();
   }, []);
 
   return (
@@ -39,7 +67,7 @@ export default function ZReportPage() {
       title="Z Report"
       subtitle={
         report
-          ? `Report generated at: ${formatTime(report.runAt)}`
+          ? `${report.newlyGenerated ? 'New report generated at' : 'Last generated at'}: ${formatTime(report.runAt)}`
           : 'Loading...'
       }
       actions={
@@ -57,7 +85,7 @@ export default function ZReportPage() {
 
           <button
             type="button"
-            onClick={loadZReport}
+            onClick={generateZReport}
             disabled={loading}
             style={{
               background: loading ? '#6b7280' : '#5b21b6',
@@ -72,13 +100,31 @@ export default function ZReportPage() {
               transition: 'all 0.2s ease',
             }}
           >
-            {loading ? 'Generating...' : 'Generate Report'}
+            {loading ? 'Working...' : 'Generate Report'}
           </button>
         </div>
       }
     >
+      {message && (
+        <p
+          style={{
+            color: message.toLowerCase().includes('unable') ? '#b91c1c' : '#15803d',
+            marginBottom: '1rem',
+            fontWeight: 600,
+          }}
+        >
+          {message}
+        </p>
+      )}
+
       {error && (
-        <p style={{ color: '#b91c1c', marginBottom: '1rem', fontWeight: 600 }}>
+        <p
+          style={{
+            color: '#b91c1c',
+            marginBottom: '1rem',
+            fontWeight: 600,
+          }}
+        >
           {error}
         </p>
       )}

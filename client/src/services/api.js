@@ -263,6 +263,20 @@ export const api = {
     }
     return res.json();;
   },
+
+  /**
+   * This method gets the latest Z report
+   * @returns the latest Z report data
+   * @throws an error if the request fails
+   */
+  async getLatestZReport() {
+    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport/latest`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load latest Z report');
+    }
+    return res.json();
+  },
   
   async processOrder(order) {
     await sleep();
