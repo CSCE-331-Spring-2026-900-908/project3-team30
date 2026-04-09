@@ -13,6 +13,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a service that handles the business logic for managing employees
+ * @author Jade Azahar
+ */
 @Service
 public class ManageEmployeesService {
     @Value("${spring.datasource.url}")
@@ -30,6 +34,11 @@ public class ManageEmployeesService {
     // boolean isManager = false;
     boolean role = false;
 
+    /**
+     * Retrieves the list of all employees
+     * @return List of ManageEmployees objects
+     * @throws Exception if an error occurs while fetching the data
+     */
     public List<ManageEmployees> getEmployeeList() throws Exception { //this will be refresh table
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String getEmployees = "SELECT code, first_name, last_name, is_manager FROM users ORDER BY code";
@@ -54,6 +63,11 @@ public class ManageEmployeesService {
         }
     }
 
+    /**
+     * Adds a new employee
+     * @param employee the employee to add
+     * @throws Exception if an error occurs while adding the employee
+     */
     public void addEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             if (employee == null
@@ -85,6 +99,11 @@ public class ManageEmployeesService {
         }
     }
 
+    /**
+     * Updates an existing employee
+     * @param employee the employee to update
+     * @throws Exception if an error occurs while updating the employee
+     */
     public void updateEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             if (employee == null
@@ -118,6 +137,11 @@ public class ManageEmployeesService {
         }
     }
     
+    /**
+     * Deletes an existing employee
+     * @param employee the employee to delete
+     * @throws Exception if an error occurs while deleting the employee
+     */
     public void deleteEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             if (employee == null || employee.getCode() == 0){
