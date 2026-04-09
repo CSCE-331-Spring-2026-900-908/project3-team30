@@ -7,10 +7,18 @@ let localMenuItems = [...menuItems];
 let localInventory = [...inventoryItems];
 let localIngredientMap = structuredClone(ingredientMap);
 
+/**
+* This is the API service that calls backend
+* @author Jade Azahar
+*/
+
 function formatRole(role) {
   return role === 'manager' || role === 'kitchen' ? 'manager' : 'cashier';
 }
 
+/**
+ * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
+ */
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -26,6 +34,12 @@ export const api = {
 
     return data;
   },
+
+  /**
+   * This method gets the manager summary data for the dashboard
+   * @return an object with the manager summary data (total sales, total orders, etc.)
+   * @throws an error if the request fails
+   */
   async getManagerSummary() {
     const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
@@ -33,20 +47,26 @@ export const api = {
     }
     return res.json();
   },
+
+  /**
+   * This method gets the list of users for the manage employees page
+   * @returns a list of user objects
+   * @throws an error if the request fails
+   */
   async getUsers() {
     // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
     const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
     if (!res.ok) throw new Error("Failed to load users");
     return res.json();
   },
+
+  /**
+   * This method adds a new user to the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @thorws an error if the request fails
+   */
   async addUser(payload) {
-    // await sleep();
-    // const index = localUsers.findIndex((user) => user.code === Number(payload.code));
-    // const normalized = { ...payload, code: Number(payload.code), role: payload.role };
-    // if (index >= 0) localUsers[index] = normalized;
-    // else localUsers.push(normalized);
-    // return normalized;
-    // const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
     const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
       method: "POST",
       headers: {
@@ -60,6 +80,13 @@ export const api = {
     }
     return;
   },
+
+  /**
+   * This method updates an existing user in the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
   async updateUser(payload) {
     const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
       method: "PUT",
@@ -74,6 +101,13 @@ export const api = {
     }
     return;
   },
+
+  /**
+   * This method deletes a user from the system
+   * @param {*} code 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
   async deleteUser(code) {
     // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
     const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
@@ -89,6 +123,7 @@ export const api = {
     }
     return;
   },
+
   async getMenuItems() {
     await sleep();
     return [...localMenuItems];
@@ -165,7 +200,16 @@ export const api = {
       restock: null,
     };
   },
+  
   async getRestockReport(){},
+
+  /**
+   * This method gets the sales report for a given date range
+   * @param {*} startDate 
+   * @param {*} endDate 
+   * @returns the sales report data for the given date range
+   * @throws an error if the request fails
+   */
   async getSalesReport(startDate, endDate){
     const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
     if (!res.ok) {
@@ -175,6 +219,13 @@ export const api = {
 
     return res.json();;
   },
+
+  /**
+   * This method gets the X report for the current day
+   * @returns the X report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the X report is always for the current day
+   */
   async getXReport(){
     const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
     if (!res.ok) {

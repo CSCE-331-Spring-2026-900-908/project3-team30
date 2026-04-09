@@ -14,6 +14,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a service that handles the business logic for generating reports in the Sales & Trends page
+ * @author Jade Azahar
+ */
 @Service
 public class ReportsService {
     @Value("${spring.datasource.url}")
@@ -25,6 +29,13 @@ public class ReportsService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
+    /**
+     * This method gets the sales report for a given date range
+     * @param startDate
+     * @param endDate
+     * @return list of sales report objects containing item name, quantity sold, and revenue for each item
+     * @throws Exception
+     */
     public List<SalesReport> getSalesReport(String startDate, String endDate) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             String getSalesData = """ 
@@ -68,6 +79,11 @@ public class ReportsService {
         }
     }
 
+    /**
+     * This method gets the X report for the current day
+     * @return XReport object containing total cash sales, total card sales, subtotal, etc
+     * @throws Exception
+     */
     public XReport getXReport() throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             Timestamp lastRunTime = null;
@@ -106,6 +122,14 @@ public class ReportsService {
         }
     }
 
+    /**
+     * This method calculates the total sales for a given payment type (CASH or CARD) since the last time the X report was run
+     * @param conn
+     * @param paymentType
+     * @param lastRunTime
+     * @return the total sales amount for the given payment type and time range
+     * @throws Exception
+     */
     public double getSalesTotal(Connection conn, String paymentType, Timestamp lastRunTime) throws Exception {
         String query = """
             SELECT COALESCE(SUM(total_cost), 0)
@@ -130,6 +154,15 @@ public class ReportsService {
         }
     }
 
+    /**
+     * This method counts the number of sales, cancelled transactions, or voided transactions since the last time the X report was run
+     * @param conn
+     * @param table
+     * @param paymentStatus
+     * @param lastRunTime
+     * @return integer count of the number of transactions matching the given criteria
+     * @throws Exception
+     */
     public int getCount(Connection conn, String table, String paymentStatus, Timestamp lastRunTime) throws Exception {
         String query = "SELECT COUNT(*) FROM " + table + " WHERE order_time <= NOW()"
                 + (lastRunTime != null ? " AND order_time >= ?" : "")
