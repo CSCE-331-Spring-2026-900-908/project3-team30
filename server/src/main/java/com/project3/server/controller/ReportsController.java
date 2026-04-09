@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
+/**
+* This is a controller that handles API report requests in the Sales & Trends page 
+* @author Jade Azahar
+*/
 @RestController
 @RequestMapping("/api")
 public class ReportsController {
@@ -18,11 +22,23 @@ public class ReportsController {
         this.reportsService = reportsService;
     }
 
+    /**
+     * This method gets the sales report for a given date range
+     * @param startDate
+     * @param endDate
+     * @return a list of sales report objects
+     * @throws Exception
+     */
     @GetMapping("/reports/salesReport")
     public List<SalesReport> getSalesReport(@RequestParam String startDate, @RequestParam String endDate) throws Exception {
         return reportsService.getSalesReport(startDate, endDate);
     }
 
+    /**
+     * This method gets the X report for the current day
+     * @return XReport object with all the parameters needed for the X report (numSales, totalRevenue, etc.)
+     * @throws Exception
+     */
     @GetMapping("/reports/XReport")
     public XReport getXReport() throws Exception {
         return reportsService.getXReport();
