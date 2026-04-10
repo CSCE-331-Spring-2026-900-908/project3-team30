@@ -7,6 +7,18 @@ let localMenuItems = [...menuItems];
 let localInventory = [...inventoryItems];
 let localIngredientMap = structuredClone(ingredientMap);
 
+/**
+* This is the API service that calls backend
+* @author Jade Azahar
+*/
+
+function formatRole(role) {
+  return role === 'manager' || role === 'kitchen' ? 'manager' : 'cashier';
+}
+
+/**
+ * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
+ */
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -22,6 +34,11 @@ export const api = {
     return data;
   },
 
+  /**
+   * This method gets the manager summary data for the dashboard
+   * @return an object with the manager summary data (total sales, total orders, etc.)
+   * @throws an error if the request fails
+   */
   async getManagerSummary() {
     const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
@@ -45,10 +62,80 @@ export const api = {
     return normalized;
   },
 
+  /**
+   * This method gets the list of users for the manage employees page
+   * @returns a list of user objects
+   * @throws an error if the request fails
+   */
+  async getUsers() {
+    // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    if (!res.ok) throw new Error("Failed to load users");
+    return res.json();
+  },
+
+  /**
+   * This method adds a new user to the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @thorws an error if the request fails
+   */
+  async addUser(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to save user");
+    }
+    return;
+  },
+
+  /**
+   * This method updates an existing user in the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
+  async updateUser(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to update user");
+    }
+    return;
+  },
+
+  /**
+   * This method deletes a user from the system
+   * @param {*} code 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
   async deleteUser(code) {
-    await sleep();
-    localUsers = localUsers.filter((user) => user.code !== code);
-    return true;
+    // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code })
+    });
+    if (!res.ok){
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to delete user");
+    }
+    return;
   },
 
   /**
@@ -165,18 +252,91 @@ export const api = {
   },
 
   async getReports() {
-    await sleep();
-    return reports;
+    return {
+      sales: null,
+      xReport: null,
+      zReport: null,
+      restock: null,
+    };
   },
-
-  async getRestockItems() {
-    await sleep();
-    return localInventory.filter((item) => item.amtInStock < item.minStockNeeded);
+  
+  // async getRestockReport(){},
+  /**
+   * This method gets the restock report data for all inventory items that are below their minimum stock needed
+   * @throws an error if the request fails
+   * @returns the restock report data for all inventory items that are below their minimum stock needed
+   * takes no parameters since the restock report is always for all items below minimum stock needed
+   */
+  async getRestockReport() {
+    const res = await fetch(`${API_BASE_URL}/api/reports/restockReport`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to load restock report");
+    }
+    return res.json();
   },
 
   /**
-   * Sends a completed checkout order to the Spring backend.
+   * This method gets the sales report for a given date range
+   * @param {*} startDate 
+   * @param {*} endDate 
+   * @returns the sales report data for the given date range
+   * @throws an error if the request fails
    */
+  async getSalesReport(startDate, endDate){
+    const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load sales report");
+    }
+
+    return res.json();;
+  },
+
+  /**
+   * This method gets the X report for the current day
+   * @returns the X report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the X report is always for the current day
+   */
+  async getXReport(){
+    const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load X report");
+    }
+    return res.json();;
+  },
+
+  /**
+   * This method gets the Z report for the current day
+   * @returns the Z report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the Z report is always for the current day
+   */
+  async getZReport(){
+    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport`);
+    if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to load Z report");
+    }
+    return res.json();;
+  },
+
+  /**
+   * This method gets the latest Z report
+   * @returns the latest Z report data
+   * @throws an error if the request fails
+   */
+  async getLatestZReport() {
+    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport/latest`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load latest Z report');
+    }
+    return res.json();
+  },
+  
   async processOrder(order) {
     const res = await fetch(`${API_BASE_URL}/api/orders`, {
       method: 'POST',

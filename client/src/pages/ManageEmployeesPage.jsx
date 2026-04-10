@@ -16,17 +16,59 @@ export default function ManageEmployeesPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
-    await api.saveUser(form);
-    setStatus(`Saved employee ${form.code}.`);
-    setForm(emptyForm);
-    load();
+    if (!String(form.code.trim())) {
+      setStatus("Enter a code before saving an employee.");
+      return;
+    }
+
+    if (!form.firstName.trim()) {
+      setStatus("Enter a first name before saving an employee.");
+      return;
+    }
+
+    if (!form.lastName.trim()) {
+      setStatus("Enter a last name before saving an employee.");
+      return;
+    }
+    try {
+      const codeNumber = Number(form.code);
+      const payload = {
+        code: codeNumber,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        role: form.role
+      };
+      const existingUser = users.find((user) => user.code === codeNumber);
+      if (!existingUser) {
+        await api.addUser(payload);
+        setStatus(`Saved employee ${form.code}.`);
+      } else {
+        await api.updateUser(payload);
+        setStatus(`Updated employee ${form.code}.`);
+      }
+      setForm(emptyForm);
+      await load();
+      
+    } catch (error) {
+      console.error(error);
+      setStatus(error.message ||"Failed to save employee.");
+    }
   };
 
   const remove = async () => {
-    await api.deleteUser(Number(form.code));
-    setStatus(`Removed employee ${form.code}.`);
-    setForm(emptyForm);
-    load();
+    if (!String(form.code.trim())) {
+      setStatus("Enter a code before removing an employee.");
+      return;
+    }
+    try {
+      await api.deleteUser(Number(form.code));
+      setStatus(`Removed employee ${form.code}.`);
+      setForm(emptyForm);
+      await load();
+    } catch (error) {
+      console.error(error);
+      setStatus(error.message || "Failed to remove employee.");
+    }
   };
 
   return (
@@ -40,7 +82,14 @@ export default function ManageEmployeesPage() {
             { key: 'role', label: 'Role' },
           ]}
           rows={users}
-          onRowClick={(row) => setForm({ code: row.code, firstName: row.firstName, lastName: row.lastName, role: row.role })}
+          onRowClick={(row) =>
+            setForm({
+              code: String(row.code), //this was the only thing I changed, to make sure it's seen as a string
+              firstName: row.firstName,
+              lastName: row.lastName,
+              role: row.role
+            })
+          }
         />
         <div className="card form-card">
           <h2>Employee Form</h2>
@@ -55,7 +104,7 @@ export default function ManageEmployeesPage() {
           </FormField>
           <div className="inline-actions">
             <button className="primary-button inline" onClick={save}>Add / Update</button>
-            <button className="secondary-button inline" onClick={remove} disabled={!form.code}>Remove</button>
+            <button className="secondary-button inline" onClick={remove}>Remove</button>
           </div>
           {status ? <p className="success-text">{status}</p> : null}
         </div>

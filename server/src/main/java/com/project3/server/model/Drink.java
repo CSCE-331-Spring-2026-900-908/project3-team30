@@ -8,14 +8,16 @@ import java.util.List;
 
 /**
  * Represents a drink to be added to the cart.
- * @author Nitya Khurana
+ * @author Nitya Khurana and Anisha Menezes
  */
 public class Drink {
 
     private String name;
     private double basePrice;
-    private List<Modification> modifications = new ArrayList<>();
     private String image;
+    private boolean complete;
+    private List<Modification> modifications = new ArrayList<>();
+
     /**
      * Creates a drink with a name and price
      * @param name
@@ -35,6 +37,7 @@ public class Drink {
     public void addModification(Modification mod) {
         modifications.add(mod);
     }
+
 
     /**
      * Gets this Drink's modifications
@@ -110,5 +113,19 @@ public class Drink {
     public void setName(String name) {
         this.name = name;
     }
+    /*
+     * Gets if the order is complete
+     * @return boolean for if the order has been completed
+     */
+    public boolean getComplete() {
+        return complete;
+    }
 
+    /**
+     * Sets if the order is complete
+     * @param comp Boolean for if the order is complete
+     */
+    public void getComplete(boolean comp) {
+        complete = comp;
+    }
 }

@@ -44,7 +44,7 @@ export default function PortalPage() {
     }
 
     const handleKitchenLogin = () => {
-        navigate('/kitchen-login');
+        navigate('/kitchen');
     }
 
     const handleMenuBoard = () => {

@@ -9,6 +9,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * This is a service that handles the business logic for generating the manager summary in the Dashboard page
+ * @author Jade Azahar
+ */
 @Service
 public class DashboardService {
 
@@ -21,6 +25,11 @@ public class DashboardService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
+    /**
+     * Retrieves the manager summary for the dashboard
+     * @return ManagerSummary object containing the summary data
+     * @throws Exception if an error occurs while fetching the data
+     */
     public ManagerSummary getManagerSummary() throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
 
