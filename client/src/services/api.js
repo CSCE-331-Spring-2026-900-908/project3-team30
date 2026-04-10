@@ -47,7 +47,6 @@ export const api = {
     return res.json();
   },
 
-  // Manager-side functions are still mostly local/mock for now
   async getUsers() {
     await sleep();
     return [...localUsers];
@@ -70,7 +69,9 @@ export const api = {
   async getUsers() {
     // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
     const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
-    if (!res.ok) throw new Error("Failed to load users");
+    if (!res.ok) {
+      throw new Error('Failed to load users');
+    }
     return res.json();
   },
 
@@ -127,20 +128,53 @@ export const api = {
     const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ code })
+      body: JSON.stringify(payload)
     });
-    if (!res.ok){
+
+    if (!res.ok) {
       const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || "Failed to delete user");
+      throw new Error(errorData?.message || 'Failed to save user');
     }
+
     return;
   },
 
-  /**
-   * Cashier/customer: load real menu items from backend.
-   */
+  async updateUser(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to update user');
+    }
+
+    return;
+  },
+
+  async deleteUser(code) {
+    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to delete user');
+    }
+
+    return;
+  },
+
   async getMenuItems() {
     const res = await fetch(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
@@ -156,9 +190,17 @@ export const api = {
       price: Number(payload.price),
       category: payload.category,
     };
-    if (existing >= 0) localMenuItems[existing] = normalized;
-    else localMenuItems.push(normalized);
-    if (!localIngredientMap[normalized.name]) localIngredientMap[normalized.name] = [];
+
+    if (existing >= 0) {
+      localMenuItems[existing] = normalized;
+    } else {
+      localMenuItems.push(normalized);
+    }
+
+    if (!localIngredientMap[normalized.name]) {
+      localIngredientMap[normalized.name] = [];
+    }
+
     return normalized;
   },
 
@@ -182,8 +224,13 @@ export const api = {
       ingredient: ingredient.ingredient,
       quantityUsed: Number(ingredient.quantityUsed),
     };
-    if (idx >= 0) list[idx] = normalized;
-    else list.push(normalized);
+
+    if (idx >= 0) {
+      list[idx] = normalized;
+    } else {
+      list.push(normalized);
+    }
+
     localIngredientMap[name] = list;
     return normalized;
   },
@@ -210,8 +257,13 @@ export const api = {
       amtInStock: Number(payload.amtInStock),
       minStockNeeded: Number(payload.minStockNeeded ?? 0),
     };
-    if (idx >= 0) localInventory[idx] = normalized;
-    else localInventory.push(normalized);
+
+    if (idx >= 0) {
+      localInventory[idx] = normalized;
+    } else {
+      localInventory.push(normalized);
+    }
+
     return normalized;
   },
 
@@ -221,23 +273,6 @@ export const api = {
     return true;
   },
 
-  /**
-   * Cashier/customer: load real alteration options from backend.
-   *
-   * Backend returns:
-   * {
-   *   defaults: [...],
-   *   sweetness: [...],
-   *   ice: [...]
-   * }
-   *
-   * Frontend pages expect:
-   * {
-   *   default: [...],
-   *   sweetness: [...],
-   *   ice: [...]
-   * }
-   */
   async getAlterations() {
     const res = await fetch(`${API_BASE_URL}/api/alterations`);
     if (!res.ok) throw new Error('Failed to load alterations');
@@ -337,6 +372,34 @@ export const api = {
     return res.json();
   },
   
+  async getRestockReport() {
+    // placeholder until backend endpoint is implemented
+    return null;
+  },
+
+  async getSalesReport(startDate, endDate) {
+    const res = await fetch(
+      `${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load sales report');
+    }
+
+    return res.json();
+  },
+
+  async getXReport() {
+    // placeholder until backend endpoint is implemented
+    return null;
+  },
+
+  async getZReport() {
+    // placeholder until backend endpoint is implemented
+    return null;
+  },
+
   async processOrder(order) {
     const res = await fetch(`${API_BASE_URL}/api/orders`, {
       method: 'POST',
@@ -350,10 +413,6 @@ export const api = {
     return data;
   },
 
-  /**
-   * Sends a cancelled order to the Spring backend so it can be recorded
-   * in cancelled_voided.
-   */
   async cancelOrder(order) {
     const res = await fetch(`${API_BASE_URL}/api/orders/cancel`, {
       method: 'POST',
