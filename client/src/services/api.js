@@ -125,6 +125,16 @@ export const api = {
   },
   
   // menu related functions start here
+  async getMenuDrinks() {
+    const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
+    if (!res.ok) throw new Error("Failed to load drinks");
+    return res.json();
+  },
+  async getMenuToppings() {
+    const res = await fetch(`${API_BASE_URL}/api/menu-toppings`);
+    if (!res.ok) throw new Error("Failed to load toppings");
+    return res.json();
+  },
   async getMenuItems() {
     await sleep();
     return [...localMenuItems];
