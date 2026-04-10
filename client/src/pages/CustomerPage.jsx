@@ -57,6 +57,8 @@ export default function MenuPage() {
               <button key={item.id} className={`menu-item ${selectedItem?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedItem(item)}>
                 {/* <span>{item.name}</span>
                 <strong>{currency(item.price)}</strong> */}
+
+                {/* set images */}
                 <div className="menu-item-content">
                     <img 
                         src={item.image} 
