@@ -46,7 +46,7 @@ export default function MenuPage() {
   return (
     <PageShell
       title="Menu"
-      subtitle="Cashier ordering flow converted from menu.fxml and modifications.fxml"
+      subtitle="Cashier ordering menu"
       actions={<Link className="primary-button inline" to="/cashier/checkout">Checkout ({items.length})</Link>}
     >
       <div className="split-layout">
@@ -54,7 +54,7 @@ export default function MenuPage() {
           <h2>Menu Items</h2>
           <div className="menu-grid">
             {menuItems.map((item) => (
-              <button key={item.id} className={`menu-item ${selectedItem?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedItem(item)}>
+              <button key={item.name} className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`} onClick={() => setSelectedItem(item)}>
                 <span>{item.name}</span>
                 <strong>{currency(item.price)}</strong>
               </button>
