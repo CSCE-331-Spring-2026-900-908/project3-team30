@@ -15,14 +15,14 @@ public class MenuBoardController {
         this.menuBoardService = menuBoardService;
     }
 
-    @GetMapping("/menu-categories")
-    public List<String> getCategories() throws Exception{
-        return menuBoardService.getCategories();
+    @GetMapping("/menu-drinks")
+    public List<MenuItem> getDrinks() throws Exception{
+        return menuBoardService.getDrinks();
     }
 
-    @GetMapping("/items/{category}")
-    public List<MenuItem> getCategoryItems(@PathVariable String category) throws Exception{
-        return menuBoardService.getCategoryItems(category);
+    @GetMapping("/menu-toppings")
+    public List<MenuItem> getToppings() throws Exception{
+        return menuBoardService.getToppings();
     }
     
 }

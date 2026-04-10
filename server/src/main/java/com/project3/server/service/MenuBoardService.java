@@ -23,44 +23,45 @@ public class MenuBoardService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
-    public List<String> getCategories() throws Exception{
-        String sql = "SELECT category FROM menu_items WHERE category NOT IN ('ice', 'sweetness', 'toppings')";
-        
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
-            List<String> categories = new ArrayList<>();
-
-            while (rs.next()){
-                String category = rs.getString("category");
-                if(!(categories.contains(category))){
-                    categories.add(category);
-                }
-            }
-
-            return categories;
-        }
-    }
-
-    public List<MenuItem> getCategoryItems(String category) throws Exception{
-        String sql = "SELECT name, price FROM menu_items WHERE category = '" + category + "'";
+    public List<MenuItem> getDrinks() throws Exception{
+        String sql = "SELECT name, price, category FROM menu_items WHERE category NOT IN ('ice', 'sweetness', 'toppings')";
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
-            List<MenuItem> items = new ArrayList<>();
+            List<MenuItem> drinks = new ArrayList<>();
 
             while (rs.next()) {
-                items.add(new MenuItem(
+                drinks.add(new MenuItem(
                         rs.getString("name"),
                         rs.getDouble("price"),
-                        category
+                        rs.getString("category")
                 ));
             }
 
-            return items;
+            return drinks;
+        }
+    }
+
+    public List<MenuItem> getToppings() throws Exception{
+        String sql = "SELECT name, price, category FROM menu_items WHERE category = 'toppings'";
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            List<MenuItem> toppings = new ArrayList<>();
+
+            while (rs.next()) {
+                toppings.add(new MenuItem(
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getString("category")
+                ));
+            }
+
+            return toppings;
         }
     }
 }
