@@ -37,6 +37,10 @@ const initialOrders = [
 
 export default function KitchenDashboardPage() {
   const [orders, setOrders] = useState(initialOrders);
+
+  // NEW: tab state
+  const [view, setView] = useState('active'); // 'active' or 'completed'
+
   const [page, setPage] = useState(0);
   const ORDERS_PER_PAGE = 2;
 
@@ -53,24 +57,64 @@ export default function KitchenDashboardPage() {
 
   const handleLogout = () => {
     logout();
-    navigate('/home'); // Redirect back to portal page
+    navigate('/home');
   };
 
-  const paginatedOrders = orders.slice(page * ORDERS_PER_PAGE, (page + 1) * ORDERS_PER_PAGE);
+  // NEW: filter + sort
+  const filteredOrders = orders
+    .filter((order) => (view === 'active' ? !order.completed : order.completed))
+    .sort((a, b) => a.id - b.id); // oldest first (based on id)
+
+  // UPDATED: pagination uses filteredOrders
+  const paginatedOrders = filteredOrders.slice(
+    page * ORDERS_PER_PAGE,
+    (page + 1) * ORDERS_PER_PAGE
+  );
+
+  // NEW: reset page when switching tabs
+  const switchView = (newView) => {
+    setView(newView);
+    setPage(0);
+  };
 
   const nextPage = () => {
-    if ((page + 1) * ORDERS_PER_PAGE < orders.length) setPage(page + 1);
+    if ((page + 1) * ORDERS_PER_PAGE < filteredOrders.length) {
+      setPage(page + 1);
+    }
   };
+
   const prevPage = () => {
-    if (page > 0) setPage(page - 1);
+    if (page > 0) {
+      setPage(page - 1);
+    }
   };
 
   return (
     <PageShell
       title="Kitchen Dashboard"
       subtitle="Check off orders as you prepare them"
-      actions={<button className="secondary-button" onClick={handleLogout}>Log out</button>}
+      actions={
+        <button className="secondary-button" onClick={handleLogout}>
+          Log out
+        </button>
+      }
     >
+      {/* NEW: Tabs */}
+      <div className="tabs">
+        <button
+          className={view === 'active' ? 'active-tab' : ''}
+          onClick={() => switchView('active')}
+        >
+          Active Orders
+        </button>
+        <button
+          className={view === 'completed' ? 'active-tab' : ''}
+          onClick={() => switchView('completed')}
+        >
+          Completed Orders
+        </button>
+      </div>
+
       <section className="orders-section">
         {paginatedOrders.length === 0 ? (
           <p>No orders</p>
@@ -88,7 +132,9 @@ export default function KitchenDashboardPage() {
                       {item.alterations.length > 0 && (
                         <div className="alterations">
                           {item.alterations.map((alt, i) => (
-                            <span key={i} className="alteration">{alt}</span>
+                            <span key={i} className="alteration">
+                              {alt}
+                            </span>
                           ))}
                         </div>
                       )}
@@ -98,7 +144,7 @@ export default function KitchenDashboardPage() {
                 <div className="footer">
                   <span className="timestamp">{order.timestamp}</span>
                   <button onClick={() => toggleCompleted(order.id)}>
-                    {order.completed ? 'Undo' : 'Done'}
+                    {order.completed ? 'Uncomplete' : 'Done'}
                   </button>
                 </div>
               </li>
@@ -107,13 +153,45 @@ export default function KitchenDashboardPage() {
         )}
       </section>
 
+      {/* UPDATED: pagination uses filteredOrders */}
       <div className="pagination">
-        <button onClick={prevPage} disabled={page === 0}>Previous</button>
-        <span>Page {page + 1} of {Math.ceil(orders.length / ORDERS_PER_PAGE)}</span>
-        <button onClick={nextPage} disabled={(page + 1) * ORDERS_PER_PAGE >= orders.length}>Next</button>
+        <button onClick={prevPage} disabled={page === 0}>
+          Previous
+        </button>
+        <span>
+          Page {page + 1} of{' '}
+          {Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE))}
+        </span>
+        <button
+          onClick={nextPage}
+          disabled={(page + 1) * ORDERS_PER_PAGE >= filteredOrders.length}
+        >
+          Next
+        </button>
       </div>
 
       <style>{`
+        .tabs {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+
+        .tabs button {
+          padding: 8px 16px;
+          border: 1px solid #ccc;
+          background: #f5f5f5;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+
+        .tabs .active-tab {
+          background: #333;
+          color: white;
+          border-color: #333;
+        }
+
         .order-list {
           list-style: none;
           padding: 0;
@@ -121,6 +199,7 @@ export default function KitchenDashboardPage() {
           flex-direction: column;
           gap: 16px;
         }
+
         .order-card {
           padding: 12px;
           border: 1px solid #ccc;
@@ -130,15 +209,18 @@ export default function KitchenDashboardPage() {
           flex-direction: column;
           gap: 8px;
         }
+
         .order-card.completed {
           opacity: 0.5;
           text-decoration: line-through;
         }
+
         .order-item {
           display: flex;
           flex-direction: column;
           gap: 2px;
         }
+
         .alterations {
           font-size: 0.8rem;
           color: #555;
@@ -147,20 +229,24 @@ export default function KitchenDashboardPage() {
           gap: 4px;
           flex-wrap: wrap;
         }
+
         .alteration {
           background-color: #eee;
           padding: 2px 6px;
           border-radius: 4px;
         }
+
         .footer {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
+
         .timestamp {
           font-size: 0.8rem;
           color: #666;
         }
+
         .pagination {
           display: flex;
           justify-content: center;
@@ -168,6 +254,7 @@ export default function KitchenDashboardPage() {
           margin-top: 20px;
           gap: 12px;
         }
+
         button {
           cursor: pointer;
         }

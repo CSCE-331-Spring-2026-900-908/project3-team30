@@ -19,7 +19,6 @@ import RestockReportPage from './pages/RestockReportPage';
 import MenuBoardPage from './pages/MenuBoardPage';
 import CustomerPage from './pages/CustomerPage';
 import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
-import KitchenLoginPage from './pages/KitchenLoginPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
 
 export default function App() {
@@ -29,8 +28,8 @@ export default function App() {
       <Route path="/" element={<Navigate to="/home" replace />} />
 
       <Route path="/cashier-login" element={<LoginPage />} />
+      <Route path="/kitchen" element={<KitchenDashboardPage />} />
       <Route path="/manager-login" element={<ManagerLoginPage />} />
-      <Route path="/kitchen-login" element={<KitchenLoginPage />} />
       <Route path="/menu-board" element={<MenuBoardPage />} />
 
       <Route
@@ -95,11 +94,7 @@ export default function App() {
         element={<CustomerCheckoutPage />}
       />
 
-      <Route
-        path="/kitchen"
-        element={<ProtectedRoute roles={["kitchen", "manager"]}><KitchenDashboardPage /></ProtectedRoute>}
-        //changed role to roles to include kitchen AND manager access to the kitchen dashboard
-      />
+  
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
