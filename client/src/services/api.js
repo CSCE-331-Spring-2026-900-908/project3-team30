@@ -123,7 +123,8 @@ export const api = {
     }
     return;
   },
-
+  
+  // menu related functions start here
   async getMenuItems() {
     await sleep();
     return [...localMenuItems];
