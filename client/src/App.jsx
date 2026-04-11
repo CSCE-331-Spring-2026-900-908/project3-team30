@@ -34,43 +34,43 @@ export default function App() {
 
       <Route
         path="/manager"
-        element={<ProtectedRoute role="manager"><ManagerDashboardPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/employees"
-        element={<ProtectedRoute role="manager"><ManageEmployeesPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><ManageEmployeesPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/menu"
-        element={<ProtectedRoute role="manager"><ManageMenuPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/menu/:itemName/ingredients"
-        element={<ProtectedRoute role="manager"><IngredientEditorPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/inventory"
-        element={<ProtectedRoute role="manager"><InventoryPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><InventoryPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/reports"
-        element={<ProtectedRoute role="manager"><SalesAndTrendsPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><SalesAndTrendsPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/reports/sales"
-        element={<ProtectedRoute role="manager"><SalesReportPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><SalesReportPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/reports/x"
-        element={<ProtectedRoute role="manager"><XReportPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><XReportPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/reports/z"
-        element={<ProtectedRoute role="manager"><ZReportPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><ZReportPage /></ProtectedRoute>}
       />
       <Route
         path="/manager/reports/restock"
-        element={<ProtectedRoute role="manager"><RestockReportPage /></ProtectedRoute>}
+        element={<ProtectedRoute roles={['manager']}><RestockReportPage /></ProtectedRoute>}
       />
 
       <Route
