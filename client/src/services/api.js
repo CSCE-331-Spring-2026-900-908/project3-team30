@@ -20,7 +20,7 @@ function formatRole(role) {
  * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
  */
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  import.meta.env.VITE_API_BASE_URL;
 
 export const api = {
   async login(pin) {
