@@ -13,7 +13,7 @@ public class Order {
     private Timestamp order_time;
     private int order_num;
     private boolean complete; 
-    public static final List<Drink> items = new ArrayList<>();
+    private List<Drink> items = new ArrayList<>();
 
     /**
      * Gets the order number
@@ -43,8 +43,40 @@ public class Order {
      * Sets if the order is complete
      * @param comp Boolean for if the order is complete
      */
-    public void getComplete(boolean comp) {
+    public void setComplete(boolean comp) {
         complete = comp;
+    }
+
+    /**
+     * Sets the order_num
+     * @param num order number to be set
+     */
+    public void setOrderNum(int num) {
+        order_num = num;
+    }
+
+    /**
+     * Sets the timestamp
+     * @param time order time to be set
+     */
+    public void setTimestamp(Timestamp time) {
+        order_time = time;
+    }
+
+    /**
+     * Returns the drink list
+     * @param drinks Drink array list to be set
+     */
+    public void setDrinks(List<Drink> drinks) {
+        items = drinks;
+    }
+
+    /**
+     * Returns the drink list
+     * @return drinks arraylist associated with this order
+     */
+    public List<Drink> getDrinks() {
+        return items;
     }
 
 

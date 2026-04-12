@@ -425,4 +425,14 @@ export const api = {
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
   },
+  async getActiveOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/orders/active`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load active orders');
+    }
+
+    return res.json();
+  },
 };

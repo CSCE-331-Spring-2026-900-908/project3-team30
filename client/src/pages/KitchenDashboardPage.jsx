@@ -3,40 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import { useAuth } from '../context/AuthContext';
 
-// Hardcoded orders for MVP
-const initialOrders = [
-  {
-    id: 1,
-    timestamp: '09:15 AM',
-    completed: false,
-    items: [
-      { name: 'Classic Milk Tea', quantity: 2, alterations: ['No Ice', 'Extra Boba'] },
-      { name: 'Taro Slush', quantity: 1, alterations: ['50% Sugar'] },
-    ],
-  },
-  {
-    id: 2,
-    timestamp: '09:22 AM',
-    completed: false,
-    items: [
-      { name: 'Mango Green Tea', quantity: 1, alterations: ['Less Ice'] },
-      { name: 'Thai Tea', quantity: 2, alterations: ['No Ice', 'Extra Creamer'] },
-    ],
-  },
-  {
-    id: 3,
-    timestamp: '09:30 AM',
-    completed: false,
-    items: [
-      { name: 'Classic Milk Tea', quantity: 1, alterations: ['Extra Boba'] },
-      { name: 'Mango Green Tea', quantity: 1, alterations: [] },
-      { name: 'Taro Slush', quantity: 1, alterations: ['0% Sugar'] },
-    ],
-  },
-];
+import { api } from '../api/api';
+import { useEffect } from 'react';
 
 export default function KitchenDashboardPage() {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
 
   // NEW: tab state
   const [view, setView] = useState('active'); // 'active' or 'completed'
