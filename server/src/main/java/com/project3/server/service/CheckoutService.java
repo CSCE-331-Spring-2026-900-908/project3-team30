@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Handles checkout/cancel logic for Project 3.
@@ -61,7 +62,11 @@ public class CheckoutService {
                 int nextItemId = getNextId(conn, "items_purchased", "id_number");
 
                 for (Drink drink : request.getItems()) {
-                    insertPurchasedItem(conn, nextItemId, transactionNumber, drink, orderNotes);
+
+                    String modNotes = drink.getModifications().stream().map(Modification::getName).collect(Collectors.joining(", "));
+
+                    String combinedNotes = (orderNotes != null && !orderNotes.trim().isEmpty()) ? orderNotes + ", " + modNotes : modNotes;
+                    insertPurchasedItem(conn, nextItemId, transactionNumber, drink, combinedNotes);
                     insertIngredientsAndUpdateInventory(conn, drink, nextItemId, transactionNumber);
                     nextItemId++;
                 }

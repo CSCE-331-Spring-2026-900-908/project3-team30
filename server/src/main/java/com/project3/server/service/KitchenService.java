@@ -30,6 +30,8 @@ public class KitchenService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
+
+
 public List<Order> getActiveOrders() {
     List<Order> orders = new ArrayList<>();
 
@@ -66,7 +68,6 @@ public List<Order> getActiveOrders() {
                 order.setTimestamp(rs.getTimestamp("order_time"));
                 order.setComplete(rs.getBoolean("complete"));
                 order.setDrinks(new ArrayList<>());
-
                 orderMap.put(transactionNumber, order);
             }
 
@@ -140,6 +141,7 @@ public List<Order> getActiveOrders() {
                     order.setTimestamp(rs.getTimestamp("order_time"));
                     order.setComplete(rs.getBoolean("complete"));
                     order.setDrinks(new ArrayList<>());
+                    order.setCompleteTime(rs.getTimestamp("complete_time")); // add this
 
                     orderMap.put(transactionNumber, order);
                 }
@@ -186,10 +188,8 @@ public List<Order> getActiveOrders() {
     } catch (Exception e) {
         e.printStackTrace();
     }
-    //TODO create the markcomplete for the drinks
-    //TODO allow uncheck 
-    //TODO have the complete time displayed as well on the UI; right now it's just order time
 }
+
 
     
 }

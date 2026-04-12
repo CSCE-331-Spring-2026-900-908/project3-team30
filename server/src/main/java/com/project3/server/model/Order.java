@@ -14,6 +14,7 @@ public class Order {
     private int order_num;
     private boolean complete; 
     private List<Drink> items = new ArrayList<>();
+    private Timestamp completeTime;
 
     /**
      * Gets the order number
@@ -64,7 +65,7 @@ public class Order {
     }
 
     /**
-     * Returns the drink list
+     * Sets the drink list
      * @param drinks Drink array list to be set
      */
     public void setDrinks(List<Drink> drinks) {
@@ -78,6 +79,18 @@ public class Order {
     public List<Drink> getDrinks() {
         return items;
     }
+
+    /**
+     * Returns the complete time
+     * @return the time completed
+     */
+    public Timestamp getCompleteTime() { return completeTime; }
+
+    /**
+     * Sets the completed list
+     * @param completeTime time to be set for that order
+     */
+    public void setCompleteTime(Timestamp completeTime) { this.completeTime = completeTime; }
 
 
 }
