@@ -4,7 +4,10 @@ import { api } from '../services/api';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [loading, setLoading] = useState(false);
 
   const value = useMemo(() => ({
@@ -15,6 +18,7 @@ export function AuthProvider({ children }) {
       try {
         const result = await api.login(pin);
         setUser(result);
+        localStorage.setItem('user', JSON.stringify(result));
         return result;
       } finally {
         setLoading(false);
@@ -22,6 +26,7 @@ export function AuthProvider({ children }) {
     },
     logout() {
       setUser(null);
+      localStorage.removeItem('user');
     },
   }), [user, loading]);
 

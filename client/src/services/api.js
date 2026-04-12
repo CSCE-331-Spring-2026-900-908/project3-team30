@@ -20,7 +20,7 @@ function formatRole(role) {
  * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
  */
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  import.meta.env.VITE_API_BASE_URL;
 
 export const api = {
   async login(pin) {
@@ -456,5 +456,37 @@ export const api = {
     }
 
     return data;
+  },
+  async getActiveOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load active orders');
+    }
+
+    return res.json();
+  },
+  async getCompletedOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/completed`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load completed orders');
+    }
+
+    return res.json();
+  },
+  async markComplete(id) {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
+      method: 'PATCH',
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to update order');
+    }
+
+    return;
   },
 };
