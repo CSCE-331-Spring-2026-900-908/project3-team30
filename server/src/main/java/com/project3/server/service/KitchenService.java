@@ -110,8 +110,14 @@ public List<Order> getActiveOrders() {
             FROM sales s
             JOIN items_purchased i 
                 ON s.transaction_number = i.transaction_number
-            WHERE s.complete = true
-            ORDER BY s.transaction_number ASC
+            WHERE s.transaction_number IN (
+                SELECT transaction_number
+                FROM sales
+                WHERE complete = true
+                ORDER BY complete_time DESC
+                LIMIT 15
+            )
+            ORDER BY s.transaction_number DESC
         """;
 
         try (
@@ -167,19 +173,21 @@ public List<Order> getActiveOrders() {
 
     public void markComplete(int transactionNumber) {
 
-    String sql = "UPDATE sales SET complete = true WHERE transaction_number = ?";
+    String sql = "UPDATE sales SET complete = NOT complete, complete_time = CASE WHEN complete = false THEN NOW() ELSE NULL END WHERE transaction_number = ?";
 
     try (
         Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
         PreparedStatement stmt = conn.prepareStatement(sql);
     ) {
-        stmt.setLong(1, transactionNumber);
+        stmt.setInt(1, transactionNumber);
         stmt.executeUpdate();
 
     } catch (Exception e) {
         e.printStackTrace();
     }
     //TODO create the markcomplete for the drinks
+    //TODO allow uncheck 
+    //TODO have the complete time displayed as well on the UI; right now it's just order time
 }
 
     

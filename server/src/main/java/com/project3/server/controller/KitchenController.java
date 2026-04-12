@@ -5,7 +5,8 @@ import com.project3.server.service.KitchenService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 * @author Anisha Menezes
 */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/kitchen")
 public class KitchenController {
 
     private final KitchenService kitchenService;
@@ -23,8 +24,18 @@ public class KitchenController {
         this.kitchenService = kitchenService;
     }
 
-    @GetMapping("/orders/active")
+    @GetMapping("/completed")
+    public List<Order> getCompletedOrders() {
+        return kitchenService.getCompletedOrders();
+    }
+
+    @GetMapping("/active")
     public List<Order> getActiveOrders() {
         return kitchenService.getActiveOrders();
+    }
+
+    @PatchMapping("/{id}/complete")
+    public void markComplete(@PathVariable int id) {
+        kitchenService.markComplete(id);
     }
 }
