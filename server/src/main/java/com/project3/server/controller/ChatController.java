@@ -3,6 +3,8 @@ package com.project3.server.controller;
 import com.project3.server.model.ChatRequest;
 import com.project3.server.model.ChatResponse;
 import com.project3.server.service.GeminiChatService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +18,14 @@ public class ChatController {
     }
 
     @PostMapping("/chat")
-    public ChatResponse chat(@RequestBody ChatRequest request) throws Exception {
-        String reply = geminiChatService.getChatReply(request);
-        return new ChatResponse(reply);
+    public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request) {
+        try {
+            String reply = geminiChatService.getChatReply(request);
+            return ResponseEntity.ok(new ChatResponse(reply));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ChatResponse("Backend error: " + e.getMessage()));
+        }
     }
 }
