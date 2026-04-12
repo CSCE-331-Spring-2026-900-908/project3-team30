@@ -105,6 +105,7 @@ public List<Order> getActiveOrders() {
                 s.transaction_number,
                 s.order_time,
                 s.complete,
+                s.complete_time,
                 i.item_name,
                 i.notes
             FROM sales s
@@ -117,7 +118,7 @@ public List<Order> getActiveOrders() {
                 ORDER BY complete_time DESC
                 LIMIT 15
             )
-            ORDER BY s.transaction_number DESC
+            ORDER BY s.complete_time DESC, s.transaction_number DESC
         """;
 
         try (
