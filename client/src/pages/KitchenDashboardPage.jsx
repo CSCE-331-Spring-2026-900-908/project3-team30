@@ -1,80 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import { useAuth } from '../context/AuthContext';
-
-// Hardcoded orders for MVP
-const initialOrders = [
-  {
-    id: 1,
-    timestamp: '09:15 AM',
-    completed: false,
-    items: [
-      { name: 'Classic Milk Tea', quantity: 2, alterations: ['No Ice', 'Extra Boba'] },
-      { name: 'Taro Slush', quantity: 1, alterations: ['50% Sugar'] },
-    ],
-  },
-  {
-    id: 2,
-    timestamp: '09:22 AM',
-    completed: false,
-    items: [
-      { name: 'Mango Green Tea', quantity: 1, alterations: ['Less Ice'] },
-      { name: 'Thai Tea', quantity: 2, alterations: ['No Ice', 'Extra Creamer'] },
-    ],
-  },
-  {
-    id: 3,
-    timestamp: '09:30 AM',
-    completed: false,
-    items: [
-      { name: 'Classic Milk Tea', quantity: 1, alterations: ['Extra Boba'] },
-      { name: 'Mango Green Tea', quantity: 1, alterations: [] },
-      { name: 'Taro Slush', quantity: 1, alterations: ['0% Sugar'] },
-    ],
-  },
-];
+import { api } from '../services/api';
 
 export default function KitchenDashboardPage() {
-  const [orders, setOrders] = useState(initialOrders);
-
-  // NEW: tab state
-  const [view, setView] = useState('active'); // 'active' or 'completed'
-
+  const [orders, setOrders] = useState([]);
+  const [view, setView] = useState('active');
   const [page, setPage] = useState(0);
+
   const ORDERS_PER_PAGE = 2;
 
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const toggleCompleted = (id) => {
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === id ? { ...order, completed: !order.completed } : order
-      )
-    );
+  // LOAD DATA FROM BACKEND
+  useEffect(() => {
+    loadOrders();
+  }, [view]);
+
+  const loadOrders = async () => {
+    try {
+      if (view === 'active') {
+        const data = await api.getActiveOrders();
+        setOrders(data);
+        console.log(data); 
+      } else {
+        const data = await api.getCompletedOrders();
+        console.log(data); 
+        setOrders(data);
+      }
+      setPage(0);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/home');
+  // MARK COMPLETE 
+  const toggleCompleted = async (transactionNumber) => {
+    try {
+      await api.markComplete(transactionNumber);
+
+      // refresh after update
+      loadOrders();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // NEW: filter + sort
-  const filteredOrders = orders
-    .filter((order) => (view === 'active' ? !order.completed : order.completed))
-    .sort((a, b) => a.id - b.id); // oldest first (based on id)
-
-  // UPDATED: pagination uses filteredOrders
+  const filteredOrders = orders; // backend already filters
   const paginatedOrders = filteredOrders.slice(
     page * ORDERS_PER_PAGE,
     (page + 1) * ORDERS_PER_PAGE
   );
 
-  // NEW: reset page when switching tabs
   const switchView = (newView) => {
     setView(newView);
-    setPage(0);
   };
 
   const nextPage = () => {
@@ -84,9 +65,12 @@ export default function KitchenDashboardPage() {
   };
 
   const prevPage = () => {
-    if (page > 0) {
-      setPage(page - 1);
-    }
+    if (page > 0) setPage(page - 1);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/home');
   };
 
   return (
@@ -99,7 +83,7 @@ export default function KitchenDashboardPage() {
         </button>
       }
     >
-      {/* NEW: Tabs */}
+      {/* TABS */}
       <div className="tabs">
         <button
           className={view === 'active' ? 'active-tab' : ''}
@@ -121,19 +105,17 @@ export default function KitchenDashboardPage() {
         ) : (
           <ul className="order-list">
             {paginatedOrders.map((order) => (
-              <li
-                key={order.id}
-                className={`order-card ${order.completed ? 'completed' : ''}`}
-              >
+              <li key={order.orderNum} className="order-card">
                 <div className="order-items">
-                  {order.items.map((item, idx) => (
+                  {order.drinks.map((item, idx) => (
                     <div key={idx} className="order-item">
-                      <strong>{item.name}</strong> × {item.quantity}
-                      {item.alterations.length > 0 && (
+                      <strong>{item.name}</strong>
+
+                      {item.modifications?.length > 0 && (
                         <div className="alterations">
-                          {item.alterations.map((alt, i) => (
+                          {item.modifications.map((mod, i) => (
                             <span key={i} className="alteration">
-                              {alt}
+                              {mod.name}
                             </span>
                           ))}
                         </div>
@@ -141,11 +123,25 @@ export default function KitchenDashboardPage() {
                     </div>
                   ))}
                 </div>
+
                 <div className="footer">
-                  <span className="timestamp">{order.timestamp}</span>
-                  <button onClick={() => toggleCompleted(order.id)}>
-                    {order.completed ? 'Uncomplete' : 'Done'}
-                  </button>
+                  <span className="timestamp">
+                    {new Date(order.orderTime).toLocaleTimeString()}
+                  </span>
+
+                  {view === 'active' ? (
+                    <button
+                      onClick={() => toggleCompleted(order.orderNum)}
+                    >
+                      Done
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleCompleted(order.orderNum)}
+                    >
+                      Uncomplete
+                    </button>
+                  )}
                 </div>
               </li>
             ))}
@@ -153,15 +149,16 @@ export default function KitchenDashboardPage() {
         )}
       </section>
 
-      {/* UPDATED: pagination uses filteredOrders */}
+      {/* PAGINATION */}
       <div className="pagination">
         <button onClick={prevPage} disabled={page === 0}>
           Previous
         </button>
+
         <span>
-          Page {page + 1} of{' '}
-          {Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE))}
+          Page {page + 1} of {Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE))}
         </span>
+
         <button
           onClick={nextPage}
           disabled={(page + 1) * ORDERS_PER_PAGE >= filteredOrders.length}
@@ -189,7 +186,6 @@ export default function KitchenDashboardPage() {
         .tabs .active-tab {
           background: #333;
           color: white;
-          border-color: #333;
         }
 
         .order-list {
@@ -204,34 +200,22 @@ export default function KitchenDashboardPage() {
           padding: 12px;
           border: 1px solid #ccc;
           border-radius: 6px;
-          background-color: #fff;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .order-card.completed {
-          opacity: 0.5;
-          text-decoration: line-through;
+          background: #fff;
         }
 
         .order-item {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
+          margin-bottom: 6px;
         }
 
         .alterations {
           font-size: 0.8rem;
-          color: #555;
-          margin-left: 8px;
+          color: #666;
           display: flex;
-          gap: 4px;
-          flex-wrap: wrap;
+          gap: 6px;
         }
 
         .alteration {
-          background-color: #eee;
+          background: #eee;
           padding: 2px 6px;
           border-radius: 4px;
         }
@@ -239,7 +223,7 @@ export default function KitchenDashboardPage() {
         .footer {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          margin-top: 10px;
         }
 
         .timestamp {
@@ -250,13 +234,8 @@ export default function KitchenDashboardPage() {
         .pagination {
           display: flex;
           justify-content: center;
-          align-items: center;
-          margin-top: 20px;
           gap: 12px;
-        }
-
-        button {
-          cursor: pointer;
+          margin-top: 20px;
         }
       `}</style>
     </PageShell>

@@ -436,4 +436,36 @@ export const api = {
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
   },
+  async getActiveOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load active orders');
+    }
+
+    return res.json();
+  },
+  async getCompletedOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/completed`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load completed orders');
+    }
+
+    return res.json();
+  },
+  async markComplete(id) {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
+      method: 'PATCH',
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to update order');
+    }
+
+    return;
+  },
 };
