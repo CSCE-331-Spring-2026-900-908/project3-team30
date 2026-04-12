@@ -6,6 +6,7 @@ export default function MenuBoardPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -16,6 +17,8 @@ export default function MenuBoardPage() {
         ]);
         setMenuItems(drinks);
         setInventory(toppings);
+        const weatherData = await api.getWeather(30.62, -96.34);
+        setWeather(weatherData);
       } catch (error) {
         console.error('Failed to load menu data:', error);
       } finally {
@@ -24,6 +27,22 @@ export default function MenuBoardPage() {
     }
     loadData();
   }, []);
+
+  // Map weather codes to icon paths and descriptions
+  const getWeatherInfo = (code) => {
+    // WMO Weather interpretation codes
+    // https://open-meteo.com/en/docs
+    if (code === 0) return { icon: '/images/sunny.png', description: 'Clear' };
+    if (code <= 2) return { icon: '/images/partly-cloudy.png', description: 'Partly Cloudy' };
+    if (code === 3) return { icom: '/images/cloudy.png', description: 'Cloudy'};
+    if (code <= 48) return { icon: '/images/fog.png', description: 'Foggy' };
+    if (code <= 67) return { icon: '/images/rain.png', description: 'Rainy' };
+    if (code <= 77) return { icon: '/images/snow.png', description: 'Snowy' };
+    if (code <= 82) return { icon: '/images/rain.png', description: 'Showers' };
+    if (code <= 86) return { icon: '/images/snow.png', description: 'Snow Showers' };
+    if (code <= 99) return { icon: '/images/storm.png', description: 'Thunderstorm' };
+    return { icon: '/images/unknown.png', description: 'Unknown' };
+  };
 
   // Group menu items by category and combine sizes
 const groupedItems = menuItems.reduce((acc, item) => {
@@ -114,8 +133,24 @@ const groupedItems = menuItems.reduce((acc, item) => {
 
       <div className="menu-board-right">
         <div className="menu-board-weather">
-          <p className="weather-placeholder">Weather Widget</p>
-          <p className="subtle">Coming soon...</p>
+          {weather ? (
+            <>
+              <div className="weather-icon-container">
+                <img 
+                  src={getWeatherInfo(weather.current.weather_code).icon} 
+                  alt="weather icon" 
+                  className="weather-icon"
+                />
+              </div>
+              <div className="weather-info">
+                <p className="weather-temp">{Math.round(weather.current.temperature_2m)}°F</p>
+                <p className="weather-condition">{getWeatherInfo(weather.current.weather_code).description}</p>
+                <p className="weather-location">College Station, TX</p>
+              </div>
+            </>
+          ) : (
+            <p className="subtle">Loading weather...</p>
+          )}
         </div>
 
         <div className="menu-board-toppings">

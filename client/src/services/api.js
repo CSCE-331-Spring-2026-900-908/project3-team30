@@ -176,6 +176,16 @@ export const api = {
   },
   
   // menu related functions start here
+
+async getWeather(latitude, longitude) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Failed to load weather data');
+  }
+  return res.json();
+},
+
   async getMenuDrinks() {
     const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
     if (!res.ok) throw new Error("Failed to load drinks");
