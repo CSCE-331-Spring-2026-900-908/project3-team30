@@ -441,22 +441,27 @@ export const api = {
      * @author Rylee Hunt
      */
     async sendChatMessage(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
 
-    const data = await res.json();
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (e) {
+        throw new Error(`Server returned status ${res.status} with non-JSON response`);
+      }
 
-    if (!res.ok) {
-      throw new Error(data.message || 'Failed to get chatbot response');
-    }
+      if (!res.ok) {
+        throw new Error(data.reply || data.message || `HTTP ${res.status}`);
+      }
 
-    return data;
-  },
+      return data;
+    },
   async getActiveOrders() {
     const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
 

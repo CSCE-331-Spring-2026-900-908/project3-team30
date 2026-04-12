@@ -47,11 +47,13 @@ export default function ChatAssistant({
         }
       ]);
     } catch (error) {
+      console.error('Chatbot error:', error);
+
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, I had trouble responding. Please try again.'
+          content: `Chatbot error: ${error.message || 'Unknown error'}`
         }
       ]);
     } finally {
