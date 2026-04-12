@@ -25,14 +25,50 @@ export default function MenuBoardPage() {
     loadData();
   }, []);
 
-  // Group menu items by category
-  const groupedItems = menuItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  // Group menu items by category and combine sizes
+const groupedItems = menuItems.reduce((acc, item) => {
+  if (!acc[item.category]) {
+    acc[item.category] = [];
+  }
+  
+  // Check if item starts with "Small" or "Large"
+  const startsWithSize = item.name.startsWith('Small ') || item.name.startsWith('Large ');
+  
+  if (startsWithSize) {
+    const size = item.name.split(' ')[0]; // "Small" or "Large"
+    const baseName = item.name.substring(size.length + 1); // Everything after "Small " or "Large "
+    
+    // Find if we already have this base item
+    const existingItem = acc[item.category].find(i => i.baseName === baseName);
+    
+    if (existingItem) {
+      // Add this size to existing item
+      if (size === 'Small') {
+        existingItem.smallPrice = item.price;
+      } else {
+        existingItem.largePrice = item.price;
+      }
+    } else {
+      // Create new combined item
+      const newItem = {
+        baseName: baseName,
+        name: baseName,
+        smallPrice: size === 'Small' ? item.price : null,
+        largePrice: size === 'Large' ? item.price : null
+      };
+      acc[item.category].push(newItem);
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {});
+  } else {
+    // Item doesn't have size prefix, add as-is
+    acc[item.category].push({
+      baseName: item.name,
+      name: item.name,
+      price: item.price
+    });
+  }
+  
+  return acc;
+}, {});
 
   // Toppings are already filtered from the backend
   const toppings = inventory;
@@ -55,10 +91,20 @@ export default function MenuBoardPage() {
             <h2 className="menu-board-category">{category}</h2>
             <div className="menu-board-items">
               {items.map(item => (
-                <div key={item.name} className="menu-board-row">
+                <div key={item.baseName || item.name} className="menu-board-row">
                   <span className="menu-board-item-name">{item.name}</span>
                   <span className="menu-board-dots"></span>
-                  <span className="menu-board-price">${item.price.toFixed(2)}</span>
+                  <span className="menu-board-price">
+                    {item.smallPrice && item.largePrice ? (
+                      <>Small: ${item.smallPrice.toFixed(2)} | Large: ${item.largePrice.toFixed(2)}</>
+                    ) : item.smallPrice ? (
+                      <>Small: ${item.smallPrice.toFixed(2)}</>
+                    ) : item.largePrice ? (
+                      <>Large: ${item.largePrice.toFixed(2)}</>
+                    ) : (
+                      <>${item.price.toFixed(2)}</>
+                    )}
+                  </span>
                 </div>
               ))}
             </div>
