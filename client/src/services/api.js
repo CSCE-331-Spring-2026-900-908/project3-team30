@@ -20,7 +20,7 @@ function formatRole(role) {
  * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
  */
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8083';
 
 export const api = {
   async login(pin) {
@@ -434,6 +434,27 @@ export const api = {
     const data = await res.json();
 
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
+    return data;
+  },
+    /**
+     * This communicates with the chatbot backend
+     * @author Rylee Hunt
+     */
+    async sendChatMessage(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Failed to get chatbot response');
+    }
+
     return data;
   },
 };
