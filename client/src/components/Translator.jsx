@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useLocation } from 'react-router-dom';
+
 const LANGUAGES = [
   { label: 'Select language', value: '' },
   { label: 'Afrikaans', value: 'af' },
@@ -55,10 +57,16 @@ const LANGUAGES = [
   { label: 'Vietnamese', value: 'vi' }
 ];
 
+
+
 export default function Translator() {
   const [open, setOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const translatorRef = useRef(null);
+  const location = useLocation();
+  if (location.pathname.startsWith('/menu-board')) {
+    return null;
+  }
 
   useEffect(() => {
     window.googleTranslateElementInit = () => {
