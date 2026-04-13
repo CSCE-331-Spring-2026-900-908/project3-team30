@@ -9,7 +9,7 @@ export default function CashierDashboardPage() {
   return (
     <PageShell
       title="Cashier Dashboard"
-      subtitle="Web version of cashierDashboard.fxml"
+      subtitle=""
       actions={<button className="secondary-button" onClick={() => { logout(); navigate('/login'); }}>Log out</button>}
     >
       <section className="quick-grid two-col">
