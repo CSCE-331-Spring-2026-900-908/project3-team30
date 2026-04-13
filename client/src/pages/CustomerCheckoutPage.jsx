@@ -4,11 +4,13 @@ import PageShell from '../components/PageShell';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
+import { useNavigate } from 'react-router-dom';
 
 export default function CheckoutPage() {
   const { items, clearCart, removeItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
-
+  const navigate = useNavigate();
+  
   const processOrder = async (paymentMethod) => {
     const response = await api.processOrder({
       paymentMethod,
@@ -34,8 +36,8 @@ export default function CheckoutPage() {
   return (
     <PageShell
       title="Checkout"
-      subtitle="Web version of checkout.fxml"
-      actions={<Link className="ghost-link" to="/cashier/menu">Back to menu</Link>}
+      subtitle=""
+      actions={<Link className="ghost-link" to="/customer">Back to menu</Link>}
     >
       <div className="card">
         <h2>Current Cart</h2>
@@ -53,6 +55,21 @@ export default function CheckoutPage() {
                 </div>
                 <div className="inline-actions">
                   <span>{currency(item.totalPrice)}</span>
+                  <button className="secondary-button inline" onClick={() => {
+                        const itemToEdit = items[index];
+
+                        removeItem(index);
+
+                        navigate(`/customize/${encodeURIComponent(itemToEdit.name)}`, {
+                          state: {
+                            item: itemToEdit,
+                            index, //for edit mode
+                            isEdit: true
+                          }
+                        });
+                      }}>
+                    Edit
+                  </button>
                   <button className="secondary-button inline" onClick={() => removeItem(index)}>
                     Remove
                   </button>
