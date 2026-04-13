@@ -34,7 +34,7 @@ export default function ManagerDashboardPage() {
         .then(setSummary)
         
         .catch(() => {
-          navigate('/', { replace: true });
+          navigate('/manager', { replace: true });
         });
     }, [location.search, setManagerUser, navigate]);
 
