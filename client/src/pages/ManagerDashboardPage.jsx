@@ -34,7 +34,8 @@ export default function ManagerDashboardPage() {
         .then(setSummary)
         
         .catch(() => {
-          navigate('/manager', { replace: true });
+          // navigate('/manager', { replace: true });
+          console.log('manager summary failed', err);
         });
     }, [location.search, setManagerUser, navigate]);
 
