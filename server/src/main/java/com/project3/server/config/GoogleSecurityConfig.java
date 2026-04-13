@@ -24,7 +24,10 @@ public class GoogleSecurityConfig {
                                 "/oauth2/**",
                                 "/login/**",
                                 "/error",
-                                "/api/login"
+                                "/api/login",
+                                "/api/manager-summary",
+                                "/api/manage-employees/**",
+                                "/api/reports/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
