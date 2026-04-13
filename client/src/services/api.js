@@ -40,11 +40,15 @@ export const api = {
    * @throws an error if the request fails
    */
   async getManagerSummary() {
-    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
+
+    const res = await fetch(`${API_BASE_URL}/api/manager-summary`, {
+    credentials: 'include',
+    });
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
     return res.json();
+    
   },
 
   async saveUser(payload) {
@@ -84,7 +88,7 @@ export const api = {
       },
       body: JSON.stringify(payload)
     });
-    if (!res.ok){
+    if (!res.ok) {
       const errorData = await res.json().catch(() => null);
       throw new Error(errorData?.message || "Failed to save user");
     }
@@ -105,7 +109,7 @@ export const api = {
       },
       body: JSON.stringify(payload)
     });
-    if (!res.ok){
+    if (!res.ok) {
       const errorData = await res.json().catch(() => null);
       throw new Error(errorData?.message || "Failed to update user");
     }
@@ -125,7 +129,7 @@ export const api = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({code})
+      body: JSON.stringify({ code })
     });
 
     if (!res.ok) {
@@ -134,17 +138,17 @@ export const api = {
     }
 
     return;
-  }, 
+  },
   // menu related functions start here
 
-async getWeather(latitude, longitude) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error('Failed to load weather data');
-  }
-  return res.json();
-},
+  async getWeather(latitude, longitude) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error('Failed to load weather data');
+    }
+    return res.json();
+  },
 
   async getMenuDrinks() {
     const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
@@ -224,33 +228,89 @@ async getWeather(latitude, longitude) {
     return true;
   },
 
-  async getInventory() {
-    await sleep();
-    return [...localInventory];
+    async getInventory() {
+    const res = await fetch(`${API_BASE_URL}/api/inventory`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || `Failed to load inventory: HTTP ${res.status}`);
+    }
+    return res.json();
   },
 
-  async saveInventoryItem(payload) {
-    await sleep();
-    const idx = localInventory.findIndex((item) => item.sku === payload.sku);
-    const normalized = {
-      ...payload,
-      retailPrice: Number(payload.retailPrice),
-      amtInStock: Number(payload.amtInStock),
-      minStockNeeded: Number(payload.minStockNeeded ?? 0),
-    };
+  async createInventoryItem(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        sku: payload.sku,
+        name: payload.name,
+        retailPrice: Number(payload.retailPrice),
+        category: payload.category,
+        amtInStock: Number(payload.amtInStock),
+        minStockNeeded: Number(payload.minStockNeeded ?? 0),
+        unitOfMeasurement: payload.unitOfMeasurement
+      })
+    });
 
-    if (idx >= 0) {
-      localInventory[idx] = normalized;
-    } else {
-      localInventory.push(normalized);
+    const text = await res.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      throw new Error(`Create failed: HTTP ${res.status}: ${text}`);
     }
 
-    return normalized;
+    if (!res.ok) {
+      throw new Error(data?.message || `Failed to create inventory item: HTTP ${res.status}`);
+    }
+
+    return data;
+  },
+
+  async updateInventoryItem(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        sku: payload.sku,
+        name: payload.name,
+        retailPrice: Number(payload.retailPrice),
+        category: payload.category,
+        amtInStock: Number(payload.amtInStock),
+        minStockNeeded: Number(payload.minStockNeeded ?? 0),
+        unitOfMeasurement: payload.unitOfMeasurement
+      })
+    });
+
+    const text = await res.text();
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      throw new Error(`Update failed: HTTP ${res.status}: ${text}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(data?.message || `Failed to update inventory item: HTTP ${res.status}`);
+    }
+
+    return data;
   },
 
   async deleteInventoryItem(sku) {
-    await sleep();
-    localInventory = localInventory.filter((item) => item.sku !== sku);
+    const res = await fetch(`${API_BASE_URL}/api/inventory/${encodeURIComponent(sku)}`, {
+      method: 'DELETE'
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || `Failed to delete inventory item: HTTP ${res.status}`);
+    }
+
     return true;
   },
 
@@ -275,7 +335,7 @@ async getWeather(latitude, longitude) {
       restock: null,
     };
   },
-  
+
   /**
    * This method gets the restock report data for all inventory items that are below their minimum stock needed
    * @throws an error if the request fails
@@ -298,11 +358,11 @@ async getWeather(latitude, longitude) {
    * @returns the sales report data for the given date range
    * @throws an error if the request fails
    */
-  async getSalesReport(startDate, endDate){
+  async getSalesReport(startDate, endDate) {
     const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
     if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Failed to load sales report");
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to load sales report");
     }
 
     return res.json();;
@@ -314,11 +374,11 @@ async getWeather(latitude, longitude) {
    * @throws an error if the request fails
    * takes no parameters since the X report is always for the current day
    */
-  async getXReport(){
+  async getXReport() {
     const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
     if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Failed to load X report");
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to load X report");
     }
     return res.json();;
   },
@@ -329,11 +389,11 @@ async getWeather(latitude, longitude) {
    * @throws an error if the request fails
    * takes no parameters since the Z report is always for the current day
    */
-  async getZReport(){
+  async getZReport() {
     const res = await fetch(`${API_BASE_URL}/api/reports/ZReport`);
     if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Failed to load Z report");
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to load Z report");
     }
     return res.json();;
   },
@@ -377,32 +437,32 @@ async getWeather(latitude, longitude) {
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
   },
-    /**
-     * This communicates with the chatbot backend
-     * @author Rylee Hunt
-     */
-    async sendChatMessage(payload) {
-      const res = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+  /**
+   * This communicates with the chatbot backend
+   * @author Rylee Hunt
+   */
+  async sendChatMessage(payload) {
+    const res = await fetch(`${API_BASE_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
 
-      let data = null;
-      try {
-        data = await res.json();
-      } catch (e) {
-        throw new Error(`Server returned status ${res.status} with non-JSON response`);
-      }
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (e) {
+      throw new Error(`Server returned status ${res.status} with non-JSON response`);
+    }
 
-      if (!res.ok) {
-        throw new Error(data.reply || data.message || `HTTP ${res.status}`);
-      }
+    if (!res.ok) {
+      throw new Error(data.reply || data.message || `HTTP ${res.status}`);
+    }
 
-      return data;
-    },
+    return data;
+  },
   async getActiveOrders() {
     const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
 

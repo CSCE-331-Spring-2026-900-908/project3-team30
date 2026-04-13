@@ -1,5 +1,5 @@
 // import { Link } from 'react-router-dom';
-// // import PageShell from '../components/PageShell';
+import PageShell from '../components/PageShell';
 
 // export default function PortalPage() {
 //   return (
@@ -20,13 +20,15 @@
 //     </PageShell>
 //   );
 // }
-
+import { useEffect } from 'react';  
+// import { Link, useNavigate } from 'react-router-dom';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function PortalPage() {
+
     const navigate = useNavigate();
     const handleManagerLogin = () => {
-        navigate('/manager-login');
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
     }
 
     const handleLogin = () => {
