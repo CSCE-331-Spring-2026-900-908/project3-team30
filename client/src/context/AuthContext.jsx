@@ -39,7 +39,8 @@ export function AuthProvider({ children }) {
     },
 
     startManagerLogin() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+      // window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+      window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
     },
 
     setManagerUser() {
@@ -48,7 +49,8 @@ export function AuthProvider({ children }) {
 
     logout() {
       persistUser(null);
-      window.location.href = 'http://localhost:5173';
+      // window.location.href = 'http://localhost:5173';
+      window.location.href = window.location.origin;
     },
   }), [user, loading]);
 
