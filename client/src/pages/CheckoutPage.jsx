@@ -16,7 +16,7 @@ export default function CheckoutPage() {
       items,
     });
 
-    setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber}`);
+    setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
     clearCart();
   };
 
@@ -27,7 +27,7 @@ export default function CheckoutPage() {
       orderNotes: 'Cancelled from checkout page',
     });
 
-    setMessage(`Order cancelled · confirmation #${response.confirmationNumber}`);
+    setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
     clearCart();
   };
 
