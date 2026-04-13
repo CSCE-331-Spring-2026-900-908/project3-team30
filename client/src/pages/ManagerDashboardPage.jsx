@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import StatCard from '../components/StatCard';
 import { api } from '../services/api';
@@ -8,16 +8,39 @@ import { useAuth } from '../context/AuthContext';
 
 export default function ManagerDashboardPage() {
   const [summary, setSummary] = useState(null);
-  const { logout } = useAuth();
+  const { user, setManagerUser, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    api.getManagerSummary().then(setSummary);
-  }, []);
+  //   api.getManagerSummary().then(setSummary);
+  // }, []);
+    const params = new URLSearchParams(location.search);
+    const oauth = params.get('oauth');
+
+    if (oauth === 'success') {
+      setManagerUser();
+      navigate('/manager', { replace: true });
+      return;
+    }
+    // currently no roles, if the email is registered, then that is the manager permission
+    // if (!user || user.role !== 'manager') {
+    //   navigate('/', { replace: true });
+    //   return;
+    // }
+
+    console.log('calling api.getManagerSummary()');
+    api.getManagerSummary()
+        .then(setSummary)
+        
+        .catch(() => {
+          navigate('/', { replace: true });
+        });
+    }, [location.search, setManagerUser, navigate]);
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    // navigate('/login');
   };
 
   return (
