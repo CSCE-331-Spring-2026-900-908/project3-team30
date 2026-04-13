@@ -72,7 +72,7 @@ public class CheckoutService {
                 }
 
                 conn.commit();
-                return new OrderResponse(transactionNumber, paymentMethod, total, "Order processed successfully");
+                return new OrderResponse(transactionNumber%600, paymentMethod, total, "Order processed successfully");
             } catch (Exception e) {
                 conn.rollback();
                 throw e;

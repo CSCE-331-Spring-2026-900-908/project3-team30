@@ -91,7 +91,7 @@ export default function KitchenDashboardPage() {
               <div key={order.orderNum} className={`ticket ${view === 'completed' ? 'ticket--done' : ''}`}>
 
                 <div className="ticket-header">
-                <span className="order-num">#{order.orderNum}</span>
+                <span className="order-num">#{order.orderNum%600}</span>
                 <span className="elapsed">{getElapsed(order.orderTime)}</span>
               </div>
 
