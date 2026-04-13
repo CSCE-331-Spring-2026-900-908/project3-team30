@@ -47,11 +47,6 @@ export const api = {
     return res.json();
   },
 
-  async getUsers() {
-    await sleep();
-    return [...localUsers];
-  },
-
   async saveUser(payload) {
     await sleep();
     const index = localUsers.findIndex((user) => user.code === Number(payload.code));
@@ -130,41 +125,7 @@ export const api = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || 'Failed to save user');
-    }
-
-    return;
-  },
-
-  async updateUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || 'Failed to update user');
-    }
-
-    return;
-  },
-
-  async deleteUser(code) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({code})
     });
 
     if (!res.ok) {
@@ -173,8 +134,7 @@ export const api = {
     }
 
     return;
-  },
-  
+  }, 
   // menu related functions start here
   async getMenuDrinks() {
     const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
@@ -306,7 +266,6 @@ export const api = {
     };
   },
   
-  // async getRestockReport(){},
   /**
    * This method gets the restock report data for all inventory items that are below their minimum stock needed
    * @throws an error if the request fails
@@ -381,34 +340,6 @@ export const api = {
       throw new Error(errorText || 'Failed to load latest Z report');
     }
     return res.json();
-  },
-  
-  async getRestockReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
-  },
-
-  async getSalesReport(startDate, endDate) {
-    const res = await fetch(
-      `${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
-    );
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to load sales report');
-    }
-
-    return res.json();
-  },
-
-  async getXReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
-  },
-
-  async getZReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
   },
 
   async processOrder(order) {
