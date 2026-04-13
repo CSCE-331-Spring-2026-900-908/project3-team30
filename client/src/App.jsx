@@ -101,7 +101,6 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/home" replace />} />
 
-        {/* customize page: */}
         <Route path="/customize/:name" element={<CustomizePage />} /> 
 
       </Routes>

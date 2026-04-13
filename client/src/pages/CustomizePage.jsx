@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
@@ -13,6 +14,7 @@ export default function CustomizePage() {
   const [alterations, setAlterations] = useState({ default: [], sweetness: [] });
   const [mods, setMods] = useState([]);
   const [sweetness, setSweetness] = useState("100% Sugar");
+
 
   useEffect(() => {
     api.getMenuItems().then((items) => {
@@ -41,7 +43,7 @@ export default function CustomizePage() {
       totalPrice: item.price + allMods.reduce((s, m) => s + m.price, 0)
     });
 
-    navigate("/menu"); // go back
+    navigate("/customer"); // go back to customer page
   };
 
   if (!item) return <p>Loading...</p>;
@@ -68,7 +70,7 @@ export default function CustomizePage() {
       </select>
 
       <button onClick={addToCart}>Add to Cart</button>
-      <button onClick={() => navigate("/menu")}>Cancel</button>
+      <button onClick={() => navigate("/customer")}>Cancel</button>
     </div>
   );
 }
