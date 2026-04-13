@@ -41,11 +41,15 @@ export const api = {
    * @throws an error if the request fails
    */
   async getManagerSummary() {
-    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
+
+    const res = await fetch(`${API_BASE_URL}/api/manager-summary`, {
+    credentials: 'include',
+    });
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
     return res.json();
+    
   },
 
   /**

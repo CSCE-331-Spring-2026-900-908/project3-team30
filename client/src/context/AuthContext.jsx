@@ -4,24 +4,49 @@ import { api } from '../services/api';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('authUser');
+    console.log('AuthProvider init, saved authUser =', saved);
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [loading, setLoading] = useState(false);
+
+  const persistUser = (nextUser) => {
+    setUser(nextUser);
+    if (nextUser) {
+      localStorage.setItem('authUser', JSON.stringify(nextUser));
+    } else {
+      localStorage.removeItem('authUser');
+    }
+  };
 
   const value = useMemo(() => ({
     user,
     loading,
+
     async login(pin) {
       setLoading(true);
       try {
         const result = await api.login(pin);
-        setUser(result);
+        persistUser(result);
         return result;
       } finally {
         setLoading(false);
       }
     },
+
+    startManagerLogin() {
+      window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    },
+
+    setManagerUser() {
+      persistUser({ role: 'manager' });
+    },
+
     logout() {
-      setUser(null);
+      persistUser(null);
+      window.location.href = 'http://localhost:5173';
     },
   }), [user, loading]);
 
