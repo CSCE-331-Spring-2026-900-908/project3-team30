@@ -37,7 +37,7 @@ export default function ProtectedRoute({ children, roles }) { //changed from rol
 
   if (oauth === 'success') {
     //console.log('allow auth');
-    setManagerUser();
+    // setManagerUser();
     return children;
   }
 
