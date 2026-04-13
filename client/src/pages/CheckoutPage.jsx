@@ -10,8 +10,24 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState('');
 
   const processOrder = async (paymentMethod) => {
-    const response = await api.processOrder({ paymentMethod, total: subtotal, items });
-    setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber}`);
+    const response = await api.processOrder({
+      paymentMethod,
+      total: subtotal,
+      items,
+    });
+
+    setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
+    clearCart();
+  };
+
+  const cancelOrder = async () => {
+    const response = await api.cancelOrder({
+      total: subtotal,
+      items,
+      orderNotes: 'Cancelled from checkout page',
+    });
+
+    setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
     clearCart();
   };
 
@@ -23,29 +39,51 @@ export default function CheckoutPage() {
     >
       <div className="card">
         <h2>Current Cart</h2>
-        {items.length === 0 ? <p className="subtle">No items in cart.</p> : (
+        {items.length === 0 ? (
+          <p className="subtle">No items in cart.</p>
+        ) : (
           <div className="cart-list">
             {items.map((item, index) => (
               <div className="cart-item" key={`${item.name}-${index}`}>
                 <div>
                   <strong>{item.name}</strong>
-                  <p className="subtle">{item.modifications.map((mod) => mod.name).join(', ') || 'No modifications'}</p>
+                  <p className="subtle">
+                    {item.modifications.map((mod) => mod.name).join(', ') || 'No modifications'}
+                  </p>
                 </div>
                 <div className="inline-actions">
                   <span>{currency(item.totalPrice)}</span>
-                  <button className="secondary-button inline" onClick={() => removeItem(index)}>Remove</button>
+                  <button className="secondary-button inline" onClick={() => removeItem(index)}>
+                    Remove
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
       <div className="page-actions">
         <span className="pill">Subtotal: {currency(subtotal)}</span>
-        <button className="secondary-button" onClick={() => { clearCart(); setMessage('Order cancelled.'); }}>Cancel Order</button>
-        <button className="primary-button inline" disabled={!items.length} onClick={() => processOrder('Cash')}>Cash</button>
-        <button className="primary-button inline" disabled={!items.length} onClick={() => processOrder('Card')}>Process Card Payment</button>
+        <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
+          Cancel Order
+        </button>
+        <button
+          className="primary-button inline"
+          disabled={!items.length}
+          onClick={() => processOrder('Cash')}
+        >
+          Cash
+        </button>
+        <button
+          className="primary-button inline"
+          disabled={!items.length}
+          onClick={() => processOrder('Card')}
+        >
+          Process Card Payment
+        </button>
       </div>
+
       {message ? <p className="success-text">{message}</p> : null}
     </PageShell>
   );

@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 // @CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
+
+/**
+ * This is a controller that handles API login requests for the login page
+ * @author Karla Sanchez
+ */
 public class LoginController {
 
     private final LoginService loginService;

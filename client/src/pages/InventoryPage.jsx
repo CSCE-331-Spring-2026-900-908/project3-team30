@@ -16,7 +16,7 @@ export default function InventoryPage() {
   useEffect(() => { load(); }, []);
 
   return (
-    <PageShell title="Inventory" subtitle="Web version of inventory.fxml" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}>
+    <PageShell title="Inventory" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}>
       <div className="split-layout">
         <DataTable
           columns={[

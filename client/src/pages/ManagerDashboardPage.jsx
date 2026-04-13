@@ -46,7 +46,6 @@ export default function ManagerDashboardPage() {
   return (
     <PageShell
       title="Manager Dashboard"
-      subtitle="Web version of managerDashboard.fxml"
       actions={<button className="secondary-button" onClick={handleLogout}>Log out</button>}
     >
       <section className="stat-grid">

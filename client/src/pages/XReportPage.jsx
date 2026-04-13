@@ -21,10 +21,19 @@ export default function XReportPage() {
       });
   }, []);
 
+  const formatTime = (ts) => {
+    if (!ts) return '';
+    return new Date(ts).toLocaleString();
+  };
+
   return (
     <PageShell
       title="X Report"
-      subtitle="Current shift summary"
+      subtitle={
+        report
+          ? `LIVE REPORT (as of ${formatTime(report.runAt)})`
+          : 'Loading...'
+      }
       actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
     >
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -34,6 +43,7 @@ export default function XReportPage() {
         <StatCard label="Total Card" value={report ? currency(report.totalCard) : '—'} />
         <StatCard label="Sales" value={report?.numSales ?? '—'} />
         <StatCard label="Cancelled / Voided" value={report ? `${report.numCancelled} / ${report.numVoided}` : '—'} />
+        <StatCard label="Net Total" value={report ? currency(report.netTotal) : '—'} />
       </section>
     </PageShell>
   );
