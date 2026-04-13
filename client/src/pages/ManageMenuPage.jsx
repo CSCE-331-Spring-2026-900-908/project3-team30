@@ -32,7 +32,7 @@ export default function ManageMenuPage() {
   };
 
   return (
-    <PageShell title="Manage Menu" subtitle="Web version of manageMenu.fxml" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}>
+    <PageShell title="Manage Menu" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}>
       <div className="split-layout">
         <DataTable
           columns={[
