@@ -39,7 +39,7 @@ public class MenuService {
      */
     public List<Drink> getMenuItems() throws Exception {
         String sql = """
-                SELECT name, price, image_url
+                SELECT name, price, image_url, category
                 FROM menu_items
                 WHERE category NOT IN ('ice', 'sweetness', 'toppings')
                 ORDER BY name
@@ -56,6 +56,7 @@ public class MenuService {
                         rs.getString("name"),
                         rs.getDouble("price"),
                         rs.getString("image_url")
+                        rs.getString("category")
                 ));
             }
 

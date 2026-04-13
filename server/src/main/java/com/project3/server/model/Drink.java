@@ -15,11 +15,26 @@ public class Drink {
     private String name;
     private double basePrice;
     private String image;
+    private String category;
     private boolean complete;
     private List<Modification> modifications = new ArrayList<>();
 
     /**
-     * Creates a drink with a name and price
+     * Creates a drink with a name, price, image, and category
+     * @param name
+     * @param basePrice
+     * @param image
+     * @param category
+     */
+    public Drink(String name, double basePrice, String image, String category) {
+        this.name = name;
+        this.basePrice = basePrice;
+        this.image = image;
+        this.category = category;
+    }
+
+    /**
+     * Creates a drink with a name, price, and image
      * @param name
      * @param basePrice
      * @param image
@@ -29,7 +44,10 @@ public class Drink {
         this.basePrice = basePrice;
         this.image = image;
     }
-
+    
+    /**
+     * Default constructor
+     */
     public Drink(){
         name = "N/A";
         basePrice = 0;
