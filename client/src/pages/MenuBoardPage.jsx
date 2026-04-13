@@ -34,7 +34,7 @@ export default function MenuBoardPage() {
     // https://open-meteo.com/en/docs
     if (code === 0) return { icon: '/images/sunny.png', description: 'Clear' };
     if (code <= 2) return { icon: '/images/partly-cloudy.png', description: 'Partly Cloudy' };
-    if (code === 3) return { icom: '/images/cloudy.png', description: 'Cloudy'};
+    if (code === 3) return { icon: '/images/cloudy.png', description: 'Cloudy'};
     if (code <= 48) return { icon: '/images/fog.png', description: 'Foggy' };
     if (code <= 67) return { icon: '/images/rain.png', description: 'Rainy' };
     if (code <= 77) return { icon: '/images/snow.png', description: 'Snowy' };

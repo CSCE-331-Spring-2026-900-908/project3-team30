@@ -5,7 +5,6 @@ export default function SalesAndTrendsPage() {
   return (
     <PageShell
       title="Sales & Trends"
-      subtitle="Web version of salesAndTrends.fxml"
       actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
     >
       <div className="quick-grid two-col">

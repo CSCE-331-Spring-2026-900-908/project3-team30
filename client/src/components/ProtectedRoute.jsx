@@ -5,11 +5,20 @@ export default function ProtectedRoute({ children, roles }) { //changed from rol
   const { user } = useAuth();
   const location = useLocation();
 
+  const params = new URLSearchParams(location.search);
+  const oauth = params.get('oauth');
+
+  if (oauth === 'success') {
+    //console.log('allow auth');
+    return children;
+  }
+
   if (!user) {
     return <Navigate to="/home" replace state={{ from: location }} />; //was originally /login but changed to /home for portal page to handle redirection
   }
 
   if (roles && !roles.includes(user.role)) {
+    console.log('wrong role → redirecting to /home');
     return <Navigate to={user.role === 'manager' ? '/manager' : '/cashier'} replace />;
   }
 
