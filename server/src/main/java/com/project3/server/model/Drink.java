@@ -30,6 +30,13 @@ public class Drink {
         this.image = image;
     }
 
+    public Drink(){
+        name = "N/A";
+        basePrice = 0;
+        complete = false;
+        image = "";
+    }
+
     /**
      * Adds a modification to this Drink's list of modifications
      * @param mod
@@ -125,7 +132,7 @@ public class Drink {
      * Sets if the order is complete
      * @param comp Boolean for if the order is complete
      */
-    public void getComplete(boolean comp) {
+    public void setComplete(boolean comp) {
         complete = comp;
     }
 }

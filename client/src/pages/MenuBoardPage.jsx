@@ -10,12 +10,12 @@ export default function MenuBoardPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [items, inv] = await Promise.all([
-          api.getMenuItems(),
-          api.getInventory()
+        const [drinks, toppings] = await Promise.all([
+          api.getMenuDrinks(),
+          api.getMenuToppings()
         ]);
-        setMenuItems(items);
-        setInventory(inv);
+        setMenuItems(drinks);
+        setInventory(toppings);
       } catch (error) {
         console.error('Failed to load menu data:', error);
       } finally {
@@ -25,17 +25,17 @@ export default function MenuBoardPage() {
     loadData();
   }, []);
 
-  const groupedItems = menuItems
-    .reduce((acc, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
-      }
-      acc[item.category].push(item);
-      return acc;
-    }, {});
+  // Group menu items by category
+  const groupedItems = menuItems.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {});
 
-  // Get toppings from inventory
-  const toppings = inventory.filter(item => item.category === 'Topping');
+  // Toppings are already filtered from the backend
+  const toppings = inventory;
 
   if (loading) {
     return (
@@ -55,7 +55,7 @@ export default function MenuBoardPage() {
             <h2 className="menu-board-category">{category}</h2>
             <div className="menu-board-items">
               {items.map(item => (
-                <div key={item.id} className="menu-board-row">
+                <div key={item.name} className="menu-board-row">
                   <span className="menu-board-item-name">{item.name}</span>
                   <span className="menu-board-dots"></span>
                   <span className="menu-board-price">${item.price.toFixed(2)}</span>
@@ -76,10 +76,10 @@ export default function MenuBoardPage() {
           <h2 className="menu-board-category">Toppings</h2>
           <div className="menu-board-items">
             {toppings.map(topping => (
-              <div key={topping.sku} className="menu-board-row">
+              <div key={topping.name} className="menu-board-row">
                 <span className="menu-board-item-name">{topping.name}</span>
                 <span className="menu-board-dots"></span>
-                <span className="menu-board-price">${topping.retailPrice.toFixed(2)}</span>
+                <span className="menu-board-price">${topping.price.toFixed(2)}</span>
               </div>
             ))}
           </div>

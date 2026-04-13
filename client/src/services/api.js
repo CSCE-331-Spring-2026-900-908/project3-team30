@@ -20,7 +20,7 @@ function formatRole(role) {
  * The base URL for the API endpoints, the import is managed by the .env file and defaults to localhost for local testing
  */
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+  import.meta.env.VITE_API_BASE_URL;
 
 export const api = {
   async login(pin) {
@@ -45,11 +45,6 @@ export const api = {
       throw new Error('Failed to load manager summary');
     }
     return res.json();
-  },
-
-  async getUsers() {
-    await sleep();
-    return [...localUsers];
   },
 
   async saveUser(payload) {
@@ -130,41 +125,7 @@ export const api = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || 'Failed to save user');
-    }
-
-    return;
-  },
-
-  async updateUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || 'Failed to update user');
-    }
-
-    return;
-  },
-
-  async deleteUser(code) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({code})
     });
 
     if (!res.ok) {
@@ -173,8 +134,18 @@ export const api = {
     }
 
     return;
+  }, 
+  // menu related functions start here
+  async getMenuDrinks() {
+    const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
+    if (!res.ok) throw new Error("Failed to load drinks");
+    return res.json();
   },
-
+  async getMenuToppings() {
+    const res = await fetch(`${API_BASE_URL}/api/menu-toppings`);
+    if (!res.ok) throw new Error("Failed to load toppings");
+    return res.json();
+  },
   async getMenuItems() {
     const res = await fetch(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
@@ -295,7 +266,6 @@ export const api = {
     };
   },
   
-  // async getRestockReport(){},
   /**
    * This method gets the restock report data for all inventory items that are below their minimum stock needed
    * @throws an error if the request fails
@@ -371,34 +341,6 @@ export const api = {
     }
     return res.json();
   },
-  
-  async getRestockReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
-  },
-
-  async getSalesReport(startDate, endDate) {
-    const res = await fetch(
-      `${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
-    );
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to load sales report');
-    }
-
-    return res.json();
-  },
-
-  async getXReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
-  },
-
-  async getZReport() {
-    // placeholder until backend endpoint is implemented
-    return null;
-  },
 
   async processOrder(order) {
     const res = await fetch(`${API_BASE_URL}/api/orders`, {
@@ -424,5 +366,63 @@ export const api = {
 
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
+  },
+    /**
+     * This communicates with the chatbot backend
+     * @author Rylee Hunt
+     */
+    async sendChatMessage(payload) {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (e) {
+        throw new Error(`Server returned status ${res.status} with non-JSON response`);
+      }
+
+      if (!res.ok) {
+        throw new Error(data.reply || data.message || `HTTP ${res.status}`);
+      }
+
+      return data;
+    },
+  async getActiveOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load active orders');
+    }
+
+    return res.json();
+  },
+  async getCompletedOrders() {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/completed`);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load completed orders');
+    }
+
+    return res.json();
+  },
+  async markComplete(id) {
+    const res = await fetch(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
+      method: 'PATCH',
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to update order');
+    }
+
+    return;
   },
 };
