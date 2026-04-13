@@ -32,6 +32,46 @@ export default function App() {
         <Route path="/home" element={<PortalPage />} />
         <Route path="/" element={<Navigate to="/home" replace />} />
 
+      <Route
+        path="/manager"
+        element={<ProtectedRoute roles={["manager"]}><ManagerDashboardPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/employees"
+        element={<ProtectedRoute role="manager"><ManageEmployeesPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/menu"
+        element={<ProtectedRoute role="manager"><ManageMenuPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/menu/:itemName/ingredients"
+        element={<ProtectedRoute role="manager"><IngredientEditorPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/inventory"
+        element={<ProtectedRoute role="manager"><InventoryPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/reports"
+        element={<ProtectedRoute role="manager"><SalesAndTrendsPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/reports/sales"
+        element={<ProtectedRoute role="manager"><SalesReportPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/reports/x"
+        element={<ProtectedRoute role="manager"><XReportPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/reports/z"
+        element={<ProtectedRoute role="manager"><ZReportPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/manager/reports/restock"
+        element={<ProtectedRoute role="manager"><RestockReportPage /></ProtectedRoute>}
+      />
         <Route path="/cashier-login" element={<LoginPage />} />
         <Route path="/kitchen" element={<KitchenDashboardPage />} />
         <Route path="/manager-login" element={<ManagerLoginPage />} />
