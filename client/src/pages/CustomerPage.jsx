@@ -80,7 +80,12 @@ export default function CustomerPage() {
                 key={item.name}
                 className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
                 //onClick={() => setSelectedItem(item)}
-                onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
+                //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
+              onClick={() =>
+                        navigate(`/customize/${encodeURIComponent(item.name)}`, {
+                          state: { item }
+                        })
+                      }
               >
                 <div className="menu-item-content">
                   <img
