@@ -41,9 +41,7 @@ export const api = {
    */
   async getManagerSummary() {
 
-    const res = await fetch(`${API_BASE_URL}/api/manager-summary`, {
-    credentials: 'include',
-    });
+    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }

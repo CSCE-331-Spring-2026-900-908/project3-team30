@@ -33,7 +33,7 @@ export default function ManagerDashboardPage() {
     api.getManagerSummary()
         .then(setSummary)
         
-        .catch(() => {
+        .catch((err) => {
           // navigate('/manager', { replace: true });
           console.log('manager summary failed', err);
         });
