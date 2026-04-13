@@ -20,84 +20,87 @@ import MenuBoardPage from './pages/MenuBoardPage';
 import CustomerPage from './pages/CustomerPage';
 import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
+import Translator from './components/Translator';
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/home" element={<PortalPage />} />
-      <Route path="/" element={<Navigate to="/home" replace />} />
+    <>
+      <Translator />
 
-      <Route path="/cashier-login" element={<LoginPage />} />
-      <Route path="/kitchen" element={<KitchenDashboardPage />} />
-      <Route path="/manager-login" element={<ManagerLoginPage />} />
-      <Route path="/menu-board" element={<MenuBoardPage />} />
+      <Routes>
+        <Route path="/home" element={<PortalPage />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
-      <Route
-        path="/manager"
-        element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/employees"
-        element={<ProtectedRoute roles={['manager']}><ManageEmployeesPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/menu"
-        element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/menu/:itemName/ingredients"
-        element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/inventory"
-        element={<ProtectedRoute roles={['manager']}><InventoryPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports"
-        element={<ProtectedRoute roles={['manager']}><SalesAndTrendsPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/sales"
-        element={<ProtectedRoute roles={['manager']}><SalesReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/x"
-        element={<ProtectedRoute roles={['manager']}><XReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/z"
-        element={<ProtectedRoute roles={['manager']}><ZReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/restock"
-        element={<ProtectedRoute roles={['manager']}><RestockReportPage /></ProtectedRoute>}
-      />
+        <Route path="/cashier-login" element={<LoginPage />} />
+        <Route path="/kitchen" element={<KitchenDashboardPage />} />
+        <Route path="/manager-login" element={<ManagerLoginPage />} />
+        <Route path="/menu-board" element={<MenuBoardPage />} />
 
-      <Route
-        path="/cashier"
-        element={<ProtectedRoute><CashierDashboardPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/cashier/menu"
-        element={<ProtectedRoute><MenuPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/cashier/checkout"
-        element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/customer"
-        element={<CustomerPage />}
-      />
-      <Route
-        path="/customer/checkout"
-        element={<CustomerCheckoutPage />}
-      />
+        <Route
+          path="/manager"
+          element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/employees"
+          element={<ProtectedRoute roles={['manager']}><ManageEmployeesPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu"
+          element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu/:itemName/ingredients"
+          element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/inventory"
+          element={<ProtectedRoute roles={['manager']}><InventoryPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/reports"
+          element={<ProtectedRoute roles={['manager']}><SalesAndTrendsPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/reports/sales"
+          element={<ProtectedRoute roles={['manager']}><SalesReportPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/reports/x"
+          element={<ProtectedRoute roles={['manager']}><XReportPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/reports/z"
+          element={<ProtectedRoute roles={['manager']}><ZReportPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/reports/restock"
+          element={<ProtectedRoute roles={['manager']}><RestockReportPage /></ProtectedRoute>}
+        />
 
-  
+        <Route
+          path="/cashier"
+          element={<ProtectedRoute><CashierDashboardPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/cashier/menu"
+          element={<ProtectedRoute><MenuPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/cashier/checkout"
+          element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/customer"
+          element={<CustomerPage />}
+        />
+        <Route
+          path="/customer/checkout"
+          element={<CustomerCheckoutPage />}
+        />
 
-      <Route path="*" element={<Navigate to="/home" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+    </>
   );
 }
 
