@@ -6,6 +6,7 @@ import ChatAssistant from '../components/ChatAssistant';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
+import { useNavigate } from 'react-router-dom';
 
 export default function CustomerPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -19,6 +20,7 @@ export default function CustomerPage() {
   const [selectedSweetness, setSelectedSweetness] = useState('100% Sugar');
   const [selectedIce, setSelectedIce] = useState('100% Ice');
   const { addItem, items } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.getMenuItems().then(setMenuItems).catch(console.error);
@@ -77,7 +79,8 @@ export default function CustomerPage() {
               <button
                 key={item.name}
                 className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
-                onClick={() => setSelectedItem(item)}
+                //onClick={() => setSelectedItem(item)}
+                onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
               >
                 <div className="menu-item-content">
                   <img
@@ -93,7 +96,7 @@ export default function CustomerPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="card">
             <h2>Customize Drink</h2>
             {!selectedItem ? (
@@ -154,7 +157,9 @@ export default function CustomerPage() {
             )}
           </div>
 
-          <ChatAssistant
+          
+        </div> */}
+        <ChatAssistant
             menuItems={menuItems}
             alterations={alterations}
             selectedItem={selectedItem}
@@ -162,7 +167,6 @@ export default function CustomerPage() {
             selectedSweetness={selectedSweetness}
             cart={items}
           />
-        </div>
       </div>
     </PageShell>
   );

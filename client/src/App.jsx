@@ -21,6 +21,7 @@ import CustomerPage from './pages/CustomerPage';
 import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
 import Translator from './components/Translator';
+import CustomizePage from './pages/CustomizePage';
 
 export default function App() {
   return (
@@ -99,6 +100,10 @@ export default function App() {
         />
 
         <Route path="*" element={<Navigate to="/home" replace />} />
+
+        {/* customize page: */}
+        <Route path="/customize/:name" element={<CustomizePage />} /> 
+
       </Routes>
     </>
   );
