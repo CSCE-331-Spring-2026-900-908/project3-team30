@@ -104,7 +104,6 @@ export default function ManageEmployeesPage() {
   return (
     <PageShell
       title="Manage Employees"
-      subtitle="Web version of manageEmployees.fxml"
       actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
     >
       <div className="split-layout">

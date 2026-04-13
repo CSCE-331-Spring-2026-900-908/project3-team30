@@ -31,7 +31,6 @@ export default function SalesReportPage() {
   return (
     <PageShell
       title="Sales Report"
-      subtitle="Web version of salesReport.fxml"
       actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
     >
       <div className="card form-card" style={{ marginBottom: '1.5rem' }}>
