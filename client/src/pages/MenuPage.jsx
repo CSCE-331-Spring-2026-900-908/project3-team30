@@ -14,10 +14,18 @@ export default function MenuPage() {
   const [selectedSweetness, setSelectedSweetness] = useState('100% Sugar');
   const { addItem, items } = useCart();
 
+  // useEffect(() => {
+  //   api.getMenuItems().then(setMenuItems);
+  //   api.getAlterations().then(setAlterations);
+  // }, []);
   useEffect(() => {
-    api.getMenuItems().then(setMenuItems);
-    api.getAlterations().then(setAlterations);
-  }, []);
+  api.getMenuItems()
+    .then((data) => {
+      console.log("MENU DATA:", data);
+      setMenuItems(data);
+    })
+    .catch((err) => console.error(err));
+}, []);
 
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
@@ -37,6 +45,7 @@ export default function MenuPage() {
       name: selectedItem.name,
       basePrice: selectedItem.price,
       modifications: mods,
+      image: selectedItem.image,
       totalPrice: selectedItem.price + mods.reduce((sum, mod) => sum + mod.price, 0),
     });
     setSelectedMods([]);
