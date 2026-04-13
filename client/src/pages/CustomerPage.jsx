@@ -101,69 +101,6 @@ export default function CustomerPage() {
           </div>
         </div>
 
-        {/* <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="card">
-            <h2>Customize Drink</h2>
-            {!selectedItem ? (
-              <p className="subtle">Select a menu item to add modifications.</p>
-            ) : (
-              <>
-                <p>
-                  <strong>{selectedItem.name}</strong> · {currency(selectedItem.price)}
-                </p>
-
-                <div className="checkbox-list">
-                  {alterations.defaults.map((mod) => (
-                    <label key={mod.name} className="checkbox-row">
-                      <input
-                        type="checkbox"
-                        checked={selectedMods.some((entry) => entry.name === mod.name)}
-                        onChange={() => toggleMod(mod)}
-                      />
-                      <span>{mod.name}</span>
-                      <span>{currency(mod.price)}</span>
-                    </label>
-                  ))}
-                </div>
-
-                <FormField label="Sweetness">
-                  <select
-                    value={selectedSweetness}
-                    onChange={(e) => setSelectedSweetness(e.target.value)}
-                  >
-                    {alterations.sweetness.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-
-                <FormField label="Ice">
-                  <select
-                    value={selectedIce}
-                    onChange={(e) => setSelectedIce(e.target.value)}
-                  >
-                    {alterations.ice.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-
-                <div className="inline-actions">
-                  <span className="pill">Current total: {currency(runningTotal)}</span>
-                  <button className="primary-button inline" onClick={addToOrder}>
-                    Add to order
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-
-          
-        </div> */}
         <ChatAssistant
             menuItems={menuItems}
             alterations={alterations}
