@@ -1,5 +1,5 @@
 package com.project3.server.model;
-
+import java.sql.Timestamp;
 /**
  * This is a model class that represents an X report, which includes the necessary fields for the X report
  * @author Jade Azahar
@@ -13,6 +13,7 @@ public class XReport {
     private int numSales;
     private int numCancelled;
     private int numVoided;
+    private Timestamp runAt;
 
     /**
      * Constructor for XReport
@@ -24,8 +25,9 @@ public class XReport {
      * @param numSales
      * @param numCancelled
      * @param numVoided
+     * @param runAt
      */
-    public XReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided) {
+    public XReport(double totalCash, double totalCard, double subtotal, double tax, double netTotal, int numSales, int numCancelled, int numVoided, Timestamp runAt) {
         this.totalCash = totalCash;
         this.totalCard = totalCard;
         this.subtotal = subtotal;
@@ -34,6 +36,7 @@ public class XReport {
         this.numSales = numSales;
         this.numCancelled = numCancelled;
         this.numVoided = numVoided;
+        this.runAt = runAt;
     }
 
     /**
@@ -98,5 +101,13 @@ public class XReport {
      */ 
     public int getNumVoided() {
         return numVoided;
+    }
+
+    /**
+     * Getters for XReport fields
+     * @return Timestamp for when the report was generated
+     */
+    public Timestamp getRunAt() {
+        return runAt;
     }
 }

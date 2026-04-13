@@ -6,39 +6,68 @@ import PageShell from '../components/PageShell';
 import { api } from '../services/api';
 
 const emptyForm = { code: '', firstName: '', lastName: '', role: 'cashier' };
+const USERS_CACHE_KEY = 'manageEmployees_users';
 
 export default function ManageEmployeesPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem(USERS_CACHE_KEY);
+      return cached ? JSON.parse(cached) : [];
+    } catch (error) {
+      console.error('Failed to read cached users:', error);
+      return [];
+    }
+  });
+
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(users.length === 0);
 
-  const load = () => api.getUsers().then(setUsers);
-  useEffect(() => { load(); }, []);
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getUsers();
+      setUsers(data);
+      sessionStorage.setItem(USERS_CACHE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error(error);
+      setStatus('Failed to load employees.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const save = async () => {
     if (!String(form.code.trim())) {
-      setStatus("Enter a code before saving an employee.");
+      setStatus('Enter a code before saving an employee.');
       return;
     }
 
     if (!form.firstName.trim()) {
-      setStatus("Enter a first name before saving an employee.");
+      setStatus('Enter a first name before saving an employee.');
       return;
     }
 
     if (!form.lastName.trim()) {
-      setStatus("Enter a last name before saving an employee.");
+      setStatus('Enter a last name before saving an employee.');
       return;
     }
+
     try {
       const codeNumber = Number(form.code);
       const payload = {
         code: codeNumber,
         firstName: form.firstName,
         lastName: form.lastName,
-        role: form.role
+        role: form.role,
       };
+
       const existingUser = users.find((user) => user.code === codeNumber);
+
       if (!existingUser) {
         await api.addUser(payload);
         setStatus(`Saved employee ${form.code}.`);
@@ -46,20 +75,21 @@ export default function ManageEmployeesPage() {
         await api.updateUser(payload);
         setStatus(`Updated employee ${form.code}.`);
       }
+
       setForm(emptyForm);
       await load();
-      
     } catch (error) {
       console.error(error);
-      setStatus(error.message ||"Failed to save employee.");
+      setStatus(error.message || 'Failed to save employee.');
     }
   };
 
   const remove = async () => {
     if (!String(form.code.trim())) {
-      setStatus("Enter a code before removing an employee.");
+      setStatus('Enter a code before removing an employee.');
       return;
     }
+
     try {
       await api.deleteUser(Number(form.code));
       setStatus(`Removed employee ${form.code}.`);
@@ -67,12 +97,15 @@ export default function ManageEmployeesPage() {
       await load();
     } catch (error) {
       console.error(error);
-      setStatus(error.message || "Failed to remove employee.");
+      setStatus(error.message || 'Failed to remove employee.');
     }
   };
 
   return (
-    <PageShell title="Manage Employees" subtitle="Web version of manageEmployees.fxml" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}>
+    <PageShell
+      title="Manage Employees"
+      actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
+    >
       <div className="split-layout">
         <DataTable
           columns={[
@@ -84,28 +117,59 @@ export default function ManageEmployeesPage() {
           rows={users}
           onRowClick={(row) =>
             setForm({
-              code: String(row.code), //this was the only thing I changed, to make sure it's seen as a string
+              code: String(row.code),
               firstName: row.firstName,
               lastName: row.lastName,
-              role: row.role
+              role: row.role,
             })
           }
         />
+
         <div className="card form-card">
           <h2>Employee Form</h2>
-          <FormField label="Code"><input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} /></FormField>
-          <FormField label="First Name"><input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} /></FormField>
-          <FormField label="Last Name"><input value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} /></FormField>
+
+          {loading ? <p>Loading employees...</p> : null}
+
+          <FormField label="Code">
+            <input
+              value={form.code}
+              onChange={(e) => setForm({ ...form, code: e.target.value })}
+            />
+          </FormField>
+
+          <FormField label="First Name">
+            <input
+              value={form.firstName}
+              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+            />
+          </FormField>
+
+          <FormField label="Last Name">
+            <input
+              value={form.lastName}
+              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+            />
+          </FormField>
+
           <FormField label="Role">
-            <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+            >
               <option value="cashier">Cashier</option>
               <option value="manager">Manager</option>
             </select>
           </FormField>
+
           <div className="inline-actions">
-            <button className="primary-button inline" onClick={save}>Add / Update</button>
-            <button className="secondary-button inline" onClick={remove}>Remove</button>
+            <button className="primary-button inline" onClick={save}>
+              Add / Update
+            </button>
+            <button className="secondary-button inline" onClick={remove}>
+              Remove
+            </button>
           </div>
+
           {status ? <p className="success-text">{status}</p> : null}
         </div>
       </div>

@@ -30,6 +30,8 @@ export function AuthProvider({ children }) {
       try {
         const result = await api.login(pin);
         persistUser(result);
+        setUser(result);
+        localStorage.setItem('user', JSON.stringify(result));
         return result;
       } finally {
         setLoading(false);

@@ -48,7 +48,7 @@ export default function PortalPage() {
     }
 
     const handleKitchenLogin = () => {
-        navigate('/kitchen-login');
+        navigate('/kitchen');
     }
 
     const handleMenuBoard = () => {
@@ -66,29 +66,29 @@ export default function PortalPage() {
             <div className="portal-stack">
                 <section className="quick-grid three-col">
                     <button className="quick-link card portal-card" onClick={handleManagerLogin}>
-                        <span className="material-symbols-outlined portal-icon">badge</span>
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">badge</span>
                         <span>Manager</span>
                     </button>
 
                     <button className="quick-link card portal-card" onClick={handleCashierLogin}>
-                        <span className="material-symbols-outlined portal-icon">point_of_sale</span>
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">point_of_sale</span>
                         <span>Cashier</span>
                     </button>
 
                     <button className="quick-link card portal-card" onClick={handleCustomer}>
-                        <span className="material-symbols-outlined portal-icon">shopping_bag</span>
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">shopping_bag</span>
                         <span>Customer</span>
                     </button>
                 </section>
 
                 <section className="quick-grid two-col portal-bottom">
                     <button className="quick-link card portal-card" onClick={handleMenuBoard}>
-                        <span className="material-symbols-outlined portal-icon">menu_book</span>
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">menu_book</span>
                         <span>Menu</span>
                     </button>
 
                     <button className="quick-link card portal-card" onClick={handleKitchenLogin}>
-                        <span className="material-symbols-outlined portal-icon">kitchen</span>
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">kitchen</span>
                         <span>Kitchen</span>
                     </button>
                 </section>
