@@ -56,7 +56,7 @@ public class MenuService {
                         rs.getString("name"),
                         rs.getDouble("price"),
                         rs.getString("image_url")
-                        rs.getString("category")
+                        //rs.getString("category")
                 ));
             }
 
