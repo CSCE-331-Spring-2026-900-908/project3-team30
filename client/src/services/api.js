@@ -22,9 +22,19 @@ function formatRole(role) {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL;
 
+const fetchWithCredentials = (url, options = {}) => {
+  return fetch(url, {
+    credentials: 'include',
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+    },
+  });
+};
+
 export const api = {
   async login(pin) {
-    const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
     const data = await res.json();
 
     if (!res.ok) {
@@ -34,19 +44,12 @@ export const api = {
     return data;
   },
 
-  /**
-   * This method gets the manager summary data for the dashboard
-   * @return an object with the manager summary data (total sales, total orders, etc.)
-   * @throws an error if the request fails
-   */
   async getManagerSummary() {
-
-    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
     return res.json();
-    
   },
 
   async saveUser(payload) {
@@ -58,28 +61,16 @@ export const api = {
     return normalized;
   },
 
-  /**
-   * This method gets the list of users for the manage employees page
-   * @returns a list of user objects
-   * @throws an error if the request fails
-   */
   async getUsers() {
-    // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees`);
     if (!res.ok) {
       throw new Error('Failed to load users');
     }
     return res.json();
   },
 
-  /**
-   * This method adds a new user to the system
-   * @param {*} payload 
-   * @returns nothing if successful
-   * @thorws an error if the request fails
-   */
   async addUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -93,14 +84,8 @@ export const api = {
     return;
   },
 
-  /**
-   * This method updates an existing user in the system
-   * @param {*} payload 
-   * @returns nothing if successful
-   * @throws an error if the request fails
-   */
   async updateUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/update`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -114,15 +99,8 @@ export const api = {
     return;
   },
 
-  /**
-   * This method deletes a user from the system
-   * @param {*} code 
-   * @returns nothing if successful
-   * @throws an error if the request fails
-   */
   async deleteUser(code) {
-    // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/remove`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
@@ -137,7 +115,6 @@ export const api = {
 
     return;
   },
-  // menu related functions start here
 
   async getWeather(latitude, longitude) {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`;
@@ -149,17 +126,19 @@ export const api = {
   },
 
   async getMenuDrinks() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks`);
     if (!res.ok) throw new Error("Failed to load drinks");
     return res.json();
   },
+
   async getMenuToppings() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-toppings`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-toppings`);
     if (!res.ok) throw new Error("Failed to load toppings");
     return res.json();
   },
+
   async getMenuItems() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-items`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
     return res.json();
   },
@@ -226,8 +205,8 @@ export const api = {
     return true;
   },
 
-    async getInventory() {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`);
+  async getInventory() {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || `Failed to load inventory: HTTP ${res.status}`);
@@ -236,7 +215,7 @@ export const api = {
   },
 
   async createInventoryItem(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -268,7 +247,7 @@ export const api = {
   },
 
   async updateInventoryItem(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -300,7 +279,7 @@ export const api = {
   },
 
   async deleteInventoryItem(sku) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory/${encodeURIComponent(sku)}`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory/${encodeURIComponent(sku)}`, {
       method: 'DELETE'
     });
 
@@ -313,7 +292,7 @@ export const api = {
   },
 
   async getAlterations() {
-    const res = await fetch(`${API_BASE_URL}/api/alterations`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/alterations`);
     if (!res.ok) throw new Error('Failed to load alterations');
 
     const data = await res.json();
@@ -334,14 +313,8 @@ export const api = {
     };
   },
 
-  /**
-   * This method gets the restock report data for all inventory items that are below their minimum stock needed
-   * @throws an error if the request fails
-   * @returns the restock report data for all inventory items that are below their minimum stock needed
-   * takes no parameters since the restock report is always for all items below minimum stock needed
-   */
   async getRestockReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/restockReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/restockReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load restock report");
@@ -349,60 +322,36 @@ export const api = {
     return res.json();
   },
 
-  /**
-   * This method gets the sales report for a given date range
-   * @param {*} startDate 
-   * @param {*} endDate 
-   * @returns the sales report data for the given date range
-   * @throws an error if the request fails
-   */
   async getSalesReport(startDate, endDate) {
-    const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load sales report");
     }
 
-    return res.json();;
+    return res.json();
   },
 
-  /**
-   * This method gets the X report for the current day
-   * @returns the X report data for the current day
-   * @throws an error if the request fails
-   * takes no parameters since the X report is always for the current day
-   */
   async getXReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/XReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load X report");
     }
-    return res.json();;
+    return res.json();
   },
 
-  /**
-   * This method gets the Z report for the current day
-   * @returns the Z report data for the current day
-   * @throws an error if the request fails
-   * takes no parameters since the Z report is always for the current day
-   */
   async getZReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load Z report");
     }
-    return res.json();;
+    return res.json();
   },
 
-  /**
-   * This method gets the latest Z report
-   * @returns the latest Z report data
-   * @throws an error if the request fails
-   */
   async getLatestZReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport/latest`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport/latest`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || 'Failed to load latest Z report');
@@ -411,7 +360,7 @@ export const api = {
   },
 
   async processOrder(order) {
-    const res = await fetch(`${API_BASE_URL}/api/orders`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
@@ -424,7 +373,7 @@ export const api = {
   },
 
   async cancelOrder(order) {
-    const res = await fetch(`${API_BASE_URL}/api/orders/cancel`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/orders/cancel`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
@@ -435,12 +384,9 @@ export const api = {
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
   },
-  /**
-   * This communicates with the chatbot backend
-   * @author Rylee Hunt
-   */
+
   async sendChatMessage(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/chat`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -461,8 +407,9 @@ export const api = {
 
     return data;
   },
+
   async getActiveOrders() {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/active`);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -471,8 +418,9 @@ export const api = {
 
     return res.json();
   },
+
   async getCompletedOrders() {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/completed`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/completed`);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -481,8 +429,9 @@ export const api = {
 
     return res.json();
   },
+
   async markComplete(id) {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
       method: 'PATCH',
     });
 

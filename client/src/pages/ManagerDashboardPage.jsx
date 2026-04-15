@@ -13,8 +13,6 @@ export default function ManagerDashboardPage() {
   const location = useLocation();
 
   useEffect(() => {
-  //   api.getManagerSummary().then(setSummary);
-  // }, []);
     const params = new URLSearchParams(location.search);
     const oauth = params.get('oauth');
 
@@ -23,25 +21,21 @@ export default function ManagerDashboardPage() {
       navigate('/manager', { replace: true });
       return;
     }
-    // currently no roles, if the email is registered, then that is the manager permission
-    // if (!user || user.role !== 'manager') {
-    //   navigate('/', { replace: true });
-    //   return;
-    // }
 
-    console.log('calling api.getManagerSummary()');
+    if (!user || user.role !== 'manager') {
+      navigate('/', { replace: true });
+      return;
+    }
+
     api.getManagerSummary()
-        .then(setSummary)
-        
-        .catch((err) => {
-          // navigate('/manager', { replace: true });
-          console.log('manager summary failed', err);
-        });
-    }, [location.search, setManagerUser, navigate]);
+      .then(setSummary)
+      .catch((err) => {
+        console.log('manager summary failed', err);
+      });
+  }, [location.search, user, setManagerUser, navigate]);
 
   const handleLogout = () => {
     logout();
-    // navigate('/login');
   };
 
   return (
