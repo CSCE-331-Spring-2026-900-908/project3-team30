@@ -29,7 +29,7 @@ export default function PortalPage() {
 
     const navigate = useNavigate();
     const handleManagerLogin = () => {
-        // window.location.href = 'http://localhost:8081/oauth2/authorization/google';
+        // window.location.href = 'http://localhost:8080/oauth2/authorization/google';
         window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
     }
 

@@ -1,14 +1,18 @@
 package com.project3.server.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
-// karla - requires local to dev changes
+
 @Configuration
 public class GoogleSecurityConfig {
+
+    @Value("${FRONTEND_BASE_URL}")
+    private String frontendBaseUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,14 +54,14 @@ public class GoogleSecurityConfig {
                             email.equalsIgnoreCase("anishatx@tamu.edu")
                         )
                     ) {
-                        response.sendRedirect("http://localhost:5173/manager?oauth=success");
+                        response.sendRedirect(frontendBaseUrl + "/manager?oauth=success");
                     } else {
-                        response.sendRedirect("http://localhost:5173/manager-login?error=unauthorized");
+                        response.sendRedirect(frontendBaseUrl + "/manager-login?error=unauthorized");
                     }
                 })
 
                 .failureHandler((request, response, exception) -> {
-                    response.sendRedirect("http://localhost:5173/manager-login?error=oauth_failed");
+                    response.sendRedirect(frontendBaseUrl + "/manager-login?error=oauth_failed");
                 })
             )
 
