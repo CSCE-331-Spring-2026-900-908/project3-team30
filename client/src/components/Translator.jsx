@@ -122,6 +122,8 @@ export default function Translator() {
   };
 
   const resetToEnglish = () => {
+    setSelectedLanguage('');
+
     document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     document.cookie =
       'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' +
@@ -135,15 +137,17 @@ export default function Translator() {
     <div className="translator" ref={translatorRef}>
       <div id="google_translate_element" className="hidden-google-translate"></div>
 
-      <button
-        className="translate-reset"
-        onClick={resetToEnglish}
-        type="button"
-        aria-label="Reset to English"
-        title="Reset to English"
-      >
-        ↺
-      </button>
+      {selectedLanguage && (
+        <button
+          className="translate-reset"
+          onClick={resetToEnglish}
+          type="button"
+          aria-label="Reset to English"
+          title="Reset to English"
+        >
+          ↺
+        </button>
+      )}
 
       <div className="language-card">
         <button
