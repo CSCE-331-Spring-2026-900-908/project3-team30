@@ -82,7 +82,6 @@ export default function MenuPage() {
       basePrice: selectedItem.price,
       image: selectedItem.image,
       modifications: mods,
-      image: selectedItem.image,
       totalPrice: selectedItem.price + mods.reduce((sum, mod) => sum + mod.price, 0),
     });
 
