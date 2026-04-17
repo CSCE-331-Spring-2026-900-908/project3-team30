@@ -26,7 +26,11 @@ public class GoogleSecurityConfig {
                     "/oauth2/**",
                     "/login/**",
                     "/error",
-                    "/api/login"
+                    "/api/login",
+                    "/api/menu-**",
+                    "/api/alterations",
+                    "/api/orders/**",
+                    "/api/kitchen/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -44,14 +48,7 @@ public class GoogleSecurityConfig {
 
                     if (
                         email != null && (
-                            email.equalsIgnoreCase("reveille.bubbletea@gmail.com") ||
-                            email.equalsIgnoreCase("karlasanchz@tamu.edu") ||
-                            email.equalsIgnoreCase("sanchezkarly14@gmail.com") ||
-                            email.equalsIgnoreCase("jazahar@tamu.edu") ||
-                            email.equalsIgnoreCase("rhunt@tamu.edu") ||
-                            email.equalsIgnoreCase("nityakhurana@tamu.edu") ||
-                            email.equalsIgnoreCase("e_pugliese@tamu.edu") ||
-                            email.equalsIgnoreCase("anishatx@tamu.edu")
+                            email.equalsIgnoreCase("reveille.bubbletea@gmail.com")
                         )
                     ) {
                         response.sendRedirect(frontendBaseUrl + "/manager?oauth=success");
