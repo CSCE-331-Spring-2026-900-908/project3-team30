@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import PortalPage from './pages/PortalPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
@@ -24,54 +24,19 @@ import Translator from './components/Translator';
 import CustomizePage from './pages/CustomizePage';
 
 export default function App() {
+  const location = useLocation();
+
+  const hideTranslator =
+    location.pathname === '/menu-board';
+
   return (
     <>
-      <Translator />
+      {!hideTranslator && <Translator />}
 
       <Routes>
         <Route path="/home" element={<PortalPage />} />
         <Route path="/" element={<Navigate to="/home" replace />} />
 
-      <Route
-        path="/manager"
-        element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/employees"
-        element={<ProtectedRoute roles={['manager']}><ManageEmployeesPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/menu"
-        element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/menu/:itemName/ingredients"
-        element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/inventory"
-        element={<ProtectedRoute roles={['manager']}><InventoryPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports"
-        element={<ProtectedRoute roles={['manager']}><SalesAndTrendsPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/sales"
-        element={<ProtectedRoute roles={['manager']}><SalesReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/x"
-        element={<ProtectedRoute roles={['manager']}><XReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/z"
-        element={<ProtectedRoute roles={['manager']}><ZReportPage /></ProtectedRoute>}
-      />
-      <Route
-        path="/manager/reports/restock"
-        element={<ProtectedRoute roles={['manager']}><RestockReportPage /></ProtectedRoute>}
-      />
         <Route path="/cashier-login" element={<LoginPage />} />
         <Route path="/kitchen" element={<KitchenDashboardPage />} />
         <Route path="/manager-login" element={<ManagerLoginPage />} />
@@ -130,47 +95,12 @@ export default function App() {
           path="/cashier/checkout"
           element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>}
         />
-        <Route
-          path="/customer"
-          element={<CustomerPage />}
-        />
-        <Route
-          path="/customer/checkout"
-          element={<CustomerCheckoutPage />}
-        />
+        <Route path="/customer" element={<CustomerPage />} />
+        <Route path="/customer/checkout" element={<CustomerCheckoutPage />} />
 
+        <Route path="/customize/:name" element={<CustomizePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
-
-        <Route path="/customize/:name" element={<CustomizePage />} /> 
-
       </Routes>
     </>
   );
 }
-
-
-/*
-------------------------------------- BELOW THIS LINE IS TO DEBUG A SINGLE FILE/PAGE -------------------------------------
-simply change the import(s) w the file(s) name and path as well as the return in the App() and comment the code above this line
-*/
-
-// import { Navigate, Route, Routes } from 'react-router-dom';
-
-// /* ----- These are the file(s) you want to test ----- */
-// import PortalPage from './pages/PortalPage';
-// import ProtectedRoute from './components/ProtectedRoute';
-// import ManagerLoginPage from './pages/ManagerLoginPage';
-// import ManagerDashboardPage from './pages/ManagerDashboardPage';
-
-// export default function App() {
-//   return (
-//     <Routes>
-//       <Route path="/home" element={<PortalPage />} />
-//       <Route path="/" element={<Navigate to="/home" replace />} />
-
-//       <Route path="/login" element={<ManagerLoginPage />} />
-
-//       <Route path="/manager" element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage/></ProtectedRoute>} />
-//     </Routes>
-//   );
-// }
