@@ -7,8 +7,7 @@ public class MenuItem {
     private String name;
     private double price;
     private String category;
-    // private List<Ingredient> ingredients = new ArrayList<>();
-    // TODO: add ingredient model and edit functionality
+    private List<MenuItemIngredient> ingredients = new ArrayList<>();
 
     public MenuItem(String name, double price, String category){
         this.name = name;
@@ -38,5 +37,23 @@ public class MenuItem {
 
     public void setCategory(String category){
         this.category = category;
+    }
+
+
+    public List<MenuItemIngredient> getIngredients(){
+        return ingredients;
+    }
+
+    public void addIngredient(InventoryItem ingredient, double quantity) {
+        this.ingredients.add(new MenuItemIngredient(ingredient, quantity));
+    }
+    
+    public void removeIngredient(InventoryItem ingredient) {
+        for (int i = 0; i < this.ingredients.size(); i++) {
+            if (this.ingredients.get(i).getIngredient().equals(ingredient)) {
+                this.ingredients.remove(i);
+                break; // Stop after removing the first match
+            }
+        }
     }
 }
