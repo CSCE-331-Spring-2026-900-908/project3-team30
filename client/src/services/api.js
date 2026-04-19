@@ -34,7 +34,7 @@ const fetchWithCredentials = (url, options = {}) => {
 
 export const api = {
   async login(pin) {
-    const res = await fetch(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
     const data = await res.json();
 
     if (!res.ok) {
@@ -51,7 +51,7 @@ export const api = {
    */
   async getManagerSummary() {
 
-    const res = await fetch(`${API_BASE_URL}/api/manager-summary`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
@@ -75,7 +75,7 @@ export const api = {
    */
   async getUsers() {
     // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees`);
     if (!res.ok) {
       throw new Error('Failed to load users');
     }
@@ -89,7 +89,7 @@ export const api = {
    * @thorws an error if the request fails
    */
   async addUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/add`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -110,7 +110,7 @@ export const api = {
    * @throws an error if the request fails
    */
   async updateUser(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/update`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/update`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -132,7 +132,7 @@ export const api = {
    */
   async deleteUser(code) {
     // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
-    const res = await fetch(`${API_BASE_URL}/api/manage-employees/remove`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/remove`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
@@ -159,17 +159,17 @@ export const api = {
   },
 
   async getMenuDrinks() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-drinks`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks`);
     if (!res.ok) throw new Error("Failed to load drinks");
     return res.json();
   },
   async getMenuToppings() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-toppings`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-toppings`);
     if (!res.ok) throw new Error("Failed to load toppings");
     return res.json();
   },
   async getMenuItems() {
-    const res = await fetch(`${API_BASE_URL}/api/menu-items`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
     return res.json();
   },
@@ -237,7 +237,7 @@ export const api = {
   },
 
     async getInventory() {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || `Failed to load inventory: HTTP ${res.status}`);
@@ -246,7 +246,7 @@ export const api = {
   },
 
   async createInventoryItem(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -278,7 +278,7 @@ export const api = {
   },
 
   async updateInventoryItem(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -310,7 +310,7 @@ export const api = {
   },
 
   async deleteInventoryItem(sku) {
-    const res = await fetch(`${API_BASE_URL}/api/inventory/${encodeURIComponent(sku)}`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory/${encodeURIComponent(sku)}`, {
       method: 'DELETE'
     });
 
@@ -323,7 +323,7 @@ export const api = {
   },
 
   async getAlterations() {
-    const res = await fetch(`${API_BASE_URL}/api/alterations`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/alterations`);
     if (!res.ok) throw new Error('Failed to load alterations');
 
     const data = await res.json();
@@ -351,7 +351,7 @@ export const api = {
    * takes no parameters since the restock report is always for all items below minimum stock needed
    */
   async getRestockReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/restockReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/restockReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load restock report");
@@ -367,7 +367,7 @@ export const api = {
    * @throws an error if the request fails
    */
   async getSalesReport(startDate, endDate) {
-    const res = await fetch(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load sales report");
@@ -383,7 +383,7 @@ export const api = {
    * takes no parameters since the X report is always for the current day
    */
   async getXReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/XReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/XReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load X report");
@@ -398,7 +398,7 @@ export const api = {
    * takes no parameters since the Z report is always for the current day
    */
   async getZReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load Z report");
@@ -412,7 +412,7 @@ export const api = {
    * @throws an error if the request fails
    */
   async getLatestZReport() {
-    const res = await fetch(`${API_BASE_URL}/api/reports/ZReport/latest`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport/latest`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || 'Failed to load latest Z report');
@@ -421,7 +421,7 @@ export const api = {
   },
 
   async processOrder(order) {
-    const res = await fetch(`${API_BASE_URL}/api/orders`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
@@ -434,7 +434,7 @@ export const api = {
   },
 
   async cancelOrder(order) {
-    const res = await fetch(`${API_BASE_URL}/api/orders/cancel`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/orders/cancel`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
@@ -472,7 +472,7 @@ export const api = {
     return data;
   },
   async getActiveOrders() {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/active`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/active`);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -482,7 +482,7 @@ export const api = {
     return res.json();
   },
   async getCompletedOrders() {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/completed`);
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/completed`);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -492,7 +492,7 @@ export const api = {
     return res.json();
   },
   async markComplete(id) {
-    const res = await fetch(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
       method: 'PATCH',
     });
 
@@ -504,7 +504,7 @@ export const api = {
     return;
   },
   updateHappyHour: async (day, payload) => {
-    const res = await fetch(`${API_BASE_URL}/api/happy-hour/${day}`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/${day}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -517,7 +517,7 @@ export const api = {
   },
 
   clearHappyHour: async (day) => {
-    const res = await fetch(`${API_BASE_URL}/api/happy-hour/${day}`, {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/${day}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -528,7 +528,7 @@ export const api = {
   },
 
   getHappyHours: async () => {
-    const res = await fetch('${API_BASE_URL}/api/happy-hour');
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour`);
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.error || 'Failed to fetch happy hours.');
