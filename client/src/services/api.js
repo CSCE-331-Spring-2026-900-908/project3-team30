@@ -528,7 +528,7 @@ export const api = {
   },
 
   getHappyHours: async () => {
-    const res = await fetch('/api/happy-hour');
+    const res = await fetch('${API_BASE_URL}/api/happy-hour');
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.error || 'Failed to fetch happy hours.');

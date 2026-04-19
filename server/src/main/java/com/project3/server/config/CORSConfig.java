@@ -12,7 +12,7 @@ import java.util.List;
 @Configuration
 public class CORSConfig {
 
-    @Value("${FRONTEND_BASE_URL}")
+    @Value("${FRONTEND_BASE_URL:http://localhost:5173}")
     private String frontendBaseUrl;
 
     @Bean
