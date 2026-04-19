@@ -503,4 +503,36 @@ export const api = {
 
     return;
   },
+  updateHappyHour: async (day, payload) => {
+    const res = await fetch(`${API_BASE_URL}/api/happy-hour/${day}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to update happy hour.');
+    }
+    return res.json();
+  },
+
+  clearHappyHour: async (day) => {
+    const res = await fetch(`${API_BASE_URL}/api/happy-hour/${day}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to clear happy hour.');
+    }
+    return res.json();
+  },
+
+  getHappyHours: async () => {
+    const res = await fetch('/api/happy-hour');
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to fetch happy hours.');
+    }
+    return res.json();
+  },
 };
