@@ -25,10 +25,12 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function PortalPage() {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     const navigate = useNavigate();
     const handleManagerLogin = () => {
-        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+        // window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+        window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
     }
 
     const handleLogin = () => {
@@ -57,7 +59,7 @@ export default function PortalPage() {
 
     return (
         <main className="app-shell portal-page">
-            <p className="eyebrow">PROJECT 3 GUI</p>
+            <p className="eyebrow">Drinks in the Dreamhouse</p>
             <h1>Welcome</h1>
             <p className="subtle portal-subtitle">Select an interface to continue</p>
 

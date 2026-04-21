@@ -40,9 +40,19 @@ export default function ManagerLoginPage() {
   const params = new URLSearchParams(location.search);
   const error = params.get('error');
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    // karla : *POSSIBLE ISSUE: this path below does not match the one set up 
+    // under authorized redirect URIS in the google website which is: 
+    // /login/oauth2/code/google
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
+
   };
+  // const handleGoogleLogin = () => {
+  //   window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+
+  // };
 
   let message = 'Manager login now uses Google authentication instead of a Pin.';
 

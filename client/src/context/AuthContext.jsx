@@ -6,7 +6,6 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('authUser');
-    console.log('AuthProvider init, saved authUser =', saved);
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -14,6 +13,7 @@ export function AuthProvider({ children }) {
 
   const persistUser = (nextUser) => {
     setUser(nextUser);
+
     if (nextUser) {
       localStorage.setItem('authUser', JSON.stringify(nextUser));
     } else {
@@ -30,8 +30,6 @@ export function AuthProvider({ children }) {
       try {
         const result = await api.login(pin);
         persistUser(result);
-        setUser(result);
-        localStorage.setItem('user', JSON.stringify(result));
         return result;
       } finally {
         setLoading(false);
@@ -39,7 +37,8 @@ export function AuthProvider({ children }) {
     },
 
     startManagerLogin() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
     },
 
     setManagerUser() {
@@ -48,7 +47,7 @@ export function AuthProvider({ children }) {
 
     logout() {
       persistUser(null);
-      window.location.href = 'http://localhost:5173';
+      window.location.href = window.location.origin;
     },
   }), [user, loading]);
 
