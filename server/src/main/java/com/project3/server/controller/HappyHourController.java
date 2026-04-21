@@ -2,6 +2,8 @@ package com.project3.server.controller;
 
 import com.project3.server.model.HappyHour;
 import com.project3.server.service.HappyHourService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +31,14 @@ public class HappyHourController {
     @DeleteMapping("/happy-hour/{day}")
     public HappyHour clearHappyHour(@PathVariable String day) throws Exception {
         return happyHourService.clearHappyHour(day);
+    }
+
+    @GetMapping("/happy-hour/current-active")
+    public ResponseEntity<HappyHour> getActiveHappyHour() throws Exception {
+        HappyHour active = happyHourService.getActiveHappyHour();
+        if (active == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(active);
     }
 }

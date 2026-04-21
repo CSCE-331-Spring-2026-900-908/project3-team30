@@ -162,4 +162,47 @@ public class HappyHourService {
             );
         }
     }
+
+    /**
+     * Returns the active HappyHour for the current day and time, or null if none is active.
+     */
+    public HappyHour getActiveHappyHour() throws Exception {
+        String sql = """
+                SELECT day, start_time, end_time, percent_off
+                FROM happy_hour
+                WHERE day = ?
+                AND start_time IS NOT NULL
+                AND end_time IS NOT NULL
+                AND percent_off IS NOT NULL
+                """;
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        String todayName = now.getDayOfWeek().toString().charAt(0)
+                + now.getDayOfWeek().toString().substring(1).toLowerCase(); 
+        java.time.LocalTime currentTime = now.toLocalTime();
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, todayName.toLowerCase());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    java.time.LocalTime start = rs.getTime("start_time").toLocalTime();
+                    java.time.LocalTime end = rs.getTime("end_time").toLocalTime();
+
+                    if (!currentTime.isBefore(start) && currentTime.isBefore(end)) {
+                        return new HappyHour(
+                                rs.getString("day"),
+                                start,
+                                end,
+                                rs.getDouble("percent_off")
+                        );
+                    }
+                }
+            }
+        }
+
+        return null; // No active happy hour
+    }
 }

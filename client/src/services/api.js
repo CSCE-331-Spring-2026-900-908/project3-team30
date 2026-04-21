@@ -535,4 +535,14 @@ export const api = {
     }
     return res.json();
   },
+
+  getActiveHappyHour: async () => {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/current-active`);
+    if (res.status === 204) return null; // No active happy hour
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to fetch active happy hour.');
+    }
+    return res.json();
+  },
 };
