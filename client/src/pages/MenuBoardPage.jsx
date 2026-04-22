@@ -153,7 +153,6 @@ const groupedItems = menuItems.reduce((acc, item) => {
             <p className="subtle">Loading weather...</p>
           )}
         </div>
-        <WomanCard></WomanCard>
 
         <div className="menu-board-toppings">
           <h2 className="menu-board-category">Toppings</h2>
@@ -167,6 +166,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
             ))}
           </div>
         </div>
+        <WomanCard></WomanCard>
       </div>
     </div>
   );

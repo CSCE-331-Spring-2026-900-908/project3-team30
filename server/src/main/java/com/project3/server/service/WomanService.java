@@ -39,7 +39,7 @@ public class WomanService {
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "WomanCardApp/1.0 (your@email.com)");
+            headers.set("User-Agent", "WomanCardApp/1.0 (nityakhurana@tamu.edu)");
             headers.set("Accept", "application/sparql-results+json");
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
