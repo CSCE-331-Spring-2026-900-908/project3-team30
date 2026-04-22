@@ -1,27 +1,34 @@
-
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
 
+function applyDiscount(basePrice, percentOff) {
+  if (!percentOff) return basePrice;
+  return Math.round(basePrice * (1 - percentOff) * 100) / 100;
+}
+
 export default function CustomizePage() {
   const { name } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { addItem } = useCart();
 
-  const [item, setItem] = useState(null);
+  const activeHappyHour = location.state?.activeHappyHour ?? null;
+
+  const [item, setItem] = useState(location.state?.item ?? null);
   const [alterations, setAlterations] = useState({ default: [], sweetness: [] });
   const [mods, setMods] = useState([]);
   const [sweetness, setSweetness] = useState("100% Sugar");
 
-
   useEffect(() => {
-    api.getMenuItems().then((items) => {
-      const found = items.find(i => i.name === decodeURIComponent(name));
-      setItem(found);
-    });
-
+    if (!item) {
+      api.getMenuItems().then((items) => {
+        const found = items.find(i => i.name === decodeURIComponent(name));
+        setItem(found);
+      });
+    }
     api.getAlterations().then(setAlterations);
   }, [name]);
 
@@ -33,25 +40,44 @@ export default function CustomizePage() {
     );
   };
 
+  const discountedBase = item ? applyDiscount(item.price, activeHappyHour?.percentOff) : 0;
+
   const addToCart = () => {
     const allMods = [...mods, { name: sweetness, price: 0 }];
 
     addItem({
       name: item.name,
-      basePrice: item.price,
+      basePrice: discountedBase,
       modifications: allMods,
-      totalPrice: item.price + allMods.reduce((s, m) => s + m.price, 0)
+      totalPrice: discountedBase + allMods.reduce((s, m) => s + m.price, 0)
     });
 
-    navigate("/customer"); // go back to customer page
+    navigate("/customer");
   };
 
   if (!item) return <p>Loading...</p>;
 
+  const allMods = [...mods, { name: sweetness, price: 0 }];
+  const runningTotal = discountedBase + allMods.reduce((s, m) => s + m.price, 0);
+
   return (
     <div className="card">
       <h2>{item.name}</h2>
-      <p>{currency(item.price)}</p>
+
+      {/* Price — only change from original */}
+      {activeHappyHour ? (
+        <p>
+          <strong style={{ color: '#d36a6a' }}>{currency(discountedBase)}</strong>
+          <span style={{ textDecoration: 'line-through', color: '#9b7880', marginLeft: '0.5rem', fontSize: '0.9rem' }}>
+            {currency(item.price)}
+          </span>
+          <span className="pill" style={{ marginLeft: '0.5rem', fontSize: '0.78rem' }}>
+            {Math.round(activeHappyHour.percentOff * 100)}% off
+          </span>
+        </p>
+      ) : (
+        <p>{currency(item.price)}</p>
+      )}
 
       {alterations.default.map(mod => (
         <label key={mod.name}>
@@ -68,6 +94,9 @@ export default function CustomizePage() {
           <option key={opt.name}>{opt.name}</option>
         ))}
       </select>
+
+      {/* Total — only change from original */}
+      <p>Total: {currency(runningTotal)}</p>
 
       <button onClick={addToCart}>Add to Cart</button>
       <button onClick={() => navigate("/customer")}>Cancel</button>
