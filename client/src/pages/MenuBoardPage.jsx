@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import '../styles/app.css';
+import WomanCard from '../components/WomanCard';
 
 export default function MenuBoardPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -152,6 +153,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
             <p className="subtle">Loading weather...</p>
           )}
         </div>
+        <WomanCard></WomanCard>
 
         <div className="menu-board-toppings">
           <h2 className="menu-board-category">Toppings</h2>
