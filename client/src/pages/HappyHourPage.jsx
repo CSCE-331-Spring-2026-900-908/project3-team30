@@ -177,8 +177,7 @@ export default function ManageHappyHourPage() {
   });
 
   return (
-    <PageShell
-      title="Manage Happy Hour"
+    <PageShell title="Manage Happy Hour" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
     >
       <div className="split-layout">
         <div>
