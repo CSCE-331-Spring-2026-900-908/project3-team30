@@ -16,26 +16,26 @@ public class WomanService {
     public Map<String, Object> fetchRandomWoman() {
         try {
             String query = """
-    SELECT ?person ?personLabel ?description ?image WHERE {
-      {
-        SELECT ?person ?image WHERE {
-          ?person wdt:P31 wd:Q5 ;
-                  wdt:P21 wd:Q6581072 ;
-                  wdt:P18 ?image ;
-                  wikibase:sitelinks ?links .
-          FILTER(?links > 20)
-        }
-        LIMIT 500
-      }
-      OPTIONAL { ?person schema:description ?description .
-                 FILTER(LANG(?description) = "en") }
-      SERVICE wikibase:label {
-        bd:serviceParam wikibase:language "en" .
-      }
-    }
-    LIMIT 1
-    OFFSET %d
-""".formatted((int)(Math.random() * 500));
+                SELECT ?person ?personLabel ?description ?image WHERE {
+                {
+                    SELECT ?person ?image WHERE {
+                    ?person wdt:P31 wd:Q5 ;
+                            wdt:P21 wd:Q6581072 ;
+                            wdt:P18 ?image ;
+                            wikibase:sitelinks ?links .
+                    FILTER(?links > 2)
+                    }
+                    LIMIT 500
+                }
+                OPTIONAL { ?person schema:description ?description .
+                            FILTER(LANG(?description) = "en") }
+                SERVICE wikibase:label {
+                    bd:serviceParam wikibase:language "en" .
+                }
+                }
+                LIMIT 1
+                OFFSET %d
+            """.formatted((int)(Math.random() * 500));
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
