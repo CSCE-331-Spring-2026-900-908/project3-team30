@@ -143,34 +143,23 @@ export const api = {
     return res.json();
   },
 
-  async saveMenuItem(payload) {
-    await sleep();
-    const existing = localMenuItems.findIndex((item) => item.name === payload.name || item.id === payload.id);
-    const normalized = {
-      id: payload.id ?? Date.now(),
-      name: payload.name,
-      price: Number(payload.price),
-      category: payload.category,
-    };
-
-    if (existing >= 0) {
-      localMenuItems[existing] = normalized;
-    } else {
-      localMenuItems.push(normalized);
-    }
-
-    if (!localIngredientMap[normalized.name]) {
-      localIngredientMap[normalized.name] = [];
-    }
-
-    return normalized;
+  async saveMenuItem(item) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    });
+    if (!res.ok) throw new Error("Failed to save menu item");
+    return res.json();
   },
 
   async deleteMenuItem(name) {
-    await sleep();
-    localMenuItems = localMenuItems.filter((item) => item.name !== name);
-    delete localIngredientMap[name];
-    return true;
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error("Failed to delete menu item");
   },
 
   async getIngredientsForMenuItem(name) {

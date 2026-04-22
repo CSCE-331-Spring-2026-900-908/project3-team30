@@ -47,6 +47,15 @@ public class MenuItem {
     public void addIngredient(InventoryItem ingredient, double quantity) {
         this.ingredients.add(new MenuItemIngredient(ingredient, quantity));
     }
+
+    public void editIngredient(InventoryItem ingredient, double quantity) {
+        for (int i = 0; i < this.ingredients.size(); i++) {
+            if (this.ingredients.get(i).getIngredient().equals(ingredient)) {
+                this.ingredients.get(i).setQuantity(quantity);
+                break; // Stop after editing the first match
+            }
+        }
+    }
     
     public void removeIngredient(InventoryItem ingredient) {
         for (int i = 0; i < this.ingredients.size(); i++) {
