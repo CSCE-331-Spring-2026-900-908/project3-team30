@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class GoogleSecurityConfig {
 
-    @Value("${FRONTEND_BASE_URL}")
+    @Value("${FRONTEND_BASE_URL:http://localhost:5173}")
     private String frontendBaseUrl;
 
     @Bean
@@ -26,7 +26,12 @@ public class GoogleSecurityConfig {
                     "/oauth2/**",
                     "/login/**",
                     "/error",
-                    "/api/login"
+                    "/api/login",
+                    "/api/menu-**",
+                    "/api/alterations",
+                    "/api/orders/**",
+                    "/api/kitchen/**",
+                    "/api/chat"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
