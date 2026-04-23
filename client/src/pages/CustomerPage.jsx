@@ -78,14 +78,24 @@ export default function CustomerPage() {
             {menuItems.map((item) => (
               <button
                 key={item.name}
-                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
+                //karla file 3 
+                // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
+                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                disabled={item.available === false}
                 //onClick={() => setSelectedItem(item)}
                 //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
-              onClick={() =>
-                        navigate(`/customize/${encodeURIComponent(item.name)}`, {
-                          state: { item }
-                        })
-                      }
+              // onClick={() =>
+              //           navigate(`/customize/${encodeURIComponent(item.name)}`, {
+              //             state: { item }
+              //           })
+              //         }
+              //karla
+              onClick={() => {
+                  if (item.available === false) return;
+                  navigate(`/customize/${encodeURIComponent(item.name)}`, {
+                    state: { item }
+                  });
+                }}
               >
                 <div className="menu-item-content">
                   <img

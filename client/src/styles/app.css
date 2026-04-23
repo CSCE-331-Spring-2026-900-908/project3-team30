@@ -59,6 +59,23 @@ th, td { padding: 0.9rem 0.8rem; border-bottom: 1px solid #f1e5e8; text-align: l
 tr:hover { background: #fff8fa; }
 .empty-cell { text-align: center; color: #8b7078; }
 
+/*karla */
+.menu-item.unavailable {
+  opacity: 0.45;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
+.menu-item.unavailable:hover {
+  transform: none;
+}
+
+.menu-item.unavailable .menu-item-image {
+  filter: grayscale(100%);
+}
+
+
+
 /*This is where I'm adding my stuff - Jade*/
 .portal-stack { display: grid; gap: 1.5rem; margin-top: 2rem;}
 
