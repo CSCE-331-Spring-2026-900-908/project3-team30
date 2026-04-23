@@ -213,11 +213,11 @@ const styles = `
 export default function WomanCard() {
   const [person, setPerson] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const fetchWoman = () => {
     setLoading(true);
     setPerson(null);
-    fetch("http://localhost:8080/api/woman") //TODO: change to work non locally
+    fetch(`${API_BASE_URL}/api/woman`) 
       .then(res => res.json())
       .then(data => {
         setPerson(data);
