@@ -16,6 +16,8 @@ public class Drink {
     private double basePrice;
     private String image;
     private String category;
+    //karla 
+    private boolean available = true; 
     private boolean complete;
     private List<Modification> modifications = new ArrayList<>();
 
@@ -112,6 +114,19 @@ public class Drink {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * @return availability of the drink based on data base inventory
+     * @author karla sanchez
+     */
+    //karla 
+    public boolean isAvailable() {
+    return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     /**
