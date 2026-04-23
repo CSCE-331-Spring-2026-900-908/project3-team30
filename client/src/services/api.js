@@ -162,36 +162,34 @@ export const api = {
     if (!res.ok) throw new Error("Failed to delete menu item");
   },
 
-  async getIngredientsForMenuItem(name) {
-    await sleep();
-    return [...(localIngredientMap[name] ?? [])];
+  async getIngredientsForMenuItem(menuItemName) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients`);
+    if (!res.ok) throw new Error("Failed to load ingredients for menu item");
+    return res.json();
   },
 
-  async saveIngredientForMenuItem(name, ingredient) {
-    await sleep();
-    const list = localIngredientMap[name] ?? [];
-    const idx = list.findIndex((entry) => entry.ingredient === ingredient.ingredient);
-    const normalized = {
-      ingredient: ingredient.ingredient,
-      quantityUsed: Number(ingredient.quantityUsed),
-    };
-
-    if (idx >= 0) {
-      list[idx] = normalized;
-    } else {
-      list.push(normalized);
-    }
-
-    localIngredientMap[name] = list;
-    return normalized;
+  async getAvailableIngredients() {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/available-ingredients`);
+    if (!res.ok) throw new Error("Failed to load available ingredients");
+    return res.json();
   },
 
-  async deleteIngredientForMenuItem(name, ingredientName) {
-    await sleep();
-    localIngredientMap[name] = (localIngredientMap[name] ?? []).filter(
-      (entry) => entry.ingredient !== ingredientName
-    );
-    return true;
+  async saveIngredientForMenuItem(menuItemName, ingredientData) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ingredientData),
+    });
+    if (!res.ok) throw new Error("Failed to save ingredient for menu item");
+  },
+
+  async deleteIngredientForMenuItem(menuItemName, ingredientName) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients/${encodeURIComponent(ingredientName)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error("Failed to delete ingredient for menu item");
   },
 
   async getInventory() {

@@ -24,7 +24,7 @@ public class ManageMenuService {
     public MenuItem saveMenuItem(MenuItem item) throws Exception {
         // Check if item exists
         String checkSql = "SELECT name FROM menu_items WHERE name = ?";
-        String insertSql = "INSERT INTO menu_items (name, price, category) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO menu_items (name, price, category, image_url) VALUES (?, ?, ?, https://food.fnr.sndimg.com/content/dam/images/food/fullset/2023/6/13/boba-milk-tea.jpg.rend.hgtvcom.1280.1280.85.suffix/1686684207354.webp)";
         String updateSql = "UPDATE menu_items SET price = ?, category = ? WHERE name = ?";
         
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
