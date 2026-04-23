@@ -102,6 +102,7 @@ public class Drink {
      * @return availability of the drink based on data base inventory
      * @author karla sanchez
      */
+    //karla 
     public boolean isAvailable() {
     return available;
     }
