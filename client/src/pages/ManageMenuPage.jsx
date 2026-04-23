@@ -14,7 +14,7 @@ export default function ManageMenuPage() {
   const [status, setStatus] = useState('');
   const navigate = useNavigate();
 
-  const load = () => api.getMenuItems().then(setItems);
+  const load = () => api.getMenuDrinks().then(setItems);
   useEffect(() => { load(); }, []);
 
   const save = async () => {
