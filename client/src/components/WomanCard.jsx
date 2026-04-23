@@ -217,7 +217,6 @@ export default function WomanCard() {
   const fetchWoman = () => {
     setLoading(true);
     setPerson(null);
-    //`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`
     fetch(`${API_BASE_URL}/api/woman`) 
       .then(res => res.json())
       .then(data => {
