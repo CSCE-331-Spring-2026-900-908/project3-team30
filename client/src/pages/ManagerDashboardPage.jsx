@@ -52,7 +52,7 @@ export default function ManagerDashboardPage() {
 
       <section className="quick-grid">
         <Link className="quick-link card" to="/manager/employees">Manage Employees</Link>
-        <Link className="quick-link card" to="/manager/menu">Manage Menu</Link>
+        <Link className="quick-link card" to="/manager/menu">Manage Menu and Happy Hour</Link>
         <Link className="quick-link card" to="/manager/inventory">Inventory</Link>
         <Link className="quick-link card" to="/manager/reports">Sales & Trends</Link>
       </section>

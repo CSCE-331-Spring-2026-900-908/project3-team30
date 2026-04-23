@@ -44,12 +44,19 @@ export const api = {
     return data;
   },
 
+  /**
+   * This method gets the manager summary data for the dashboard
+   * @return an object with the manager summary data (total sales, total orders, etc.)
+   * @throws an error if the request fails
+   */
   async getManagerSummary() {
+
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
     return res.json();
+    
   },
 
   async saveUser(payload) {
@@ -61,7 +68,13 @@ export const api = {
     return normalized;
   },
 
+  /**
+   * This method gets the list of users for the manage employees page
+   * @returns a list of user objects
+   * @throws an error if the request fails
+   */
   async getUsers() {
+    // const res = await fetch("http://localhost:8082/api/manage-employees"); //to run locally
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees`);
     if (!res.ok) {
       throw new Error('Failed to load users');
@@ -69,6 +82,12 @@ export const api = {
     return res.json();
   },
 
+  /**
+   * This method adds a new user to the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @thorws an error if the request fails
+   */
   async addUser(payload) {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/add`, {
       method: "POST",
@@ -84,6 +103,12 @@ export const api = {
     return;
   },
 
+  /**
+   * This method updates an existing user in the system
+   * @param {*} payload 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
   async updateUser(payload) {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/update`, {
       method: "PUT",
@@ -99,7 +124,14 @@ export const api = {
     return;
   },
 
+  /**
+   * This method deletes a user from the system
+   * @param {*} code 
+   * @returns nothing if successful
+   * @throws an error if the request fails
+   */
   async deleteUser(code) {
+    // const res = await fetch("http://localhost:8082/api/manage-employees/remove", {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manage-employees/remove`, {
       method: "DELETE",
       headers: {
@@ -115,6 +147,7 @@ export const api = {
 
     return;
   },
+  // menu related functions start here
 
   async getWeather(latitude, longitude) {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=America%2FChicago`;
@@ -130,82 +163,67 @@ export const api = {
     if (!res.ok) throw new Error("Failed to load drinks");
     return res.json();
   },
-
   async getMenuToppings() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-toppings`);
     if (!res.ok) throw new Error("Failed to load toppings");
     return res.json();
   },
-
   async getMenuItems() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
     return res.json();
   },
 
-  async saveMenuItem(payload) {
-    await sleep();
-    const existing = localMenuItems.findIndex((item) => item.name === payload.name || item.id === payload.id);
-    const normalized = {
-      id: payload.id ?? Date.now(),
-      name: payload.name,
-      price: Number(payload.price),
-      category: payload.category,
-    };
-
-    if (existing >= 0) {
-      localMenuItems[existing] = normalized;
-    } else {
-      localMenuItems.push(normalized);
-    }
-
-    if (!localIngredientMap[normalized.name]) {
-      localIngredientMap[normalized.name] = [];
-    }
-
-    return normalized;
+  async saveMenuItem(item) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    });
+    if (!res.ok) throw new Error("Failed to save menu item");
+    return res.json();
   },
 
   async deleteMenuItem(name) {
-    await sleep();
-    localMenuItems = localMenuItems.filter((item) => item.name !== name);
-    delete localIngredientMap[name];
-    return true;
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error("Failed to delete menu item");
   },
 
-  async getIngredientsForMenuItem(name) {
-    await sleep();
-    return [...(localIngredientMap[name] ?? [])];
+  async getIngredientsForMenuItem(menuItemName) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients`);
+    if (!res.ok) throw new Error("Failed to load ingredients for menu item");
+    return res.json();
   },
 
-  async saveIngredientForMenuItem(name, ingredient) {
-    await sleep();
-    const list = localIngredientMap[name] ?? [];
-    const idx = list.findIndex((entry) => entry.ingredient === ingredient.ingredient);
-    const normalized = {
-      ingredient: ingredient.ingredient,
-      quantityUsed: Number(ingredient.quantityUsed),
-    };
-
-    if (idx >= 0) {
-      list[idx] = normalized;
-    } else {
-      list.push(normalized);
-    }
-
-    localIngredientMap[name] = list;
-    return normalized;
+  async getAvailableIngredients() {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/available-ingredients`);
+    if (!res.ok) throw new Error("Failed to load available ingredients");
+    return res.json();
   },
 
-  async deleteIngredientForMenuItem(name, ingredientName) {
-    await sleep();
-    localIngredientMap[name] = (localIngredientMap[name] ?? []).filter(
-      (entry) => entry.ingredient !== ingredientName
-    );
-    return true;
+  async saveIngredientForMenuItem(menuItemName, ingredientData) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ingredientData),
+    });
+    if (!res.ok) throw new Error("Failed to save ingredient for menu item");
   },
 
-  async getInventory() {
+  async deleteIngredientForMenuItem(menuItemName, ingredientName) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-drinks/${encodeURIComponent(menuItemName)}/ingredients/${encodeURIComponent(ingredientName)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error("Failed to delete ingredient for menu item");
+  },
+
+    async getInventory() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`);
     if (!res.ok) {
       const errorText = await res.text();
@@ -313,6 +331,12 @@ export const api = {
     };
   },
 
+  /**
+   * This method gets the restock report data for all inventory items that are below their minimum stock needed
+   * @throws an error if the request fails
+   * @returns the restock report data for all inventory items that are below their minimum stock needed
+   * takes no parameters since the restock report is always for all items below minimum stock needed
+   */
   async getRestockReport() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/restockReport`);
     if (!res.ok) {
@@ -322,6 +346,13 @@ export const api = {
     return res.json();
   },
 
+  /**
+   * This method gets the sales report for a given date range
+   * @param {*} startDate 
+   * @param {*} endDate 
+   * @returns the sales report data for the given date range
+   * @throws an error if the request fails
+   */
   async getSalesReport(startDate, endDate) {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/salesReport?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
     if (!res.ok) {
@@ -329,27 +360,44 @@ export const api = {
       throw new Error(errorText || "Failed to load sales report");
     }
 
-    return res.json();
+    return res.json();;
   },
 
+  /**
+   * This method gets the X report for the current day
+   * @returns the X report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the X report is always for the current day
+   */
   async getXReport() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/XReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load X report");
     }
-    return res.json();
+    return res.json();;
   },
 
+  /**
+   * This method gets the Z report for the current day
+   * @returns the Z report data for the current day
+   * @throws an error if the request fails
+   * takes no parameters since the Z report is always for the current day
+   */
   async getZReport() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport`);
     if (!res.ok) {
       const errorText = await res.text();
       throw new Error(errorText || "Failed to load Z report");
     }
-    return res.json();
+    return res.json();;
   },
 
+  /**
+   * This method gets the latest Z report
+   * @returns the latest Z report data
+   * @throws an error if the request fails
+   */
   async getLatestZReport() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/reports/ZReport/latest`);
     if (!res.ok) {
@@ -384,9 +432,12 @@ export const api = {
     if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
     return data;
   },
-
+  /**
+   * This communicates with the chatbot backend
+   * @author Rylee Hunt
+   */
   async sendChatMessage(payload) {
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/chat`, {
+    const res = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -407,7 +458,6 @@ export const api = {
 
     return data;
   },
-
   async getActiveOrders() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/active`);
 
@@ -418,7 +468,6 @@ export const api = {
 
     return res.json();
   },
-
   async getCompletedOrders() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/completed`);
 
@@ -429,7 +478,6 @@ export const api = {
 
     return res.json();
   },
-
   async markComplete(id) {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/kitchen/${id}/complete`, {
       method: 'PATCH',
@@ -441,5 +489,47 @@ export const api = {
     }
 
     return;
+  },
+  updateHappyHour: async (day, payload) => {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/${day}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to update happy hour.');
+    }
+    return res.json();
+  },
+
+  clearHappyHour: async (day) => {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/${day}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to clear happy hour.');
+    }
+    return res.json();
+  },
+
+  getHappyHours: async () => {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour`);
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to fetch happy hours.');
+    }
+    return res.json();
+  },
+
+  getActiveHappyHour: async () => {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/happy-hour/current-active`);
+    if (res.status === 204) return null; // No active happy hour
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to fetch active happy hour.');
+    }
+    return res.json();
   },
 };

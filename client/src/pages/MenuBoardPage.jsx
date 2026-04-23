@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import '../styles/app.css';
+import WomanCard from '../components/WomanCard';
 
 export default function MenuBoardPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -165,6 +166,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
             ))}
           </div>
         </div>
+        <WomanCard></WomanCard>
       </div>
     </div>
   );
