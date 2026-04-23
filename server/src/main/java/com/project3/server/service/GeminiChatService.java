@@ -58,12 +58,12 @@ public class GeminiChatService {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            return "Sorry, the assistant is temporarily unavailable. Please try again.";
+            return "Sorry, I can't help with that! Try asking about our menu or modifications.";
         }
 
         String text = extractTextFromGeminiResponse(response.body());
         if (text == null || text.isBlank()) {
-            return "I’m not sure how to answer that yet. Try asking about sweetness, toppings, or drink recommendations.";
+            return "I’m not sure how to answer that. Try asking about sweetness, toppings, or drink recommendations.";
         }
 
         return text.trim();
@@ -80,6 +80,7 @@ public class GeminiChatService {
         sb.append("If the user asks for a recommendation, suggest 1-3 real options.\n");
         sb.append("If the user asks about sweetness, explain simply.\n");
         sb.append("If the user asks about toppings, recommend from the real toppings list.\n\n");
+        sb.append("Do not use markdown or any special formatting.\n\n");
 
         sb.append("MENU ITEMS:\n");
         appendMenuItems(sb, request.getMenuItems());

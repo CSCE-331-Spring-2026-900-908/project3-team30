@@ -24,6 +24,7 @@ import Translator from './components/Translator';
 import CustomizePage from './pages/CustomizePage';
 import HappyHourAndManageMenuPage from './pages/HappyHourAndManageMenuPage';
 import HappyHourPage from './pages/HappyHourPage';
+import AccessibilityToolbox from './components/AccessibilityToolbox';
 
 
 export default function App() {
@@ -31,10 +32,12 @@ export default function App() {
 
   const hideTranslator =
     location.pathname === '/menu-board';
+    
 
   return (
     <>
       {!hideTranslator && <Translator />}
+      {!hideTranslator && <AccessibilityToolbox />}
 
       <Routes>
         <Route path="/home" element={<PortalPage />} />
