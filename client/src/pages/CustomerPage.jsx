@@ -151,23 +151,24 @@ export default function CustomerPage() {
             {menuItems.map((item) => (
               <button
                 key={item.name}
-                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
+                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                disabled={item.available === false}
                 onClick={() =>
                   navigate(`/customize/${encodeURIComponent(item.name)}`, {
                     state: { item, activeHappyHour }
                   })
                 }
                 //karla file 3 
-                // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
-                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
-                disabled={item.available === false}
-                //onClick={() => setSelectedItem(item)}
-                //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
-              onClick={() =>
-                        navigate(`/customize/${encodeURIComponent(item.name)}`, {
-                          state: { item }
-                        })
-                      }
+              //   // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
+              //   className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+              //   disabled={item.available === false}
+              //   //onClick={() => setSelectedItem(item)}
+              //   //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
+              // onClick={() =>
+              //           navigate(`/customize/${encodeURIComponent(item.name)}`, {
+              //             state: { item }
+              //           })
+              //         }
               //karla
               // onClick={() => {
               //     if (item.available === false) return;
