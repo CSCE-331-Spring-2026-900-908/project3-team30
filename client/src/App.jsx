@@ -37,7 +37,7 @@ export default function App() {
   return (
     <>
       {!hideTranslator && <Translator />}
-      <AccessibilityToolbox />
+      {!hideTranslator && <AccessibilityToolbox />}
 
       <Routes>
         <Route path="/home" element={<PortalPage />} />
