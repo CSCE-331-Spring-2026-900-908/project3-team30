@@ -31,7 +31,8 @@ public class GoogleSecurityConfig {
                     "/api/alterations",
                     "/api/orders/**",
                     "/api/kitchen/**",
-                    "/api/chat"
+                    "/api/chat", 
+                    "/api/happy-hour/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
