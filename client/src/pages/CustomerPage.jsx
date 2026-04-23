@@ -79,8 +79,8 @@ export default function CustomerPage() {
               <button
                 key={item.name}
                 //karla file 3 
-                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
-                // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
+                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
                 disabled={item.available === false}
                 //onClick={() => setSelectedItem(item)}
                 //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}

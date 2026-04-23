@@ -52,7 +52,7 @@ public class MenuService {
             mi.image_url,
             NOT EXISTS (
                 SELECT 1
-                FROM menu_ingredients_junction mti
+                FROM menu_to_ingredients mti
                 JOIN ingredients_alterations ia
                     ON ia.name = mti.ingredient
                 WHERE mti.menu_item = mi.name
