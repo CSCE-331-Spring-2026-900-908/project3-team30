@@ -1,8 +1,8 @@
 ALTER TABLE menu_items
 ADD COLUMN IF NOT EXISTS image_url TEXT;
 
-UPDATE menu_items SET image_url = '/images/BlackTea.png'       WHERE name = 'Small Black Milk Tea';
-UPDATE menu_items SET image_url = '/images/BlackTea.png'       WHERE name = 'Large Black Milk Tea';
+UPDATE menu_items SET image_url = '/images/BlackMilkTea.png'       WHERE name = 'Small Black Milk Tea';
+UPDATE menu_items SET image_url = '/images/BlackMilkTea.png'       WHERE name = 'Large Black Milk Tea';
 
 UPDATE menu_items SET image_url = '/images/GreenMilkTea.png'   WHERE name = 'Small Green Milk Tea';
 UPDATE menu_items SET image_url = '/images/GreenMilkTea.png'   WHERE name = 'Large Green Milk Tea';
