@@ -109,72 +109,143 @@ export default function CustomerPage() {
       }
     >
       {activeHappyHour && (
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
-            border: '1px solid #e8c4cc',
-            borderRadius: '18px',
-            padding: '1rem 1.5rem',
-            display: 'flex',
-            alignItems: 'center',
+        <div style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%)',
+          borderRadius: '20px',
+          marginBottom: '1.25rem',
+          padding: '0',
+          border: '1.5px solid #f0a8b8',
+          boxShadow: '0 4px 24px rgba(210, 100, 130, 0.15)',
+        }}>
+
+          {/* Decorative circles */}
+          <div style={{
+            position: 'absolute', top: '-28px', right: '-28px',
+            width: '120px', height: '120px', borderRadius: '50%',
+            background: 'rgba(255,255,255,0.25)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: '-40px', right: '80px',
+            width: '90px', height: '90px', borderRadius: '50%',
+            background: 'rgba(255,255,255,0.18)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute', top: '-20px', left: '200px',
+            width: '60px', height: '60px', borderRadius: '50%',
+            background: 'rgba(255,255,255,0.2)',
+            pointerEvents: 'none',
+          }} />
+
+          <div style={{
+            position: 'relative',
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '20px 28px',
             gap: '1rem',
-            boxShadow: '0 4px 16px rgba(211, 106, 106, 0.12)',
-            marginBottom: '0.5rem'
-          }}
-        >
-          <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🧋</span>
+            flexWrap: 'wrap',
+          }}>
 
-          <div>
-            <p
-              style={{
-                margin: 0,
-                fontWeight: 700,
-                fontSize: '1rem',
-                color: '#7d4a55',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase'
-              }}
-            >
-              Happy Hour
-            </p>
+            {/* Left: title + time */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{
+                fontFamily: '"DM Sans", sans-serif',
+                fontSize: '22px',
+                fontWeight: 800,
+                color: '#b5365a',
+                letterSpacing: '-0.02em',
+                lineHeight: 1,
+              }}>
+                Happy Hour
+              </span>
+              <span style={{
+                fontFamily: '"DM Sans", sans-serif',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#c26080',
+                letterSpacing: '0.01em',
+              }}>
+                {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
+              </span>
+            </div>
 
-            <p style={{ margin: 0, fontSize: '0.92rem', color: '#9b5d6e' }}>
-              {Math.round(activeHappyHour.percentOff * 100)}% off all drinks |{' '}
-              {formatTime(activeHappyHour.startTime)} –{' '}
-              {formatTime(activeHappyHour.endTime)}
-            </p>
-          </div>
-
-          <div
-            style={{
-              marginLeft: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem'
-            }}
-          >
-            <span
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#d36a6a',
-                boxShadow: '0 0 0 3px rgba(211,106,106,0.25)',
-                display: 'inline-block',
-                animation: 'pulse 2s infinite'
-              }}
-            />
-
-            <span
-              style={{
-                fontSize: '0.82rem',
+            {/* Center: big discount */}
+            <div style={{
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', gap: '1px',
+            }}>
+              <span style={{
+                fontFamily: '"DM Sans", sans-serif',
+                fontSize: '42px',
+                fontWeight: 900,
+                color: '#b5365a',
+                lineHeight: 1,
+                letterSpacing: '-0.03em',
+              }}>
+                {Math.round(activeHappyHour.percentOff * 100)}% off
+              </span>
+              <span style={{
+                fontFamily: '"DM Sans", sans-serif',
+                fontSize: '12px',
                 fontWeight: 600,
-                color: '#d36a6a',
-                letterSpacing: '0.03em'
-              }}
-            >
-              Active Now
-            </span>
+                color: '#c26080',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}>
+                all drinks
+              </span>
+            </div>
+
+            {/* Right: time remaining */}
+              {(() => {
+                const now = new Date();
+                const end = activeHappyHour.endTime;
+                let endH, endM;
+                if (Array.isArray(end)) {
+                  [endH, endM] = end;
+                } else {
+                  [endH, endM] = end.split(':').map(Number);
+                }
+                const endDate = new Date();
+                endDate.setHours(endH, endM, 0, 0);
+                const diffMs = endDate - now;
+                const diffMins = Math.max(0, Math.floor(diffMs / 60000));
+                const hours = Math.floor(diffMins / 60);
+                const mins = diffMins % 60;
+
+                return (
+                  <div style={{
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: '2px',
+                    flexShrink: 0,
+                  }}>
+                    <span style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: '28px',
+                      fontWeight: 900,
+                      color: '#b5365a',
+                      letterSpacing: '-0.03em',
+                      lineHeight: 1,
+                    }}>
+                      {hours > 0 ? `${hours}h ${String(mins).padStart(2, '0')}m` : `${mins}m`}
+                    </span>
+                    <span style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      color: '#c26080',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                    }}>
+                      remaining
+                    </span>
+                  </div>
+                );
+              })()}
+
           </div>
         </div>
       )}
