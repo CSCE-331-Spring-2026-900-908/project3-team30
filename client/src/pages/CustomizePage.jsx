@@ -61,8 +61,8 @@ export default function CustomizePage() {
   const runningTotal = discountedBase + allMods.reduce((s, m) => s + m.price, 0);
 
   return (
-    <div className="card">
-      <h2>{item.name}</h2>
+    <div className="card" aria-labelledby="customize-title">
+      <h2 id="customize-title">{item.name}</h2>
 
       {/* Price — only change from original */}
       {activeHappyHour ? (
@@ -84,22 +84,23 @@ export default function CustomizePage() {
           <input
             type="checkbox"
             onChange={() => toggleMod(mod)}
+            aria-label={`${mod.name} topping. Adds ${currency(mod.price)}`}
           />
           {mod.name} (+{currency(mod.price)})
         </label>
       ))}
 
-      <select value={sweetness} onChange={e => setSweetness(e.target.value)}>
+      <select aria-label="Select sweetness level" value={sweetness} onChange={e => setSweetness(e.target.value)}>
         {alterations.sweetness.map(opt => (
           <option key={opt.name}>{opt.name}</option>
         ))}
       </select>
 
       {/* Total — only change from original */}
-      <p>Total: {currency(runningTotal)}</p>
+      <p role="status" aria-live="polite">Total: {currency(runningTotal)}</p>
 
-      <button onClick={addToCart}>Add to Cart</button>
-      <button onClick={() => navigate("/customer")}>Cancel</button>
+      <button type="button" onClick={addToCart} aria-label={`Add ${item.name} to cart. Total ${currency(runningTotal)}`}>Add to Cart</button>
+      <button type="button" onClick={() => navigate("/customer")} aria-label="Cancel customization and return to customer menu">Cancel</button>
     </div>
   );
 }
