@@ -745,3 +745,93 @@ html {
   background: #222 !important;
   color: #fff !important;
 }
+
+
+/* ------------Menu Categories CSS-------------- */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.category-tab {
+  border: 1px solid #e8c4cc;
+  background: #fff7f8;
+  color: #7d4a55;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.category-tab:hover,
+.category-tab.active {
+  background: #d36a6a;
+  color: white;
+  border-color: #d36a6a;
+}
+
+/* ----- Cashier weird cards fix ---- */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 0.65rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
+
+  border: 1px solid #e8c4cc;
+  border-radius: 14px;
+  background: #fff7f8;
+
+  color: #1b1b2f;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item span {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.menu-item strong {
+  white-space: nowrap;
+  color: #7d4a55;
+}
+
+.menu-item:hover {
+  border-color: #d36a6a;
+  background: #fff0f3;
+}
+
+.menu-item.selected {
+  background: #d36a6a;
+  border-color: #d36a6a;
+  color: white;
+}
+
+.menu-item.selected strong {
+  color: white;
+}
+
+.menu-item.unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+@media (max-width: 850px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
