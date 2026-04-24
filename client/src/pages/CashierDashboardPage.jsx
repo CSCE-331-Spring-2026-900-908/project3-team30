@@ -15,6 +15,7 @@ export default function CashierDashboardPage() {
       <section className="quick-grid two-col">
         <Link className="quick-link card" to="/cashier/menu">Menu</Link>
         <Link className="quick-link card" to="/cashier/checkout">Checkout</Link>
+        <Link className="quick-link card" to>Log out</Link>
       </section>
     </PageShell>
   );
