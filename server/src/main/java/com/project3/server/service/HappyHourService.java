@@ -176,7 +176,8 @@ public class HappyHourService {
                 AND percent_off IS NOT NULL
                 """;
 
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.ZoneId zone = java.time.ZoneId.of("America/Chicago");
+        java.time.LocalDateTime now = java.time.LocalDateTime.now(zone);
         String todayName = now.getDayOfWeek().toString().charAt(0)
                 + now.getDayOfWeek().toString().substring(1).toLowerCase(); 
         java.time.LocalTime currentTime = now.toLocalTime();

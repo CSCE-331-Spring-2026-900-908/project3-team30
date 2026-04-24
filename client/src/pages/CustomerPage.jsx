@@ -100,44 +100,79 @@ export default function CustomerPage() {
 
   return (
     <PageShell
-      title="Boba Shop"
-      subtitle="Place your order"
+      title="Drinks in the Dreamhouse"
+      subtitle="Sip something fabulous."
       actions={
         <Link className="primary-button inline" to="/customer/checkout">
-          Checkout ({items.length})
+          View Cart ({items.length})
         </Link>
       }
     >
       {activeHappyHour && (
-        <div style={{
-          background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
-          border: '1px solid #e8c4cc',
-          borderRadius: '18px',
-          padding: '1rem 1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          boxShadow: '0 4px 16px rgba(211, 106, 106, 0.12)',
-          marginBottom: '0.5rem',
-        }}>
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
+            border: '1px solid #e8c4cc',
+            borderRadius: '18px',
+            padding: '1rem 1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '0 4px 16px rgba(211, 106, 106, 0.12)',
+            marginBottom: '0.5rem'
+          }}
+        >
           <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🧋</span>
+
           <div>
-            <p style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: '#7d4a55', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            <p
+              style={{
+                margin: 0,
+                fontWeight: 700,
+                fontSize: '1rem',
+                color: '#7d4a55',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+              }}
+            >
               Happy Hour
             </p>
+
             <p style={{ margin: 0, fontSize: '0.92rem', color: '#9b5d6e' }}>
-              {Math.round(activeHappyHour.percentOff * 100)}% off all drinks  |  {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
+              {Math.round(activeHappyHour.percentOff * 100)}% off all drinks |{' '}
+              {formatTime(activeHappyHour.startTime)} –{' '}
+              {formatTime(activeHappyHour.endTime)}
             </p>
           </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span style={{
-              width: '8px', height: '8px', borderRadius: '50%',
-              background: '#d36a6a',
-              boxShadow: '0 0 0 3px rgba(211,106,106,0.25)',
-              display: 'inline-block',
-              animation: 'pulse 2s infinite',
-            }} />
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#d36a6a', letterSpacing: '0.03em' }}>
+
+          <div
+            style={{
+              marginLeft: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem'
+            }}
+          >
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#d36a6a',
+                boxShadow: '0 0 0 3px rgba(211,106,106,0.25)',
+                display: 'inline-block',
+                animation: 'pulse 2s infinite'
+              }}
+            />
+
+            <span
+              style={{
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                color: '#d36a6a',
+                letterSpacing: '0.03em'
+              }}
+            >
               Active Now
             </span>
           </div>
@@ -147,69 +182,73 @@ export default function CustomerPage() {
       <div className="split-layout">
         <div className="card">
           <h2>Menu Items</h2>
+
           <div className="menu-grid">
             {menuItems.map((item) => (
               <button
                 key={item.name}
-                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                type="button"
+                className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''
+                  } ${item.available === false ? 'unavailable' : ''}`}
                 disabled={item.available === false}
                 onClick={() =>
                   navigate(`/customize/${encodeURIComponent(item.name)}`, {
                     state: { item, activeHappyHour }
                   })
                 }
-                //karla file 3 
-              //   // className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
-              //   className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
-              //   disabled={item.available === false}
-              //   //onClick={() => setSelectedItem(item)}
-              //   //onClick={() => navigate(`/customize/${encodeURIComponent(item.name)}`)}
-              // onClick={() =>
-              //           navigate(`/customize/${encodeURIComponent(item.name)}`, {
-              //             state: { item }
-              //           })
-              //         }
-              //karla
-              // onClick={() => {
-              //     if (item.available === false) return;
-              //     navigate(`/customize/${encodeURIComponent(item.name)}`, {
-              //       state: { item }
-              //     });
-              //   }}
               >
                 <div className="menu-item-content">
                   <img
                     src={item.image}
-                    alt={item.name}
+                    alt={`${item.name} drink`}
                     className="menu-item-image"
                   />
-                  <span>{item.name}</span>
-                  {activeHappyHour ? (
-                    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ textDecoration: 'line-through', color: '#9b7880', fontSize: '0.85rem' }}>
-                        {currency(item.price)}
-                      </span>
-                      <strong style={{ color: '#d36a6a' }}>
-                        {currency(applyDiscount(item.price, activeHappyHour.percentOff))}
-                      </strong>
+
+                  <div className="menu-item-details">
+                    <div>
+                      <h3>{item.name}</h3>
+                      <p>Customize sweetness, ice, and toppings.</p>
                     </div>
-                  ) : (
-                    <strong>{currency(item.price)}</strong>
-                  )}
+
+                    <div className="menu-item-footer">
+                      {activeHappyHour ? (
+                        <div className="price-stack">
+                          <span className="original-price">
+                            {currency(item.price)}
+                          </span>
+
+                          <strong className="sale-price">
+                            {currency(
+                              applyDiscount(
+                                item.price,
+                                activeHappyHour.percentOff
+                              )
+                            )}
+                          </strong>
+                        </div>
+                      ) : (
+                        <strong>{currency(item.price)}</strong>
+                      )}
+
+                      <span className="customize-label">Customize</span>
+                    </div>
+                  </div>
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        <ChatAssistant
-          menuItems={menuItems}
-          alterations={alterations}
-          selectedItem={selectedItem}
-          selectedMods={selectedMods}
-          selectedSweetness={selectedSweetness}
-          cart={items}
-        />
+        <div className="card">
+          <ChatAssistant
+            menuItems={menuItems}
+            alterations={alterations}
+            selectedItem={selectedItem}
+            selectedMods={selectedMods}
+            selectedSweetness={selectedSweetness}
+            cart={items}
+          />
+        </div>
       </div>
     </PageShell>
   );
