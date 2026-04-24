@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import FormField from '../components/FormField';
+import Modal from '../components/Modal';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
@@ -35,10 +36,12 @@ export default function MenuPage() {
   const [selectedIce, setSelectedIce] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [addedItemName, setAddedItemName] = useState('');
+  const { addItem, items } = useCart();
+  const navigate = useNavigate();
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const { addItem, items } = useCart();
   const pollRef = useRef(null);
 
   useEffect(() => {
@@ -74,7 +77,6 @@ export default function MenuPage() {
         setLoading(false);
       }
     }
-
     loadData();
 
     // Poll every 60 seconds so prices update if happy hour starts/ends mid-shift
@@ -113,7 +115,6 @@ export default function MenuPage() {
 
   const addToOrder = () => {
     if (!selectedItem) return;
-
     const mods = [
       ...selectedMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
@@ -129,12 +130,21 @@ export default function MenuPage() {
       modifications: mods,
       totalPrice: discountedBase + mods.reduce((sum, mod) => sum + mod.price, 0),
     });
-
+    setAddedItemName(selectedItem.name);
+    setShowModal(true);
     setSelectedMods([]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleViewCart = () => {
+    setShowModal(false);
+    navigate('/cashier/checkout');
+  };
   const categories = useMemo(() => {
     const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'seasonal'];
 
@@ -237,7 +247,6 @@ export default function MenuPage() {
               ))}
             </div>
           </div>
-
           <div className="card">
             <h2>Customize Drink</h2>
             {!selectedItem ? (
@@ -252,7 +261,6 @@ export default function MenuPage() {
                     </span>
                   )}
                 </p>
-
                 <div className="checkbox-list">
                   {alterations.default.map((mod) => (
                     <label key={mod.name} className="checkbox-row">
@@ -267,7 +275,6 @@ export default function MenuPage() {
                     </label>
                   ))}
                 </div>
-
                 <FormField label="Sweetness">
                   <select
                     aria-label="Select sweetness level"
@@ -285,7 +292,6 @@ export default function MenuPage() {
                     ))}
                   </select>
                 </FormField>
-
                 <FormField label="Ice">
                   <select
                     aria-label="Select ice level"
@@ -303,7 +309,6 @@ export default function MenuPage() {
                     ))}
                   </select>
                 </FormField>
-
                 <div className="inline-actions">
                   <span className="pill" role="status" aria-live="polite">Current total: {currency(runningTotal)}</span>
                   <button
@@ -320,6 +325,18 @@ export default function MenuPage() {
           </div>
         </div>
       )}
+
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <p className="modal-message">{addedItemName} added to cart</p>
+        <div className="modal-actions">
+          <button className="secondary-button" onClick={handleCloseModal}>
+            Back to menu
+          </button>
+          <button className="primary-button" onClick={handleViewCart}>
+            View cart
+          </button>
+        </div>
+      </Modal>
     </PageShell>
   );
 }
