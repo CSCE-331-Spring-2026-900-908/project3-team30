@@ -25,7 +25,8 @@ public class WomanService {
                             wikibase:sitelinks ?links .
                     FILTER(?links > 2)
                     }
-                    LIMIT 500
+                    LIMIT 1
+                    OFFSET %d
                 }
                 OPTIONAL { ?person schema:description ?description .
                             FILTER(LANG(?description) = "en") }
@@ -33,9 +34,8 @@ public class WomanService {
                     bd:serviceParam wikibase:language "en" .
                 }
                 }
-                LIMIT 1
-                OFFSET %d
-            """.formatted((int)(Math.random() * 500));
+                
+            """.formatted((int)(Math.random() * 10000));
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
