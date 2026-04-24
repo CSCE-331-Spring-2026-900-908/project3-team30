@@ -199,114 +199,116 @@ export default function MenuPage() {
     )}
 
       {!loading && !error && (
-        <div className="split-layout">
-          <div className="card">
-            <h2>Menu Items</h2>
-            <div className="category-tabs">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  className={`category-tab ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-            <div className="menu-grid">
-              {filteredMenuItems.map((item) => (
-                <button
-                  key={item.name}
-                  className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
-                  disabled={item.available === false}
-                  onClick={() => {
-                    if (item.available === false) return;
-                    setSelectedItem(item);
-                  }}
-                >
-                  <span>{item.name}</span>
-                  <strong>{currency(getItemPrice(item))}</strong>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="card">
-            <h2>Customize Drink</h2>
-            {!selectedItem ? (
-              <p className="subtle">Select a menu item to add modifications.</p>
-            ) : (
-              <>
-                <p>
-                  <strong>{selectedItem.name}</strong> · {currency(getItemPrice(selectedItem))}
-                  {activeHappyHour && (
-                    <span className="subtle" style={{ marginLeft: '0.5rem', textDecoration: 'line-through' }}>
-                      {currency(selectedItem.price)}
-                    </span>
-                  )}
-                </p>
-
-                <div className="checkbox-list">
-                  {alterations.default.map((mod) => (
-                    <label key={mod.name} className="checkbox-row">
-                      <input
-                        type="checkbox"
-                        checked={selectedMods.some((entry) => entry.name === mod.name)}
-                        onChange={() => toggleMod(mod)}
-                      />
-                      <span>{mod.name}</span>
-                      <span>{currency(mod.price)}</span>
-                    </label>
-                  ))}
-                </div>
-
-                <FormField label="Sweetness">
-                  <select
-                    value={selectedSweetness?.name ?? ''}
-                    onChange={(e) =>
-                      setSelectedSweetness(
-                        alterations.sweetness.find((option) => option.name === e.target.value) ?? null
-                      )
-                    }
-                  >
-                    {alterations.sweetness.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-
-                <FormField label="Ice">
-                  <select
-                    value={selectedIce?.name ?? ''}
-                    onChange={(e) =>
-                      setSelectedIce(
-                        alterations.ice.find((option) => option.name === e.target.value) ?? null
-                      )
-                    }
-                  >
-                    {alterations.ice.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </FormField>
-
-                <div className="inline-actions">
-                  <span className="pill">Current total: {currency(runningTotal)}</span>
+        <div className="cashier-menu">
+          <div className="split-layout">
+            <div className="card">
+              <h2>Menu Items</h2>
+              <div className="category-tabs">
+                {categories.map((category) => (
                   <button
-                    className="primary-button inline"
-                    onClick={addToOrder}
-                    disabled={!selectedItem || selectedItem.available === false}
+                    key={category}
+                    type="button"
+                    className={`category-tab ${selectedCategory === category ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(category)}
                   >
-                    Add to order
+                    {category}
                   </button>
-                </div>
-              </>
-            )}
+                ))}
+              </div>
+              <div className="menu-grid">
+                {filteredMenuItems.map((item) => (
+                  <button
+                    key={item.name}
+                    className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                    disabled={item.available === false}
+                    onClick={() => {
+                      if (item.available === false) return;
+                      setSelectedItem(item);
+                    }}
+                  >
+                    <span>{item.name}</span>
+                    <strong>{currency(getItemPrice(item))}</strong>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="card">
+              <h2>Customize Drink</h2>
+              {!selectedItem ? (
+                <p className="subtle">Select a menu item to add modifications.</p>
+              ) : (
+                <>
+                  <p>
+                    <strong>{selectedItem.name}</strong> · {currency(getItemPrice(selectedItem))}
+                    {activeHappyHour && (
+                      <span className="subtle" style={{ marginLeft: '0.5rem', textDecoration: 'line-through' }}>
+                        {currency(selectedItem.price)}
+                      </span>
+                    )}
+                  </p>
+
+                  <div className="checkbox-list">
+                    {alterations.default.map((mod) => (
+                      <label key={mod.name} className="checkbox-row">
+                        <input
+                          type="checkbox"
+                          checked={selectedMods.some((entry) => entry.name === mod.name)}
+                          onChange={() => toggleMod(mod)}
+                        />
+                        <span>{mod.name}</span>
+                        <span>{currency(mod.price)}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <FormField label="Sweetness">
+                    <select
+                      value={selectedSweetness?.name ?? ''}
+                      onChange={(e) =>
+                        setSelectedSweetness(
+                          alterations.sweetness.find((option) => option.name === e.target.value) ?? null
+                        )
+                      }
+                    >
+                      {alterations.sweetness.map((option) => (
+                        <option key={option.name} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  </FormField>
+
+                  <FormField label="Ice">
+                    <select
+                      value={selectedIce?.name ?? ''}
+                      onChange={(e) =>
+                        setSelectedIce(
+                          alterations.ice.find((option) => option.name === e.target.value) ?? null
+                        )
+                      }
+                    >
+                      {alterations.ice.map((option) => (
+                        <option key={option.name} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  </FormField>
+
+                  <div className="inline-actions">
+                    <span className="pill">Current total: {currency(runningTotal)}</span>
+                    <button
+                      className="primary-button inline"
+                      onClick={addToOrder}
+                      disabled={!selectedItem || selectedItem.available === false}
+                    >
+                      Add to order
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
