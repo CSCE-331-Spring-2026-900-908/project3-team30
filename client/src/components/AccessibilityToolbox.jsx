@@ -15,7 +15,7 @@ const styles = `
   .a11y-toolbox { font-family: 'DM Sans', sans-serif; }
 
   .a11y-trigger {
-    position: fixed; bottom: 28px; left: 28px;
+    position: fixed; bottom: 7.5rem; left: 1.25rem;
     width: 60px; height: 60px; border-radius: 50%;
     background: #1a1f5e; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
@@ -27,7 +27,7 @@ const styles = `
   .a11y-trigger svg { width: 28px; height: 28px; fill: white; }
 
   .a11y-panel {
-    position: fixed; bottom: 100px; left: 28px;
+    position: fixed; bottom: 13rem; left: 1.25rem;
     background: #ffffff; border-radius: 20px;
     box-shadow: 0 16px 60px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
     width: 400px; overflow: hidden; z-index: 9998;

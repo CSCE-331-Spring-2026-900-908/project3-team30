@@ -154,6 +154,8 @@ export default function Translator() {
           className="language-card-header"
           onClick={() => setOpen((prev) => !prev)}
           type="button"
+          title="Translate page"
+          aria-label="Translate page" 
         >
           Translate
         </button>

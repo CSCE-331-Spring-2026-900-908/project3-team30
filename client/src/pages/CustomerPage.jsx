@@ -196,9 +196,8 @@ export default function CustomerPage() {
         </div>
       )}
 
-      <div className="split-layout">
-        <div className="card">
-          <h2>Menu Items</h2>
+      <div className="card customer-menu-card">
+        <h2>Menu Items</h2>
           <div className="category-tabs">
             {categories.map((category) => (
               <button
@@ -267,8 +266,6 @@ export default function CustomerPage() {
             ))}
           </div>
         </div>
-
-        <div className="card">
           <ChatAssistant
             menuItems={menuItems}
             alterations={alterations}
@@ -277,8 +274,6 @@ export default function CustomerPage() {
             selectedSweetness={selectedSweetness}
             cart={items}
           />
-        </div>
-      </div>
     </PageShell>
   );
 }
