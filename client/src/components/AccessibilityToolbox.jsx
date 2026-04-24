@@ -75,6 +75,7 @@ const styles = `
   }
   .a11y-section-icon svg { width: 18px; height: 18px; fill: #1a1f5e; }
   .a11y-section-title { font-size: 14px; font-weight: 600; color: #1a1f5e; }
+  .a11y-help-text { font-size: 12px; line-height: 1.4; color: #6b7280; text-align: left; }
 
   .a11y-toggle-section {
     width: 100%;
@@ -85,6 +86,33 @@ const styles = `
   .a11y-toggle-section:hover {
     border-color: #4a52c8;
     background: #2b3b8b;
+  }
+
+  .a11y-clickable-section {
+    border: 1.5px solid #e8eaf2;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .a11y-clickable-section:hover {
+    border-color: #4a52c8;
+    background: #eef0fa;
+  }
+
+  .a11y-active {
+    border-color: #1a1f5e;
+    background: #eef0fa;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* ── Text size controls ── */
@@ -161,7 +189,74 @@ export default function AccessibilityToolbox() {
   const [highContrast, setHighContrast] = useState(() => {
     return localStorage.getItem('a11y-high-contrast') === 'true';
   });
+  // Screen reader should always start OFF when the website loads.
+  const [screenReader, setScreenReader] = useState(false);
+  const lastSpokenRef = useRef({ text: '', time: 0 });
 
+  const getReadableText = (element) => {
+    if (!element) return '';
+
+    const labelledBy = element.getAttribute('aria-labelledby');
+    const labelledByText = labelledBy
+      ? labelledBy
+          .split(/\s+/)
+          .map((id) => document.getElementById(id)?.innerText || '')
+          .join(' ')
+      : '';
+
+    const labelText =
+      element.id && element.tagName !== 'BUTTON'
+        ? document.querySelector(`label[for="${element.id}"]`)?.innerText
+        : '';
+
+    const visibleTextWithoutIcons = (() => {
+      const clone = element.cloneNode(true);
+      clone
+        .querySelectorAll(
+          'svg, .material-symbols-outlined, .material-icons, [aria-hidden=\"true\"], [data-screen-reader-ignore=\"true\"]'
+        )
+        .forEach((node) => node.remove());
+
+      return clone.innerText || clone.textContent || '';
+    })();
+
+    const directText =
+      element.getAttribute('data-screen-reader-text') ||
+      element.getAttribute('aria-label') ||
+      labelledByText ||
+      labelText ||
+      element.getAttribute('alt') ||
+      element.getAttribute('title') ||
+      element.getAttribute('placeholder') ||
+      visibleTextWithoutIcons ||
+      element.value ||
+      '';
+
+    return String(directText).replace(/\s+/g, ' ').trim();
+  };
+
+  const speak = (text) => {
+    if (!screenReader || !text || !window.speechSynthesis) return;
+
+    const cleanText = String(text).replace(/\s+/g, ' ').trim();
+    if (!cleanText) return;
+
+    const now = Date.now();
+    if (
+      lastSpokenRef.current.text === cleanText &&
+      now - lastSpokenRef.current.time < 1200
+    ) {
+      return;
+    }
+
+    lastSpokenRef.current = { text: cleanText, time: now };
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  };
 
   if (location.pathname.startsWith('/menu-board')) return null;
 
@@ -178,6 +273,67 @@ export default function AccessibilityToolbox() {
     document.body.classList.toggle('accessibility-high-contrast', highContrast);
     localStorage.setItem('a11y-high-contrast', highContrast);
   }, [highContrast]);
+
+  // Apply screen reader mode setting
+  useEffect(() => {
+    document.body.classList.toggle('accessibility-screen-reader-mode', screenReader);
+    localStorage.setItem('a11y-screen-reader', screenReader);
+
+    if (screenReader) {
+      speak('Screen reader mode on');
+    } else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+  }, [screenReader]);
+
+  // Read buttons, links, inputs, selects, and clickable cards when they receive focus or are clicked
+  useEffect(() => {
+    if (!screenReader) return undefined;
+
+    const selector = 'button, a, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])';
+
+    const handleRead = (event) => {
+      const target = event.target.closest?.(selector);
+      if (!target || toolboxRef.current?.contains(target)) return;
+
+      let text = getReadableText(target);
+
+      if (target.tagName === 'INPUT' && target.type === 'checkbox') {
+        text = `${text || target.name || 'Checkbox'} ${target.checked ? 'checked' : 'not checked'}`;
+      }
+
+      if (target.tagName === 'SELECT') {
+        const selected = target.options[target.selectedIndex]?.text || '';
+        text = `${text || 'Dropdown'} ${selected}`;
+      }
+
+      if (target.getAttribute('aria-pressed')) {
+        text = `${text} ${target.getAttribute('aria-pressed') === 'true' ? 'selected' : 'not selected'}`;
+      }
+
+      if (target.disabled || target.getAttribute('aria-disabled') === 'true') {
+        text = `${text} disabled`;
+      }
+
+      speak(text);
+    };
+
+    document.addEventListener('focusin', handleRead);
+    document.addEventListener('click', handleRead);
+
+    return () => {
+      document.removeEventListener('focusin', handleRead);
+      document.removeEventListener('click', handleRead);
+    };
+  }, [screenReader]);
+
+  // Announce page title when route changes
+  useEffect(() => {
+    if (!screenReader) return;
+
+    const pageTitle = document.querySelector('h1')?.innerText || document.title || 'Page loaded';
+    speak(pageTitle);
+  }, [location.pathname, screenReader]);
 
   // Close panel on outside click
   useEffect(() => {
@@ -200,6 +356,7 @@ export default function AccessibilityToolbox() {
         onClick={() => setOpen((prev) => !prev)}
         type="button"
         aria-label="Accessibility options"
+        aria-expanded={open}
         title="Accessibility options"
       >
         <svg viewBox="0 0 24 24">
@@ -222,7 +379,7 @@ export default function AccessibilityToolbox() {
                 <div className="a11y-header-sub">Customize your experience</div>
               </div>
             </div>
-            <button className="a11y-close" onClick={() => setOpen(false)}>✕</button>
+            <button type="button" className="a11y-close" aria-label="Close accessibility options" onClick={() => setOpen(false)}>✕</button>
           </div>
 
           {/* Body */}
@@ -278,8 +435,14 @@ export default function AccessibilityToolbox() {
               </div>
             </div>
 
-            {/* ── Screen Reader (coming soon) ── */}
-            <div className="a11y-section">
+            {/* ── Screen Reader ── */}
+            <button
+              type="button"
+              className={`a11y-section a11y-clickable-section ${screenReader ? 'a11y-active' : ''}`}
+              onClick={() => setScreenReader((prev) => !prev)}
+              aria-pressed={screenReader}
+              aria-label={`Screen reader mode ${screenReader ? 'on' : 'off'}. Turn on, then tab or click through the page to hear controls read aloud.`}
+            >
               <div className="a11y-section-header">
                 <div className="a11y-section-left">
                   <div className="a11y-section-icon">
@@ -287,14 +450,20 @@ export default function AccessibilityToolbox() {
                   </div>
                   <span className="a11y-section-title">Screen Reader</span>
                 </div>
+                <span className="a11y-size-value">{screenReader ? 'On' : 'Off'}</span>
               </div>
-            </div>
+              <p className="a11y-help-text">
+                Turn on, then use Tab or click controls to hear buttons, links, fields, and menu items read aloud.
+              </p>
+            </button>
 
             {/* ── Color Contrast (coming soon) ── */}
             <button
               type="button"
-              className={`a11y-section a11y-clickable-section ${highContrast ? 'a11y-contrast-active' : ''}`}
+              className={`a11y-section a11y-clickable-section ${highContrast ? 'a11y-active' : ''}`}
               onClick={() => setHighContrast((prev) => !prev)}
+              aria-pressed={highContrast}
+              aria-label={`Color contrast mode ${highContrast ? 'on' : 'off'}`}
             >
               <div className="a11y-section-header">
                 <div className="a11y-section-left">
@@ -309,6 +478,9 @@ export default function AccessibilityToolbox() {
             </button>
 
           </div>{/* end body */}
+          <div className="sr-only" aria-live="polite">
+            Screen reader mode is {screenReader ? 'on' : 'off'}.
+          </div>
 
 
         </div>

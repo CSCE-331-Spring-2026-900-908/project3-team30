@@ -139,7 +139,7 @@ export default function MenuPage() {
       title="Menu"
       subtitle="Cashier ordering menu"
       actions={
-        <Link className="primary-button inline" to="/cashier/checkout">
+        <Link className="primary-button inline" to="/cashier/checkout" aria-label={`Go to checkout. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
           Checkout ({items.length})
         </Link>
       }
@@ -148,7 +148,10 @@ export default function MenuPage() {
       {error && <p className="error-text">{error}</p>}
 
       {activeHappyHour && (
-      <div style={{
+      <div
+        role="status"
+        aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
+        style={{
         background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
         border: '1px solid #e8c4cc',
         borderRadius: '18px',
@@ -191,8 +194,11 @@ export default function MenuPage() {
               {menuItems.map((item) => (
                 <button
                   key={item.name}
+                  type="button"
                   className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
                   disabled={item.available === false}
+                  aria-pressed={selectedItem?.name === item.name}
+                  aria-label={`${item.name}. ${currency(getItemPrice(item))}. ${item.available === false ? 'Unavailable' : 'Select to customize'}`}
                   onClick={() => {
                     if (item.available === false) return;
                     setSelectedItem(item);
@@ -227,6 +233,7 @@ export default function MenuPage() {
                         type="checkbox"
                         checked={selectedMods.some((entry) => entry.name === mod.name)}
                         onChange={() => toggleMod(mod)}
+                        aria-label={`${mod.name} topping. Adds ${currency(mod.price)}`}
                       />
                       <span>{mod.name}</span>
                       <span>{currency(mod.price)}</span>
@@ -236,6 +243,7 @@ export default function MenuPage() {
 
                 <FormField label="Sweetness">
                   <select
+                    aria-label="Select sweetness level"
                     value={selectedSweetness?.name ?? ''}
                     onChange={(e) =>
                       setSelectedSweetness(
@@ -253,6 +261,7 @@ export default function MenuPage() {
 
                 <FormField label="Ice">
                   <select
+                    aria-label="Select ice level"
                     value={selectedIce?.name ?? ''}
                     onChange={(e) =>
                       setSelectedIce(
@@ -269,11 +278,12 @@ export default function MenuPage() {
                 </FormField>
 
                 <div className="inline-actions">
-                  <span className="pill">Current total: {currency(runningTotal)}</span>
+                  <span className="pill" role="status" aria-live="polite">Current total: {currency(runningTotal)}</span>
                   <button
                     className="primary-button inline"
                     onClick={addToOrder}
                     disabled={!selectedItem || selectedItem.available === false}
+                    aria-label={selectedItem ? `Add ${selectedItem.name} to order. Current total ${currency(runningTotal)}` : 'Add selected drink to order'}
                   >
                     Add to order
                   </button>

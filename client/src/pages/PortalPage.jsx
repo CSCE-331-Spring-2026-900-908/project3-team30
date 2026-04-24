@@ -65,30 +65,30 @@ export default function PortalPage() {
 
             <div className="portal-stack">
                 <section className="quick-grid three-col">
-                    <button className="quick-link card portal-card" onClick={handleManagerLogin}>
-                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">badge</span>
+                    <button className="quick-link card portal-card" onClick={handleManagerLogin} aria-label="Manager">
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no" aria-hidden="true">badge</span>
                         <span>Manager</span>
                     </button>
 
-                    <button className="quick-link card portal-card" onClick={handleCashierLogin}>
-                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">point_of_sale</span>
+                    <button className="quick-link card portal-card" onClick={handleCashierLogin} aria-label="Cashier">
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no" aria-hidden="true">point_of_sale</span>
                         <span>Cashier</span>
                     </button>
 
-                    <button className="quick-link card portal-card" onClick={handleCustomer}>
-                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">shopping_bag</span>
+                    <button className="quick-link card portal-card" onClick={handleCustomer} aria-label="Customer">
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no" aria-hidden="true">shopping_bag</span>
                         <span>Customer</span>
                     </button>
                 </section>
 
                 <section className="quick-grid two-col portal-bottom">
-                    <button className="quick-link card portal-card" onClick={handleMenuBoard}>
-                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">menu_book</span>
+                    <button className="quick-link card portal-card" onClick={handleMenuBoard} aria-label="Menu">
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no" aria-hidden="true">menu_book</span>
                         <span>Menu</span>
                     </button>
 
-                    <button className="quick-link card portal-card" onClick={handleKitchenLogin}>
-                        <span className="material-symbols-outlined portal-icon notranslate" translate="no">kitchen</span>
+                    <button className="quick-link card portal-card" onClick={handleKitchenLogin} aria-label="Kitchen">
+                        <span className="material-symbols-outlined portal-icon notranslate" translate="no" aria-hidden="true">kitchen</span>
                         <span>Kitchen</span>
                     </button>
                 </section>

@@ -35,16 +35,16 @@ export default function CheckoutPage() {
     <PageShell
       title="Checkout"
       subtitle="Web version of checkout.fxml"
-      actions={<Link className="ghost-link" to="/cashier/menu">Back to menu</Link>}
+      actions={<Link className="ghost-link" to="/cashier/menu" aria-label="Back to cashier menu">Back to menu</Link>}
     >
       <div className="card">
         <h2>Current Cart</h2>
         {items.length === 0 ? (
           <p className="subtle">No items in cart.</p>
         ) : (
-          <div className="cart-list">
+          <div className="cart-list" role="list" aria-label="Current cart items">
             {items.map((item, index) => (
-              <div className="cart-item" key={`${item.name}-${index}`}>
+              <div className="cart-item" key={`${item.name}-${index}`} role="listitem">
                 <div>
                   <strong>{item.name}</strong>
                   <p className="subtle">
@@ -53,7 +53,11 @@ export default function CheckoutPage() {
                 </div>
                 <div className="inline-actions">
                   <span>{currency(item.totalPrice)}</span>
-                  <button className="secondary-button inline" onClick={() => removeItem(index)}>
+                  <button
+                    className="secondary-button inline"
+                    onClick={() => removeItem(index)}
+                    aria-label={`Remove ${item.name} from cart`}
+                  >
                     Remove
                   </button>
                 </div>
@@ -64,14 +68,15 @@ export default function CheckoutPage() {
       </div>
 
       <div className="page-actions">
-        <span className="pill">Subtotal: {currency(subtotal)}</span>
-        <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
+        <span className="pill" role="status" aria-live="polite">Subtotal: {currency(subtotal)}</span>
+        <button className="secondary-button" disabled={!items.length} onClick={cancelOrder} aria-label="Cancel current order">
           Cancel Order
         </button>
         <button
           className="primary-button inline"
           disabled={!items.length}
           onClick={() => processOrder('Cash')}
+          aria-label={`Process cash payment for ${currency(subtotal)}`}
         >
           Cash
         </button>
@@ -79,12 +84,13 @@ export default function CheckoutPage() {
           className="primary-button inline"
           disabled={!items.length}
           onClick={() => processOrder('Card')}
+          aria-label={`Process card payment for ${currency(subtotal)}`}
         >
           Process Card Payment
         </button>
       </div>
 
-      {message ? <p className="success-text">{message}</p> : null}
+      {message ? <p className="success-text" role="status" aria-live="polite">{message}</p> : null}
     </PageShell>
   );
 }
