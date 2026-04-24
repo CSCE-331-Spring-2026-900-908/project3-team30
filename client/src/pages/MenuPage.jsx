@@ -54,6 +54,14 @@ export default function MenuPage() {
         ]);
 
         setMenuItems(menuData);
+        if (selectedItem) {
+        const refreshedSelected = menuData.find((item) => item.name === selectedItem.name);
+        if (!refreshedSelected || refreshedSelected.available === false) {
+          setSelectedItem(null);
+        } else {
+          setSelectedItem(refreshedSelected);
+        }
+      }
         setAlterations(alterationData);
         setSelectedSweetness(alterationData.sweetness?.[0] ?? null);
         setSelectedIce(alterationData.ice?.[0] ?? null);
@@ -183,8 +191,12 @@ export default function MenuPage() {
               {menuItems.map((item) => (
                 <button
                   key={item.name}
-                  className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''}`}
-                  onClick={() => setSelectedItem(item)}
+                  className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
+                  disabled={item.available === false}
+                  onClick={() => {
+                    if (item.available === false) return;
+                    setSelectedItem(item);
+                  }}
                 >
                   <span>{item.name}</span>
                   <strong>{currency(getItemPrice(item))}</strong>
@@ -258,7 +270,11 @@ export default function MenuPage() {
 
                 <div className="inline-actions">
                   <span className="pill">Current total: {currency(runningTotal)}</span>
-                  <button className="primary-button inline" onClick={addToOrder}>
+                  <button
+                    className="primary-button inline"
+                    onClick={addToOrder}
+                    disabled={!selectedItem || selectedItem.available === false}
+                  >
                     Add to order
                   </button>
                 </div>
