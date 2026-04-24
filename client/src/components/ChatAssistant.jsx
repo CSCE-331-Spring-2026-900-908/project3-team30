@@ -70,96 +70,58 @@ export default function ChatAssistant({
   ];
 
   return (
-  <div className="card">
-    <h2>Drink Assistant</h2>
-    <p className="subtle">
-      Ask for recommendations, toppings, sweetness, or help deciding.
-    </p>
+    <div className="card">
+      <h2>Drink Assistant</h2>
+      <p className="subtle">
+        Ask for recommendations, toppings, sweetness, or help deciding.
+      </p>
 
-    <div
-      role="log"
-      aria-live="polite"
-      aria-label="Drink assistant conversation"
-      style={{
-        maxHeight: '280px',
-        overflowY: 'auto',
-        marginBottom: '12px',
-        border: '1px solid #e5e7eb',
-        borderRadius: '12px',
-        padding: '12px',
-        background: '#fff'
-      }}
-    >
-      {messages.map((msg, index) => (
-        <div
-          key={index}
-          style={{
-            marginBottom: '10px',
-            padding: '10px',
-            borderRadius: '12px',
-            background: msg.role === 'assistant' ? '#f3f4f6' : '#dbeafe'
+      <div className="chat-message-list">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`chat-message ${msg.role === 'assistant' ? 'assistant-message' : 'user-message'}`}
+          >
+            <strong>{msg.role === 'assistant' ? 'Assistant' : 'You'}:</strong>{' '}
+            {msg.content}
+          </div>
+        ))}
+        {loading && <p className="subtle">Assistant is typing...</p>}
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+        {quickPrompts.map((prompt) => (
+          <button
+            key={prompt}
+            type="button"
+            className="secondary-button inline"
+            onClick={() => sendMessage(prompt)}
+            disabled={loading}
+          >
+            {prompt}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask about drinks, toppings, sweetness..."
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') sendMessage();
           }}
-        >
-          <strong>{msg.role === 'assistant' ? 'Assistant' : 'You'}:</strong>{' '}
-          {msg.content}
-        </div>
-      ))}
-
-      {loading && (
-        <p className="subtle" role="status">
-          Assistant is typing...
-        </p>
-      )}
-    </div>
-
-    <div
-      aria-label="Suggested questions"
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        marginBottom: '12px'
-      }}
-    >
-      {quickPrompts.map((prompt) => (
+          style={{ flex: 1 }}
+        />
         <button
-          key={prompt}
           type="button"
-          className="secondary-button inline"
-          onClick={() => sendMessage(prompt)}
+          className="primary-button inline"
+          onClick={() => sendMessage()}
           disabled={loading}
         >
-          {prompt}
+          Send
         </button>
-      ))}
+      </div>
     </div>
-
-    {/* Screen Reader Support: Label for input and live region for messages */}
-    <div style={{ display: 'flex', gap: '8px' }}>
-      <label className="sr-only" htmlFor="drink-assistant-input">
-        Ask the drink assistant a question
-      </label>
-
-      <input
-        id="drink-assistant-input"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask about drinks, toppings, sweetness..."
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') sendMessage();
-        }}
-        style={{ flex: 1 }}
-      />
-
-      <button
-        type="button"
-        className="primary-button inline"
-        onClick={() => sendMessage()}
-        disabled={loading}
-      >
-        Send
-      </button>
-    </div>
-  </div>
-);
+  );
 }

@@ -574,3 +574,174 @@ html {
   background: #fff199 !important;
   border-color: #ffd84d !important;
 }
+
+/* ----High contrast for translate button---- */
+.accessibility-high-contrast .translate-reset,
+.accessibility-high-contrast .language-card-header {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+/* Dropdown body */
+.accessibility-high-contrast .language-card-body {
+  background: #111 !important;
+  color: #fff !important;
+}
+/* Select dropdown */
+.accessibility-high-contrast .translate-select {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* ---------- High Contrast: site-wide fixes with pink accents ---------- */
+
+.accessibility-high-contrast,
+.accessibility-high-contrast body,
+.accessibility-high-contrast .app-shell,
+.accessibility-high-contrast .centered-page,
+.accessibility-high-contrast .menu-board-container {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+/* Main cards stay dark */
+.accessibility-high-contrast .card,
+.accessibility-high-contrast .menu-item,
+.accessibility-high-contrast .split-layout > *,
+.accessibility-high-contrast .chat-panel,
+.accessibility-high-contrast .chat-box,
+.accessibility-high-contrast .assistant-card,
+.accessibility-high-contrast .menu-board-toppings,
+.accessibility-high-contrast .menu-board-weather {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* Keep pink accent areas */
+.accessibility-high-contrast .pill,
+.accessibility-high-contrast .happy-hour-banner {
+  background: #2a1118 !important;
+  color: #ffb6c1 !important;
+  border-color: #ffb6c1 !important;
+}
+
+/* Main text readable */
+.accessibility-high-contrast h1,
+.accessibility-high-contrast h2,
+.accessibility-high-contrast h3,
+.accessibility-high-contrast label,
+.accessibility-high-contrast .menu-item-details h3 {
+  color: #fff !important;
+}
+
+/* Secondary text can stay pink */
+.accessibility-high-contrast p,
+.accessibility-high-contrast span,
+.accessibility-high-contrast .subtle,
+.accessibility-high-contrast .menu-item-details p,
+.accessibility-high-contrast .field span,
+.accessibility-high-contrast .stat-label {
+  color: #ffb6c1 !important;
+}
+
+/* Inputs and dropdowns */
+.accessibility-high-contrast input,
+.accessibility-high-contrast select,
+.accessibility-high-contrast textarea,
+.accessibility-high-contrast .pin-display {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast option {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+/* Table hover fix */
+.accessibility-high-contrast table,
+.accessibility-high-contrast th,
+.accessibility-high-contrast td {
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast tr:hover,
+.accessibility-high-contrast tbody tr:hover {
+  background: #2a1118 !important;
+  color: #fff !important;
+}
+
+/* Buttons: primary pink, selected/accessibility yellow */
+.accessibility-high-contrast .primary-button,
+.accessibility-high-contrast .pin-button,
+.accessibility-high-contrast .customize-label {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .secondary-button {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+
+/* Chat */
+.accessibility-high-contrast .chat-suggestion,
+.accessibility-high-contrast .suggestion-button,
+.accessibility-high-contrast .quick-question {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .chat-message,
+.accessibility-high-contrast .assistant-message,
+.accessibility-high-contrast .user-message {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+/* Translate button */
+.accessibility-high-contrast .translate-reset,
+.accessibility-high-contrast .language-card-header {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.chat-message-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.assistant-message {
+  background: #f3f4f6;
+  color: #2a2530;
+}
+
+.user-message {
+  background: #dbeafe;
+  color: #2a2530;
+}
+
+.accessibility-high-contrast .chat-message-list {
+  background: #111 !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .assistant-message,
+.accessibility-high-contrast .user-message {
+  background: #222 !important;
+  color: #fff !important;
+}
