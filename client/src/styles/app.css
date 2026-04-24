@@ -465,6 +465,18 @@ html {
   50%       { box-shadow: 0 0 0 6px rgba(211, 106, 106, 0.08); }
 }
 
+/* Chatbot SR Support */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /*------------ High Contrast Mode ------------ */
 /*added the !important rule so it can overwrite everything for high contrast */
