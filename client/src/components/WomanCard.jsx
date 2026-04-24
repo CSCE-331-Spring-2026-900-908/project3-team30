@@ -266,9 +266,9 @@ export default function WomanCard() {
               <h3 className="barbie-card-name">{person?.name}</h3>
               <div className="barbie-card-divider">✦</div>
               <p className="barbie-card-fact">{person?.fact}</p>
-              <button className="barbie-card-btn" onClick={fetchWoman} disabled={loading}>
+              {/* <button className="barbie-card-btn" onClick={fetchWoman} disabled={loading}>
                 Meet Another Icon
-              </button>
+              </button> */}
             </div>
           </>
         )}
