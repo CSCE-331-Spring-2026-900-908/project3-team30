@@ -76,26 +76,11 @@ export default function ChatAssistant({
         Ask for recommendations, toppings, sweetness, or help deciding.
       </p>
 
-      <div
-        style={{
-          maxHeight: '280px',
-          overflowY: 'auto',
-          marginBottom: '12px',
-          border: '1px solid #e5e7eb',
-          borderRadius: '12px',
-          padding: '12px',
-          background: '#fff'
-        }}
-      >
+      <div className="chat-message-list">
         {messages.map((msg, index) => (
           <div
             key={index}
-            style={{
-              marginBottom: '10px',
-              padding: '10px',
-              borderRadius: '12px',
-              background: msg.role === 'assistant' ? '#f3f4f6' : '#dbeafe'
-            }}
+            className={`chat-message ${msg.role === 'assistant' ? 'assistant-message' : 'user-message'}`}
           >
             <strong>{msg.role === 'assistant' ? 'Assistant' : 'You'}:</strong>{' '}
             {msg.content}
