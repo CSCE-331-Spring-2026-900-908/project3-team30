@@ -39,6 +39,7 @@ export default function CustomerPage() {
   const [selectedSweetness, setSelectedSweetness] = useState('100% Sugar');
   const [selectedIce, setSelectedIce] = useState('100% Ice');
   const [activeHappyHour, setActiveHappyHour] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const { addItem, items } = useCart();
   const navigate = useNavigate();
@@ -97,6 +98,20 @@ export default function CustomerPage() {
     setSelectedSweetness('100% Sugar');
     setSelectedIce('100% Ice');
   };
+
+  const categories = useMemo(() => {
+    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'seasonal'];
+
+    return categoryOrder.filter(
+      (category) =>
+        category === 'All' || menuItems.some((item) => item.category === category)
+    );
+  }, [menuItems]);
+
+  const filteredMenuItems = useMemo(() => {
+    if (selectedCategory === 'All') return menuItems;
+    return menuItems.filter((item) => item.category === selectedCategory);
+  }, [menuItems, selectedCategory]);
 
   return (
     <PageShell
@@ -182,9 +197,20 @@ export default function CustomerPage() {
       <div className="split-layout">
         <div className="card">
           <h2>Menu Items</h2>
-
+          <div className="category-tabs">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className={`category-tab ${selectedCategory === category ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
           <div className="menu-grid">
-            {menuItems.map((item) => (
+            {filteredMenuItems.map((item) => (
               <button
                 key={item.name}
                 type="button"
