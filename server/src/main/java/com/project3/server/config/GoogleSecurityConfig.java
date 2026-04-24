@@ -13,6 +13,7 @@ public class GoogleSecurityConfig {
 
     @Value("${FRONTEND_BASE_URL}")
     private String frontendBaseUrl;
+    // private final String frontendBaseUrl = "http://localhost:5173";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -23,6 +24,7 @@ public class GoogleSecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/api/woman",
                     "/oauth2/**",
                     "/login/**",
                     "/error",
@@ -31,7 +33,8 @@ public class GoogleSecurityConfig {
                     "/api/alterations",
                     "/api/orders/**",
                     "/api/kitchen/**",
-                    "/api/chat"
+                    "/api/chat", 
+                    "/api/happy-hour/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

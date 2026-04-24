@@ -26,7 +26,7 @@ export default function LoginPage() {
         return;
       }
       
-      const fallback = user.role === 'manager' ? '/manager' : '/cashier';
+      const fallback = user.role === 'manager' ? '/manager' : '/cashier/menu';
       navigate(location.state?.from?.pathname || fallback, { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -37,9 +37,9 @@ export default function LoginPage() {
   return (
     <div className="centered-page">
       <div className="login-card card">
-        <p className="eyebrow">JavaFX → React</p>
+        <p className="eyebrow"></p>
         <h1>Employee Login</h1>
-        <p className="subtle">Use mock PINs 1111, 2222, or 3333.</p>
+        <p className="subtle"></p>
         <div className="pin-display">{pin || '••••'}</div>
         {error ? <p className="error-text">{error}</p> : <p className="subtle">Enter your 4-digit employee PIN.</p>}
         <div className="pin-grid">

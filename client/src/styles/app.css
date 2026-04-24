@@ -310,14 +310,92 @@ tr:hover { background: #fff8fa; }
   color: #b86a6a;
 }
 /* for customer menu */
-.menu-item-image {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 10px;
+.menu-item {
+  background: #fffafd;
+  border: 1px solid #f0d8dd;
+  border-radius: 22px;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  display: block;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
+.menu-item:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(121, 84, 96, 0.14);
+  border-color: #d36a6a;
+}
+
+.menu-item:focus-visible {
+  outline: 3px solid #ff4fb8;
+  outline-offset: 3px;
+}
+
+.menu-item-content {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.menu-item-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+}
+
+.menu-item-details {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 1rem 1rem;
+}
+
+.menu-item-details h3 {
+  margin: 0;
+  color: #2a2530;
+  font-size: 1.05rem;
+}
+
+.menu-item-details p {
+  margin: 0.25rem 0 0;
+  color: #6f5f67;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.menu-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.customize-label {
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: #f4e4e8;
+  color: #7d2f5a;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #8b7078;
+  font-size: 0.85rem;
+}
+
+.sale-price {
+  color: #b83b6f;
+}
+
+.price-stack {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
 
 
 /*----------------------Translator Style----------------------- */
@@ -425,4 +503,380 @@ html {
 
 .notranslate {
   translate: no;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(211, 106, 106, 0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(211, 106, 106, 0.08); }
+}
+
+/* Chatbot SR Support */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*------------ High Contrast Mode ------------ */
+/*added the !important rule so it can overwrite everything for high contrast */
+.accessibility-high-contrast {
+  background: #000 !important;
+  color: #fff !important;
+}
+.accessibility-high-contrast .card,
+.accessibility-high-contrast .menu-item,
+.accessibility-high-contrast .menu-board-toppings,
+.accessibility-high-contrast .menu-board-weather,
+.accessibility-high-contrast .a11y-panel,
+.accessibility-high-contrast .a11y-section {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+.accessibility-high-contrast input {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+.accessibility-high-contrast .a11y-section-title,
+.accessibility-high-contrast .a11y-title,
+.accessibility-high-contrast .a11y-subtitle,
+.accessibility-high-contrast .a11y-value {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-section-icon,
+.accessibility-high-contrast .a11y-trigger,
+.accessibility-high-contrast .a11y-close {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-section-icon svg,
+.accessibility-high-contrast .a11y-trigger svg {
+  fill: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-title {
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-icon {
+  background: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-icon svg {
+  fill: #ffd84d !important;
+}
+.accessibility-high-contrast .a11y-range {
+  background: #fff !important;
+}
+.accessibility-high-contrast .a11y-range::-webkit-slider-thumb {
+  background: #ffd84d !important;
+}
+.accessibility-high-contrast .a11y-range::-moz-range-thumb {
+  background: #ffd84d !important;
+}
+.a11y-reset-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.accessibility-high-contrast .a11y-reset-link {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-size-value {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-panel {
+  background: #000 !important;
+  color: #fff !important;
+
+  border: none !important; /* remove actual border */
+  box-shadow: 0 0 0 2px #ffffff !important; /* fake border */
+}
+.accessibility-high-contrast .a11y-trigger {
+  background: #ffd84d !important;
+
+  border: none !important;
+  box-shadow: 0 0 0 2px #ffffff !important;
+}
+/* Hover feedback for clickable accessibility sections */
+.a11y-toggle-section:hover,
+.a11y-clickable-section:hover {
+  background: #eef0fa !important;
+  border-color: #2b3078 !important;
+}
+/* Hover feedback while high contrast is ON */
+.accessibility-high-contrast .a11y-toggle-section:hover,
+.accessibility-high-contrast .a11y-clickable-section:hover {
+  background: #fff199 !important;
+  border-color: #ffd84d !important;
+}
+
+/* ----High contrast for translate button---- */
+.accessibility-high-contrast .translate-reset,
+.accessibility-high-contrast .language-card-header {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+/* Dropdown body */
+.accessibility-high-contrast .language-card-body {
+  background: #111 !important;
+  color: #fff !important;
+}
+/* Select dropdown */
+.accessibility-high-contrast .translate-select {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* ---------- High Contrast: site-wide fixes with pink accents ---------- */
+
+.accessibility-high-contrast,
+.accessibility-high-contrast body,
+.accessibility-high-contrast .app-shell,
+.accessibility-high-contrast .centered-page,
+.accessibility-high-contrast .menu-board-container {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+/* Main cards stay dark */
+.accessibility-high-contrast .card,
+.accessibility-high-contrast .menu-item,
+.accessibility-high-contrast .split-layout > *,
+.accessibility-high-contrast .chat-panel,
+.accessibility-high-contrast .chat-box,
+.accessibility-high-contrast .assistant-card,
+.accessibility-high-contrast .menu-board-toppings,
+.accessibility-high-contrast .menu-board-weather {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* Keep pink accent areas */
+.accessibility-high-contrast .pill,
+.accessibility-high-contrast .happy-hour-banner {
+  background: #2a1118 !important;
+  color: #ffb6c1 !important;
+  border-color: #ffb6c1 !important;
+}
+
+/* Main text readable */
+.accessibility-high-contrast h1,
+.accessibility-high-contrast h2,
+.accessibility-high-contrast h3,
+.accessibility-high-contrast label,
+.accessibility-high-contrast .menu-item-details h3 {
+  color: #fff !important;
+}
+
+/* Secondary text can stay pink */
+.accessibility-high-contrast p,
+.accessibility-high-contrast span,
+.accessibility-high-contrast .subtle,
+.accessibility-high-contrast .menu-item-details p,
+.accessibility-high-contrast .field span,
+.accessibility-high-contrast .stat-label {
+  color: #ffb6c1 !important;
+}
+
+/* Inputs and dropdowns */
+.accessibility-high-contrast input,
+.accessibility-high-contrast select,
+.accessibility-high-contrast textarea,
+.accessibility-high-contrast .pin-display {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast option {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+/* Table hover fix */
+.accessibility-high-contrast table,
+.accessibility-high-contrast th,
+.accessibility-high-contrast td {
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast tr:hover,
+.accessibility-high-contrast tbody tr:hover {
+  background: #2a1118 !important;
+  color: #fff !important;
+}
+
+/* Buttons: primary pink, selected/accessibility yellow */
+.accessibility-high-contrast .primary-button,
+.accessibility-high-contrast .pin-button,
+.accessibility-high-contrast .customize-label {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .secondary-button {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+
+/* Chat */
+.accessibility-high-contrast .chat-suggestion,
+.accessibility-high-contrast .suggestion-button,
+.accessibility-high-contrast .quick-question {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .chat-message,
+.accessibility-high-contrast .assistant-message,
+.accessibility-high-contrast .user-message {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+/* Translate button */
+.accessibility-high-contrast .translate-reset,
+.accessibility-high-contrast .language-card-header {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
+
+.chat-message-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.assistant-message {
+  background: #f3f4f6;
+  color: #2a2530;
+}
+
+.user-message {
+  background: #dbeafe;
+  color: #2a2530;
+}
+
+.accessibility-high-contrast .chat-message-list {
+  background: #111 !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .assistant-message,
+.accessibility-high-contrast .user-message {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+
+/* ------------Menu Categories CSS-------------- */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.category-tab {
+  border: 1px solid #e8c4cc;
+  background: #fff7f8;
+  color: #7d4a55;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.category-tab:hover,
+.category-tab.active {
+  background: #d36a6a;
+  color: white;
+  border-color: #d36a6a;
+}
+
+/* ----- Cashier weird cards fix ---- */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 0.65rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
+
+  border: 1px solid #e8c4cc;
+  border-radius: 14px;
+  background: #fff7f8;
+
+  color: #1b1b2f;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item span {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.menu-item strong {
+  white-space: nowrap;
+  color: #7d4a55;
+}
+
+.menu-item:hover {
+  border-color: #d36a6a;
+  background: #fff0f3;
+}
+
+.menu-item.selected {
+  background: #d36a6a;
+  border-color: #d36a6a;
+  color: white;
+}
+
+.menu-item.selected strong {
+  color: white;
+}
+
+.menu-item.unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+@media (max-width: 850px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
 }
