@@ -22,16 +22,22 @@ import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
 import Translator from './components/Translator';
 import CustomizePage from './pages/CustomizePage';
+import HappyHourAndManageMenuPage from './pages/HappyHourAndManageMenuPage';
+import HappyHourPage from './pages/HappyHourPage';
+import AccessibilityToolbox from './components/AccessibilityToolbox';
+
 
 export default function App() {
   const location = useLocation();
 
   const hideTranslator =
     location.pathname === '/menu-board';
+    
 
   return (
     <>
       {!hideTranslator && <Translator />}
+      {!hideTranslator && <AccessibilityToolbox />}
 
       <Routes>
         <Route path="/home" element={<PortalPage />} />
@@ -52,11 +58,19 @@ export default function App() {
         />
         <Route
           path="/manager/menu"
+          element={<ProtectedRoute roles={['manager']}><HappyHourAndManageMenuPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu/menu"
           element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
         />
         <Route
-          path="/manager/menu/:itemName/ingredients"
+          path="/manager/menu//menu:itemName/ingredients"
           element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu/happyhour"
+          element={<ProtectedRoute roles={['manager']}><HappyHourPage /></ProtectedRoute>}
         />
         <Route
           path="/manager/inventory"
@@ -99,7 +113,7 @@ export default function App() {
         <Route path="/customer/checkout" element={<CustomerCheckoutPage />} />
 
         <Route path="/customize/:name" element={<CustomizePage />} />
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<Navigate to="/home" replace />} /> 
       </Routes>
     </>
   );

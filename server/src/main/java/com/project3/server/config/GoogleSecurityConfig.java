@@ -24,6 +24,7 @@ public class GoogleSecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/api/woman",
                     "/oauth2/**",
                     "/login/**",
                     "/error",
@@ -32,7 +33,8 @@ public class GoogleSecurityConfig {
                     "/api/alterations",
                     "/api/orders/**",
                     "/api/kitchen/**",
-                    "/api/chat"
+                    "/api/chat", 
+                    "/api/happy-hour/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
