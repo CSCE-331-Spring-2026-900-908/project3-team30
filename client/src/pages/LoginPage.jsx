@@ -26,7 +26,7 @@ export default function LoginPage() {
         return;
       }
       
-      const fallback = user.role === 'manager' ? '/manager' : '/cashier';
+      const fallback = user.role === 'manager' ? '/manager' : '/cashier/menu';
       navigate(location.state?.from?.pathname || fallback, { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed');

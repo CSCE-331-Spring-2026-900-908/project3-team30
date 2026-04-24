@@ -59,7 +59,7 @@ export default function PortalPage() {
 
     return (
         <main className="app-shell portal-page">
-            <p className="eyebrow">PROJECT 3 GUI</p>
+            <p className="eyebrow">Drinks in the Dreamhouse</p>
             <h1>Welcome</h1>
             <p className="subtle portal-subtitle">Select an interface to continue</p>
 
