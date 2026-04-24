@@ -275,6 +275,16 @@ tr:hover { background: #fff8fa; }
   margin: 0;
 }
 
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
 @media (max-width: 960px) {
   .split-layout, .stat-grid, .quick-grid, .quick-grid.two-col, .quick-grid.three-col { grid-template-columns: 1fr; }
   .topbar { flex-direction: column; }

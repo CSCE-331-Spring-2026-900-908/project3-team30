@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import FormField from '../components/FormField';
+import Modal from '../components/Modal';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
@@ -15,25 +16,20 @@ export default function MenuPage() {
   const [selectedIce, setSelectedIce] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const [showModal, setShowModal] = useState(false);
+  const [addedItemName, setAddedItemName] = useState('');
   const { addItem, items } = useCart();
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   api.getMenuItems().then(setMenuItems);
-  //   api.getAlterations().then(setAlterations);
-  // }, []);
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
         setError('');
-
         const menuData = await api.getMenuItems();
         const alterationData = await api.getAlterations();
-
         console.log('menuData:', menuData);
         console.log('alterationData:', alterationData);
-
         setMenuItems(menuData);
         setAlterations(alterationData);
         setSelectedSweetness(alterationData.sweetness?.[0] ?? null);
@@ -45,13 +41,11 @@ export default function MenuPage() {
         setLoading(false);
       }
     }
-
     loadData();
   }, []);
 
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
-
     return (
       selectedItem.price +
       selectedMods.reduce((sum, mod) => sum + mod.price, 0) +
@@ -70,13 +64,11 @@ export default function MenuPage() {
 
   const addToOrder = () => {
     if (!selectedItem) return;
-
     const mods = [
       ...selectedMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
-
     addItem({
       name: selectedItem.name,
       basePrice: selectedItem.price,
@@ -84,10 +76,20 @@ export default function MenuPage() {
       modifications: mods,
       totalPrice: selectedItem.price + mods.reduce((sum, mod) => sum + mod.price, 0),
     });
-
+    setAddedItemName(selectedItem.name);
+    setShowModal(true);
     setSelectedMods([]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleViewCart = () => {
+    setShowModal(false);
+    navigate('/cashier/checkout');
   };
 
   return (
@@ -102,7 +104,6 @@ export default function MenuPage() {
     >
       {loading && <p>Loading menu...</p>}
       {error && <p className="error-text">{error}</p>}
-
       {!loading && !error && (
         <div className="split-layout">
           <div className="card">
@@ -120,7 +121,6 @@ export default function MenuPage() {
               ))}
             </div>
           </div>
-
           <div className="card">
             <h2>Customize Drink</h2>
             {!selectedItem ? (
@@ -130,7 +130,6 @@ export default function MenuPage() {
                 <p>
                   <strong>{selectedItem.name}</strong> · {currency(selectedItem.price)}
                 </p>
-
                 <div className="checkbox-list">
                   {alterations.default.map((mod) => (
                     <label key={mod.name} className="checkbox-row">
@@ -144,7 +143,6 @@ export default function MenuPage() {
                     </label>
                   ))}
                 </div>
-
                 <FormField label="Sweetness">
                   <select
                     value={selectedSweetness?.name ?? ''}
@@ -161,7 +159,6 @@ export default function MenuPage() {
                     ))}
                   </select>
                 </FormField>
-
                 <FormField label="Ice">
                   <select
                     value={selectedIce?.name ?? ''}
@@ -178,7 +175,6 @@ export default function MenuPage() {
                     ))}
                   </select>
                 </FormField>
-
                 <div className="inline-actions">
                   <span className="pill">Current total: {currency(runningTotal)}</span>
                   <button className="primary-button inline" onClick={addToOrder}>
@@ -190,6 +186,18 @@ export default function MenuPage() {
           </div>
         </div>
       )}
+
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <p className="modal-message">{addedItemName} added to cart</p>
+        <div className="modal-actions">
+          <button className="secondary-button" onClick={handleCloseModal}>
+            Back to menu
+          </button>
+          <button className="primary-button" onClick={handleViewCart}>
+            View cart
+          </button>
+        </div>
+      </Modal>
     </PageShell>
   );
 }
