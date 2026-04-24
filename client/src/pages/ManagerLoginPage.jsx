@@ -42,8 +42,7 @@ export default function ManagerLoginPage() {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const handleGoogleLogin = () => {
-    // karla : *POSSIBLE ISSUE: this path below does not match the one set up 
+  const handleGoogleLogin = () => { 
     // under authorized redirect URIS in the google website which is: 
     // /login/oauth2/code/google
     window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
