@@ -464,3 +464,101 @@ html {
   0%, 100% { box-shadow: 0 0 0 3px rgba(211, 106, 106, 0.25); }
   50%       { box-shadow: 0 0 0 6px rgba(211, 106, 106, 0.08); }
 }
+
+
+/*------------ High Contrast Mode ------------ */
+/*added the !important rule so it can overwrite everything for high contrast */
+.accessibility-high-contrast {
+  background: #000 !important;
+  color: #fff !important;
+}
+.accessibility-high-contrast .card,
+.accessibility-high-contrast .menu-item,
+.accessibility-high-contrast .menu-board-toppings,
+.accessibility-high-contrast .menu-board-weather,
+.accessibility-high-contrast .a11y-panel,
+.accessibility-high-contrast .a11y-section {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+.accessibility-high-contrast input {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+.accessibility-high-contrast .a11y-section-title,
+.accessibility-high-contrast .a11y-title,
+.accessibility-high-contrast .a11y-subtitle,
+.accessibility-high-contrast .a11y-value {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-section-icon,
+.accessibility-high-contrast .a11y-trigger,
+.accessibility-high-contrast .a11y-close {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-section-icon svg,
+.accessibility-high-contrast .a11y-trigger svg {
+  fill: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-title {
+  color: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-icon {
+  background: #000 !important;
+}
+.accessibility-high-contrast .a11y-contrast-active .a11y-section-icon svg {
+  fill: #ffd84d !important;
+}
+.accessibility-high-contrast .a11y-range {
+  background: #fff !important;
+}
+.accessibility-high-contrast .a11y-range::-webkit-slider-thumb {
+  background: #ffd84d !important;
+}
+.accessibility-high-contrast .a11y-range::-moz-range-thumb {
+  background: #ffd84d !important;
+}
+.a11y-reset-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.accessibility-high-contrast .a11y-reset-link {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-size-value {
+  color: #fff !important;
+}
+.accessibility-high-contrast .a11y-panel {
+  background: #000 !important;
+  color: #fff !important;
+
+  border: none !important; /* remove actual border */
+  box-shadow: 0 0 0 2px #ffffff !important; /* fake border */
+}
+.accessibility-high-contrast .a11y-trigger {
+  background: #ffd84d !important;
+
+  border: none !important;
+  box-shadow: 0 0 0 2px #ffffff !important;
+}
+/* Hover feedback for clickable accessibility sections */
+.a11y-toggle-section:hover,
+.a11y-clickable-section:hover {
+  background: #eef0fa !important;
+  border-color: #2b3078 !important;
+}
+/* Hover feedback while high contrast is ON */
+.accessibility-high-contrast .a11y-toggle-section:hover,
+.accessibility-high-contrast .a11y-clickable-section:hover {
+  background: #fff199 !important;
+  border-color: #ffd84d !important;
+}

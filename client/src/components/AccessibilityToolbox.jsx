@@ -76,6 +76,17 @@ const styles = `
   .a11y-section-icon svg { width: 18px; height: 18px; fill: #1a1f5e; }
   .a11y-section-title { font-size: 14px; font-weight: 600; color: #1a1f5e; }
 
+  .a11y-toggle-section {
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .a11y-toggle-section:hover {
+    border-color: #4a52c8;
+    background: #2b3b8b;
+  }
+
   /* ── Text size controls ── */
   .a11y-size-controls { display: flex; align-items: center; gap: 10px; }
   .a11y-size-btn {
@@ -147,6 +158,10 @@ export default function AccessibilityToolbox() {
   });
   const toolboxRef = useRef(null);
   const location = useLocation();
+  const [highContrast, setHighContrast] = useState(() => {
+    return localStorage.getItem('a11y-high-contrast') === 'true';
+  });
+
 
   if (location.pathname.startsWith('/menu-board')) return null;
 
@@ -157,6 +172,12 @@ export default function AccessibilityToolbox() {
     document.documentElement.style.fontSize = `${fontSize}px`;
     localStorage.setItem('a11y-font-size', fontSize);
   }, [fontSize]);
+
+  // Apply high contrast class
+  useEffect(() => {
+    document.body.classList.toggle('accessibility-high-contrast', highContrast);
+    localStorage.setItem('a11y-high-contrast', highContrast);
+  }, [highContrast]);
 
   // Close panel on outside click
   useEffect(() => {
@@ -270,16 +291,22 @@ export default function AccessibilityToolbox() {
             </div>
 
             {/* ── Color Contrast (coming soon) ── */}
-            <div className="a11y-section">
+            <button
+              type="button"
+              className={`a11y-section a11y-clickable-section ${highContrast ? 'a11y-contrast-active' : ''}`}
+              onClick={() => setHighContrast((prev) => !prev)}
+            >
               <div className="a11y-section-header">
                 <div className="a11y-section-left">
                   <div className="a11y-section-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" /></svg>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                    </svg>
                   </div>
                   <span className="a11y-section-title">Color Contrast</span>
                 </div>
               </div>
-            </div>
+            </button>
 
           </div>{/* end body */}
 
