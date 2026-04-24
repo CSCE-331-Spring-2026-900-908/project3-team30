@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
+import Modal from '../components/Modal';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
@@ -8,6 +9,7 @@ import { currency } from '../utils/format';
 export default function CheckoutPage() {
   const { items, clearCart, removeItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const processOrder = async (paymentMethod) => {
     const response = await api.processOrder({
@@ -18,6 +20,7 @@ export default function CheckoutPage() {
 
     setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
     clearCart();
+    setShowModal(true);
   };
 
   const cancelOrder = async () => {
@@ -29,12 +32,17 @@ export default function CheckoutPage() {
 
     setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
     clearCart();
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/customer');
   };
 
   return (
     <PageShell
       title="Checkout"
-      subtitle="Web version of checkout.fxml"
       actions={<Link className="ghost-link" to="/cashier/menu">Back to menu</Link>}
     >
       <div className="card">
@@ -84,7 +92,12 @@ export default function CheckoutPage() {
         </button>
       </div>
 
-      {message ? <p className="success-text">{message}</p> : null}
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <p className="modal-message">{message}</p>
+        <button className="primary-button" onClick={handleCloseModal}>
+          Back to menu
+        </button>
+      </Modal>
     </PageShell>
   );
 }

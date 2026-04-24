@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
+import Modal from '../components/Modal';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 export default function CheckoutPage() {
   const { items, clearCart, removeItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   
   const processOrder = async (paymentMethod) => {
@@ -17,9 +19,9 @@ export default function CheckoutPage() {
       total: subtotal,
       items,
     });
-
     setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
     clearCart();
+    setShowModal(true);
   };
 
   const cancelOrder = async () => {
@@ -28,15 +30,19 @@ export default function CheckoutPage() {
       items,
       orderNotes: 'Cancelled from checkout page',
     });
-
     setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
     clearCart();
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/customer');
   };
 
   return (
     <PageShell
       title="Checkout"
-      subtitle=""
       actions={<Link className="ghost-link" to="/customer">Back to menu</Link>}
     >
       <div className="card">
@@ -57,13 +63,11 @@ export default function CheckoutPage() {
                   <span>{currency(item.totalPrice)}</span>
                   <button className="secondary-button inline" onClick={() => {
                         const itemToEdit = items[index];
-
                         removeItem(index);
-
                         navigate(`/customize/${encodeURIComponent(itemToEdit.name)}`, {
                           state: {
                             item: itemToEdit,
-                            index, //for edit mode
+                            index,
                             isEdit: true
                           }
                         });
@@ -79,7 +83,6 @@ export default function CheckoutPage() {
           </div>
         )}
       </div>
-
       <div className="page-actions">
         <span className="pill">Subtotal: {currency(subtotal)}</span>
         <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
@@ -101,7 +104,12 @@ export default function CheckoutPage() {
         </button>
       </div>
 
-      {message ? <p className="success-text">{message}</p> : null}
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <p className="modal-message">{message}</p>
+        <button className="primary-button" onClick={handleCloseModal}>
+          Back to menu
+        </button>
+      </Modal>
     </PageShell>
   );
 }
