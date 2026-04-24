@@ -12,8 +12,10 @@ import java.util.List;
 @Configuration
 public class CORSConfig {
 
+// karla 
     @Value("${FRONTEND_BASE_URL}")
     private String frontendBaseUrl;
+    // private final String frontendBaseUrl = "http://localhost:5173";
 
     @Bean
     public CorsFilter corsFilter() {
