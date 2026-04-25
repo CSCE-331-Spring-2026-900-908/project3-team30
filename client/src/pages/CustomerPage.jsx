@@ -118,13 +118,15 @@ export default function CustomerPage() {
       title="Drinks in the Dreamhouse"
       subtitle="Sip something fabulous."
       actions={
-        <Link className="primary-button inline" to="/customer/checkout">
+        <Link className="primary-button inline" to="/customer/checkout" aria-label={`View cart. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
           View Cart ({items.length})
         </Link>
       }
     >
       {activeHappyHour && (
         <div
+          role="status"
+          aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
           style={{
             background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
             border: '1px solid #e8c4cc',
@@ -216,6 +218,7 @@ export default function CustomerPage() {
                 className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''
                   } ${item.available === false ? 'unavailable' : ''}`}
                 disabled={item.available === false}
+                aria-label={`${item.name}. ${activeHappyHour ? currency(applyDiscount(item.price, activeHappyHour.percentOff)) : currency(item.price)}. ${item.available === false ? 'Unavailable' : 'Customize this drink'}`}
                 onClick={() =>
                   navigate(`/customize/${encodeURIComponent(item.name)}`, {
                     state: { item, activeHappyHour }
@@ -225,7 +228,7 @@ export default function CustomerPage() {
                 <div className="menu-item-content">
                   <img
                     src={item.image}
-                    alt={`${item.name} drink`}
+                    alt={`${item.name} drink image`}
                     className="menu-item-image"
                   />
 

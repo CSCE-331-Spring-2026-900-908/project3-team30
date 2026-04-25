@@ -81,7 +81,7 @@ tr:hover { background: #fff8fa; }
 
 .portal-bottom { margin: 0 auto; width: min(65%, 840px);} /*so all buttons the same size*/
 
-/* Menu Board Styles */
+/* evie styles */
 .menu-board-container {
   min-height: 100vh;
   padding: 3rem;
@@ -238,6 +238,51 @@ tr:hover { background: #fff8fa; }
     grid-template-columns: 1fr;
     padding: 1.5rem;
   }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(121, 84, 96, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #f0dfe4;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(121, 84, 96, 0.15);
+  padding: 2rem;
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #7d4a55;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.modal-actions button {
+  flex: 1;
 }
 
 @media (max-width: 960px) {
@@ -1099,4 +1144,50 @@ html {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* --------Evies stuff--------- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(121, 84, 96, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #f0dfe4;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(121, 84, 96, 0.15);
+  padding: 2rem;
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #7d4a55;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.modal-actions button {
+  flex: 1;
 }

@@ -9,9 +9,9 @@ export default function PageShell({ title, subtitle, actions, children }) {
       <header className="topbar">
         <div>
           <h1>{title}</h1>
-          {subtitle ? <p className="subtle">{subtitle}</p> : null}
+          
         </div>
-        
+        {subtitle ? <p className="subtle">{subtitle}</p> : null}
       </header>
       {actions ? <div className="page-actions">{actions}</div> : null}
       <main>{children}</main>
