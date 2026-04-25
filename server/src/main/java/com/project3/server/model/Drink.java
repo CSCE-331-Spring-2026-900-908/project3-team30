@@ -168,4 +168,12 @@ public class Drink {
     public void setComplete(boolean comp) {
         complete = comp;
     }
+
+    /**
+     * Gets the category of this Drink
+     * @return Drink category
+     */
+    public String getCategory() {
+        return category;
+    }
 }
