@@ -50,17 +50,18 @@ public class MenuService {
             mi.name,
             mi.price,
             mi.image_url,
+            mi.category,
             NOT EXISTS (
                 SELECT 1
                 FROM menu_to_ingredients mti
                 JOIN ingredients_alterations ia
                     ON ia.name = mti.ingredient
                 WHERE mti.menu_item = mi.name
-                  AND ia.amt_in_stock < ia.min_stock_needed
+                AND ia.amt_in_stock < ia.min_stock_needed
             ) AS available
         FROM menu_items mi
         WHERE mi.category NOT IN ('ice', 'sweetness', 'toppings')
-        ORDER BY mi.name
+        ORDER BY mi.category, mi.name
         """;
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -81,7 +82,8 @@ public class MenuService {
                 Drink drink = new Drink(
                         rs.getString("name"),
                         rs.getDouble("price"),
-                        rs.getString("image_url")
+                        rs.getString("image_url"),
+                        rs.getString("category")
             );
             drink.setAvailable(rs.getBoolean("available"));
             items.add(drink);
