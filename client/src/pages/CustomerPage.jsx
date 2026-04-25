@@ -235,7 +235,7 @@ export default function CustomerPage() {
                   <div className="menu-item-details">
                     <div>
                       <h3>{item.name}</h3>
-                      <p>Customize sweetness, ice, and toppings.</p>
+                      {/* <p>Customize sweetness, ice, and toppings.</p> */}
                     </div>
 
                     <div className="menu-item-footer">
