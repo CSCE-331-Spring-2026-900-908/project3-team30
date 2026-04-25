@@ -157,6 +157,8 @@ export default function Translator() {
           title="Translate page"
           aria-label="Translate page" 
         >
+          <img className="translate-icon" src="/g_translate_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" alt="" />
+
           Translate
         </button>
 
