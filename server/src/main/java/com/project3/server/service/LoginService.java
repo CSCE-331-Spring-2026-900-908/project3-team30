@@ -38,22 +38,25 @@ public class LoginService {
             throw new Exception("Database connection failed");
         }
 
-        String sql = "SELECT is_manager FROM users WHERE code = ?";
+        String sql = "SELECT is_manager, first_name, last_name FROM users WHERE code = ?";
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, enteredCode);
 
         ResultSet rs = pstmt.executeQuery();
 
+
         if (rs.next()) {
             boolean isManager = rs.getBoolean("is_manager");
             String role = isManager ? "manager" : "cashier";
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
 
             rs.close();
             pstmt.close();
             conn.close();
-
-            return new LoginResponse(role, "Login successful");
+            System.out.println("Returning: role=" + role + ", firstName=" + firstName + ", lastName=" + lastName);
+            return new LoginResponse(role, "Login successful", firstName, lastName);
         }
 
         rs.close();
