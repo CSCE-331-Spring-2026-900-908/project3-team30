@@ -6,7 +6,7 @@ const styles = `
   .barbie-card {
     background: linear-gradient(160deg, #fff0f7 0%, #ffe4f0 100%);
     border-radius: 24px;
-    max-width: 300px;
+    max-width: 350px;
     width: 100%;
     box-shadow:
       0 0 0 3px #ff69b4,
@@ -37,7 +37,7 @@ const styles = `
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 3px;
+    margin-top: 5px;
   }
 
   .barbie-card-image-frame {

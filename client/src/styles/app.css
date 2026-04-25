@@ -165,10 +165,12 @@ tr:hover { background: #fff8fa; }
   border-radius: 24px;
   padding: 2rem;
   width: 100%;
+  max-width: 350px;
   box-shadow: 0 10px 30px rgba(121, 84, 96, 0.06);
 }
 
 .menu-board-toppings .menu-board-category {
+  text-align: center;
   font-size: 1.5rem;
 }
 
