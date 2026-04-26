@@ -431,6 +431,7 @@ tr:hover { background: #fff8fa; }
 
 .customer-menu-card {
   width: 100%;
+  padding-top: 0;
 }
 
 
@@ -516,8 +517,6 @@ tr:hover { background: #fff8fa; }
   opacity: 0.9;
 }
 
-
-
 /* Hide Google translate top banner */
 body > .skiptranslate {
   display: none !important;
@@ -559,7 +558,7 @@ html {
   50%       { box-shadow: 0 0 0 6px rgba(211, 106, 106, 0.08); }
 }
 
-/* Chatbot SR Support */
+/* ----------Chatbot SR Support------------ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -803,6 +802,7 @@ html {
   color: #000 !important;
 }
 
+/*------------------- Chatbot Button Stuff -------------------*/
 .chat-message-list {
   max-height: 280px;
   overflow-y: auto;
@@ -849,7 +849,7 @@ html {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin: 0.75rem 0 1rem;
+  margin: 0.75rem 0 1.7rem;
 }
 
 .category-tab {
@@ -938,7 +938,7 @@ html {
 .floating-chat-button {
   position: fixed;
   right: 1.25rem;
-  bottom: 1.25rem; /* EXACT spot Translate used to be */
+  bottom: 1.25rem;
   z-index: 9999;
 
   width: 3.2rem;
@@ -1219,6 +1219,7 @@ html {
   flex: 1;
 }
 
+/*----------- Anisha Kitchen Stuff ---------------*/
 .happy-hour-banner {
   position: relative;
   overflow: hidden;
@@ -1519,3 +1520,197 @@ html {
   color: #7d4a55;
 }
 
+
+/*----------- Menu Item Customization Popup (Jade) -----------*/
+.customize-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(42, 37, 48, 0.65); /*was 0.45 before*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overscroll-behavior: contain;
+}
+
+.customize-popup {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 90vh;
+  /* overflow-y: auto; */
+  padding-right: 2rem;
+  position: relative;
+
+  background: #fffafd;
+  border: 1px solid #f0d8dd;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(121, 84, 96, 0.22);
+
+  padding: 1.25rem 1.5rem 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: #b83b6f transparent;
+
+  animation: popupFromCard 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+  overflow: hidden;
+}
+.customize-close:hover {
+  background: #e6a7b3;
+}
+
+@keyframes popupFromCard {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.customize-popup-image {
+  width: 100%;
+  height: 440px;
+  object-fit: fill;
+  object-position: center;
+  background: #f8f4f6;
+
+  border-radius: 22px;
+  display: block;
+  margin-bottom: 1.25rem;
+  padding: 0.5rem;
+}
+.customize-popup-scroll{
+  max-height: calc(90vh - 4rem);
+  overflow-y: auto;
+  padding-top: 0.25rem;
+  margin-top: 0.4rem; /*change these to change scrollbar height*/
+  margin-bottom: 0.4rem;
+
+  width: calc(100% + 1.35rem);
+  padding-right: 1.5rem;
+  padding-left: 0.6rem;
+
+  touch-action: auto;
+  overscroll-behavior: contain;
+}
+.customize-popup-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.customize-popup-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.customize-popup-scroll::-webkit-scrollbar-thumb {
+  background: #a74e73;
+  border-radius: 999px;
+}
+
+.customize-popup-header {
+  padding: 0;
+}
+
+.customize-popup h2 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.7rem;
+  line-height: 1.15;
+}
+
+.customize-popup-price {
+  margin: 1rem 0 1.25rem;
+  font-weight: 700;
+  color: #b83b6f;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.customize-scroll {
+  overflow: visible;
+  max-height: none;
+  padding-top: 0.5rem;
+}
+
+.customize-section {
+  margin-top: 1.25rem;
+}
+
+.customize-section h3 {
+  margin: 0 0 0.8rem;
+}
+
+.customize-popup-footer {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0;
+  border-top: 1px solid #f0d8dd;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.secondary-button {
+  background: #f4e4e8;
+  color: #7d2f5a;
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  border: none;
+}
+
+.secondary-button:hover {
+  background: #e6a7b3;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.discount-badge {
+  background: #f4e4e8;
+  color: #9b3f65;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.customize-popup.popup-closing {
+  animation: popupClose 0.22s ease-in forwards;
+}
+
+@keyframes popupClose {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.94) translateY(18px);
+  }
+}
+
+body.modal-open {
+  position: fixed;
+  width: 100%;
+  overflow-y: hidden; /* keeps scrollbar space = no shift */
+  /* padding-right: 15px; compensate for scrollbar width */
+}
+body.modal-open .floating-chat-button {
+  right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
+}
+
+body.modal-open .chat-hint-bubble {
+  right: calc(1.1rem + var(--modal-scrollbar-offset, 0px));
+}
+
+/* adjust this selector to match your accessibility button */
+body.modal-open .a11y-trigger {
+  right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
+}

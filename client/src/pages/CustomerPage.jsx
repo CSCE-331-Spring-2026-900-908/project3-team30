@@ -7,6 +7,7 @@ import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
 import { useNavigate } from 'react-router-dom';
+import CustomizePopUp from '../components/CustomizePopUp';
 
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
@@ -187,11 +188,7 @@ export default function CustomerPage() {
                   } ${item.available === false ? 'unavailable' : ''}`}
                 disabled={item.available === false}
                 aria-label={`${item.name}. ${activeHappyHour ? currency(applyDiscount(item.price, activeHappyHour.percentOff)) : currency(item.price)}. ${item.available === false ? 'Unavailable' : 'Customize this drink'}`}
-                onClick={() =>
-                  navigate(`/customize/${encodeURIComponent(item.name)}`, {
-                    state: { item, activeHappyHour }
-                  })
-                }
+                onClick={() => setSelectedItem(item)}
               >
                 <div className="menu-item-content">
                   <img
@@ -234,6 +231,18 @@ export default function CustomerPage() {
             ))}
           </div>
         </div>
+          {selectedItem && (
+            <CustomizePopUp
+              item={selectedItem}
+              alterations={alterations}
+              activeHappyHour={activeHappyHour}
+              onClose={() => setSelectedItem(null)}
+              onAddToCart={(cartItem) => {
+                addItem(cartItem);
+                setSelectedItem(null);
+              }}
+            />
+          )}
           <ChatAssistant
             menuItems={menuItems}
             alterations={alterations}
