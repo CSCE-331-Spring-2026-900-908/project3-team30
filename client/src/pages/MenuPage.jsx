@@ -169,44 +169,23 @@ export default function MenuPage() {
       {loading && <p>Loading menu...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      {activeHappyHour && (
-      <div
-        role="status"
-        aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
-        style={{
-        background: 'linear-gradient(135deg, #f9e4e8 0%, #fdf0f2 100%)',
-        border: '1px solid #e8c4cc',
-        borderRadius: '18px',
-        padding: '1rem 1.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1rem',
-        boxShadow: '0 4px 16px rgba(211, 106, 106, 0.12)',
-        marginBottom: '0.5rem',
-      }}>
-        <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🧋</span>
-        <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: '#7d4a55', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            Happy Hour
-          </p>
-          <p style={{ margin: 0, fontSize: '0.92rem', color: '#9b5d6e' }}>
-            {Math.round(activeHappyHour.percentOff * 100)}% off all drinks  |  {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
-          </p>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{
-            width: '8px', height: '8px', borderRadius: '50%',
-            background: '#d36a6a',
-            boxShadow: '0 0 0 3px rgba(211,106,106,0.25)',
-            display: 'inline-block',
-            animation: 'pulse 2s infinite',
-          }} />
-          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#d36a6a', letterSpacing: '0.03em' }}>
-            Active Now
-          </span>
-        </div>
-      </div>
-    )}
+{activeHappyHour && (
+  <div
+    role="status"
+    aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
+    className="happy-hour-banner"
+  >
+    <div>
+      <p className="happy-hour-title">Happy Hour</p>
+      <p className="happy-hour-time">
+        {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
+      </p>
+    </div>
+    <p className="happy-hour-discount">
+      {Math.round(activeHappyHour.percentOff * 100)}% off
+    </p>
+  </div>
+)}
 
       {!loading && !error && (
         <div className="cashier-menu">

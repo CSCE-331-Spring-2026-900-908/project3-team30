@@ -1218,3 +1218,304 @@ html {
 .modal-actions button {
   flex: 1;
 }
+
+.happy-hour-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%);
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+  border: 1.5px solid #f0a8b8;
+  box-shadow: 0 4px 24px rgba(210, 100, 130, 0.15);
+}
+
+.happy-hour-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.happy-hour-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.happy-hour-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #b5365a;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.happy-hour-time {
+  font-size: 13px;
+  font-weight: 500;
+  color: #c26080;
+  letter-spacing: 0.01em;
+}
+
+.happy-hour-discount {
+  font-size: 42px;
+  font-weight: 900;
+  color: #b5365a;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.happy-hour-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c26080;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.happy-hour-remaining {
+  font-size: 28px;
+  font-weight: 900;
+  color: #b5365a;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/*KITCHEN STUFF*/
+
+.board-shell {
+          display: flex;
+          height: 100vh;
+          overflow: hidden;    
+          background: #f5f4f0;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+          width: 145px;
+          flex-shrink: 0;
+          background: #fff;
+          border-right: 0.5px solid #e0dfd8;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 60px 0;
+          gap: 60px;
+          
+        }
+        .sidebar-label {
+          font-size: 15px;
+          color: #999;
+          letter-spacing: 0.05em;
+          margin-bottom: 12px;
+          font-weight: 500;
+        }
+        .view-btn {
+          width: 100px;
+          height: 200px;
+          border-radius: 8px;
+          border: 0.5px solid #ddd;
+          background: transparent;
+          cursor: pointer;
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
+          font-size: 15px;
+          color: #999;
+        }
+        .view-btn--active {
+          background: #e6f1fb;
+          border-color: #378add;
+          color: #185fa5;
+          font-weight: 500;
+        }
+        .view-btn--done {
+          background: #eaf3de;
+          border-color: #639922;
+          color: #3b6d11;
+          font-weight: 500;
+        }
+
+        /* RAIL */
+        .rail-wrapper {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          min-height: 0; 
+        }
+        .rail-header {
+          padding: 28px 32px 24px;
+          background: #fff;
+          border-bottom: 0.5px solid #e0dfd8;
+          display: flex;
+          align-items: center;
+          font-size: 19px;
+          font-weight: 650;
+        }
+        .ticket-count {
+          font-weight: 400;
+          color: #999;
+        }
+        .ticket-rail {
+          flex: 1;
+          min-height: 0;         
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 200px));
+          grid-template-rows: repeat(2, 1fr);
+          grid-auto-flow: column;
+          gap: 12px;
+          padding: 16px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          align-content: start;
+        }
+        .empty {
+          font-size: 13px;
+          color: #bbb;
+        }
+
+        /* TICKETS */
+        .ticket {
+          min-width: 160px;
+          max-width: 200px;
+          background: #fff;
+          border-radius: 12px;
+          border: 0.5px solid #e0dfd8;
+          border-top: 3px solid #378add;
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          min-height: 0;      
+          overflow: hidden;  
+        }
+        .ticket--done {
+          border-top-color: #639922;
+        }
+        .ticket-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .order-num {
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .elapsed {
+          font-size: 11px;
+          color: #bbb;
+        }
+        .ticket-items {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          overflow-y: auto;    
+          min-height: 0;      
+        }
+        .ticket-item {
+          border-top: 0.5px solid #e0dfd8;
+          padding-top: 8px;
+          padding-bottom: 2px;
+        }
+        .item-name {
+          font-size: 13px;
+          font-weight: 500;
+
+        }
+        .mods {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-top: 4px;
+        }
+        .mod-tag {
+          font-size: 11px;
+          background: #f1efe8;
+          color: #666;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+        .ticket-footer {
+          margin-top: auto;
+          padding-top: 8px;
+          border-top: 0.5px solid #e0dfd8;
+        }
+        .action-btn {
+          width: 100%;
+          padding: 10px;
+          font-size: 14px;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 0.5px solid #ddd;
+        }
+        .action-btn--done {
+          background: #eaf3de;
+          color: #3b6d11;
+          border-color: #97c459;
+        }
+        .action-btn--undo {
+          background: #fcebeb;
+          color: #a32d2d;
+          border-color: #f09595;
+        }
+        .complete-time {
+          font-size: 11px;
+          color: #3b6d11;
+          margin-top: -6px;
+        }
+        .ticket-times {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          margin-top: -4px;
+        }
+        .ticket-time-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .time-label {
+          font-size: 11px;
+          color: #bbb;
+        }
+        .time-value {
+          font-size: 11px;
+          color: #888;
+        }
+/*Happy hour for cashier*/
+.happy-hour-banner {
+  background: #fff;
+  border: 1.5px solid #f0d0d8;
+  border-left: 5px solid #b5365a;
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.happy-hour-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #7d4a55;
+}
+
+.happy-hour-time {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #000000;
+  margin-top: 2px;
+}
+
+.happy-hour-discount {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #7d4a55;
+}
+
