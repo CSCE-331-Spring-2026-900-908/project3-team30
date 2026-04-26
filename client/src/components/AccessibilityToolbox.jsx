@@ -156,13 +156,6 @@ const styles = `
   }
   .a11y-reset-link:hover { opacity: 1; text-decoration: underline; }
 
-  /* ── Coming soon badge ── */
-  .a11y-coming-soon {
-    font-size: 11px; font-weight: 600; color: #9ca3af;
-    background: #f3f4f6; border: 1px solid #e5e7eb;
-    border-radius: 6px; padding: 3px 8px; letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
 
   /* ── Footer ── */
   .a11y-footer {
