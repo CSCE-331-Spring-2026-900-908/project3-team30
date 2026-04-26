@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
 import { useNavigate } from 'react-router-dom';
 import CustomizePopUp from '../components/CustomizePopUp';
+import WeatherWidget from '../components/WeatherWidget';
 
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
@@ -26,6 +27,16 @@ function formatTime(localTime) {
   const hour = h % 12 || 12;
   const minute = m > 0 ? `:${String(m).padStart(2, '0')}` : '';
   return `${hour}${minute} ${period}`;
+}
+
+function getDisplayDrinkName(name) {
+  return name
+    .replace(/^(Small|Large)\s+/i, '')
+    .trim();
+}
+
+function isSmallDrink(item) {
+  return /^Small\s+/i.test(item.name);
 }
 
 export default function CustomerPage() {
@@ -110,60 +121,71 @@ export default function CustomerPage() {
   }, [menuItems]);
 
   const filteredMenuItems = useMemo(() => {
-    if (selectedCategory === 'All') return menuItems;
-    return menuItems.filter((item) => item.category === selectedCategory);
+    const smallDrinks = menuItems.filter(isSmallDrink);
+
+    if (selectedCategory === 'All') return smallDrinks;
+
+    return smallDrinks.filter((item) => item.category === selectedCategory);
   }, [menuItems, selectedCategory]);
 
   return (
-    <PageShell
-      title="Drinks in the Dreamhouse"
-      subtitle="Sip something fabulous."
-      actions={
-        <Link className="primary-button inline" to="/customer/checkout" aria-label={`View cart. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
-          View Cart ({items.length})
-        </Link>
-      }
-    >
-{activeHappyHour && (
-  <div className="happy-hour-banner">
-    <div className="happy-hour-circle" style={{ top: '-28px', right: '-28px', width: '120px', height: '120px', background: 'rgba(255,255,255,0.25)' }} />
-    <div className="happy-hour-circle" style={{ bottom: '-40px', right: '80px', width: '90px', height: '90px', background: 'rgba(255,255,255,0.18)' }} />
-    <div className="happy-hour-circle" style={{ top: '-20px', left: '200px', width: '60px', height: '60px', background: 'rgba(255,255,255,0.2)' }} />
+    <div className="customer-page">
+      <PageShell
+        title="Drinks in the Dreamhouse"
+        // subtitle="Sip something fabulous."
+        subtitle={
+          <WeatherWidget
+            latitude={30.62}
+            longitude={-96.34}
+            locationName="College Station, TX"
+          />}
+        actions={
+          <Link className="primary-button inline" to="/customer/checkout" aria-label={`View cart. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
+            View Cart ({items.length})
+          </Link>
+        }
+      >
+      
+      {activeHappyHour && (
+        <div className="happy-hour-banner">
+          <div className="happy-hour-circle" style={{ top: '-28px', right: '-28px', width: '120px', height: '120px', background: 'rgba(255,255,255,0.25)' }} />
+          <div className="happy-hour-circle" style={{ bottom: '-40px', right: '80px', width: '90px', height: '90px', background: 'rgba(255,255,255,0.18)' }} />
+          <div className="happy-hour-circle" style={{ top: '-20px', left: '200px', width: '60px', height: '60px', background: 'rgba(255,255,255,0.2)' }} />
 
-    <div className="happy-hour-inner">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        <span className="happy-hour-title">Happy Hour</span>
-        <span className="happy-hour-time">{formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}</span>
-      </div>
+          <div className="happy-hour-inner">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span className="happy-hour-title">Happy Hour</span>
+              <span className="happy-hour-time">{formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}</span>
+            </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-        <span className="happy-hour-discount">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
-        <span className="happy-hour-label">all drinks</span>
-      </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
+              <span className="happy-hour-discount">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
+              <span className="happy-hour-label">all drinks</span>
+            </div>
 
-      {(() => {
-        const now = new Date();
-        const end = activeHappyHour.endTime;
-        let endH, endM;
-        if (Array.isArray(end)) { [endH, endM] = end; }
-        else { [endH, endM] = end.split(':').map(Number); }
-        const endDate = new Date();
-        endDate.setHours(endH, endM, 0, 0);
-        const diffMins = Math.max(0, Math.floor((endDate - now) / 60000));
-        const hours = Math.floor(diffMins / 60);
-        const mins = diffMins % 60;
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-            <span className="happy-hour-remaining">
-              {hours > 0 ? `${hours}h ${String(mins).padStart(2, '0')}m` : `${mins}m`}
-            </span>
-            <span className="happy-hour-label">remaining</span>
+            {(() => {
+              const now = new Date();
+              const end = activeHappyHour.endTime;
+              let endH, endM;
+              if (Array.isArray(end)) { [endH, endM] = end; }
+              else { [endH, endM] = end.split(':').map(Number); }
+              const endDate = new Date();
+              endDate.setHours(endH, endM, 0, 0);
+              const diffMins = Math.max(0, Math.floor((endDate - now) / 60000));
+              const hours = Math.floor(diffMins / 60);
+              const mins = diffMins % 60;
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+                  <span className="happy-hour-remaining">
+                    {hours > 0 ? `${hours}h ${String(mins).padStart(2, '0')}m` : `${mins}m`}
+                  </span>
+                  <span className="happy-hour-label">remaining</span>
+                </div>
+              );
+            })()}
           </div>
-        );
-      })()}
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
       <div className="card customer-menu-card">
         <h2>Menu Items</h2>
@@ -182,24 +204,24 @@ export default function CustomerPage() {
           <div className="menu-grid">
             {filteredMenuItems.map((item) => (
               <button
-                key={item.name}
+                key={getDisplayDrinkName(item.name)}
                 type="button"
                 className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''
                   } ${item.available === false ? 'unavailable' : ''}`}
                 disabled={item.available === false}
-                aria-label={`${item.name}. ${activeHappyHour ? currency(applyDiscount(item.price, activeHappyHour.percentOff)) : currency(item.price)}. ${item.available === false ? 'Unavailable' : 'Customize this drink'}`}
+                aria-label={`${getDisplayDrinkName(item.name)}. ${activeHappyHour ? currency(applyDiscount(item.price, activeHappyHour.percentOff)) : currency(item.price)}. ${item.available === false ? 'Unavailable' : 'Customize this drink'}`}
                 onClick={() => setSelectedItem(item)}
               >
                 <div className="menu-item-content">
                   <img
                     src={item.image}
-                    alt={`${item.name} drink image`}
+                    alt={`${getDisplayDrinkName(item.name)} drink image`}
                     className="menu-item-image"
                   />
 
                   <div className="menu-item-details">
                     <div>
-                      <h3>{item.name}</h3>
+                      <h3>{getDisplayDrinkName(item.name)}</h3>
                       {/* <p>Customize sweetness, ice, and toppings.</p> */}
                     </div>
 
@@ -251,6 +273,7 @@ export default function CustomerPage() {
             selectedSweetness={selectedSweetness}
             cart={items}
           />
-    </PageShell>
+      </PageShell>
+    </div>
   );
 }

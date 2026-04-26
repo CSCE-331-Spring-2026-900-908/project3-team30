@@ -6,6 +6,12 @@ function applyDiscount(basePrice, percentOff) {
   return Math.round(basePrice * (1 - percentOff) * 100) / 100;
 }
 
+function getDisplayDrinkName(name) {
+  return name
+    .replace(/^(Small|Large)\s+/i, '')
+    .trim();
+}
+
 export default function CustomizePopUp({
   item,
   alterations,
@@ -17,24 +23,33 @@ export default function CustomizePopUp({
   const [selectedSweetness, setSelectedSweetness] = useState(null);
   const [selectedIce, setSelectedIce] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  const sizeOptions = [
+    { name: 'Small', price: 0 },
+    // { name: 'Medium', price: 0.75 },
+    { name: 'Large', price: 1.5 },
+  ];
 
   useEffect(() => {
     setSelectedMods([]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
+    setSelectedSize(sizeOptions[0]);
   }, [item, alterations]);
 
   const basePrice = applyDiscount(item.price, activeHappyHour?.percentOff);
 
   const runningTotal = useMemo(() => {
     const mods = [
+      ...(selectedSize ? [selectedSize] : []),
       ...selectedMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
 
     return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
-  }, [basePrice, selectedMods, selectedSweetness, selectedIce]);
+  }, [basePrice, selectedSize, selectedMods, selectedSweetness, selectedIce]);
 
   const toggleMod = (mod) => {
     setSelectedMods((prev) =>
@@ -46,6 +61,7 @@ export default function CustomizePopUp({
 
   const handleAdd = () => {
     const mods = [
+      ...(selectedSize ? [selectedSize] : []),
       ...selectedMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
@@ -86,11 +102,12 @@ export default function CustomizePopUp({
     document.body.style.top = `-${scrollY}px`;
     document.body.style.paddingRight = `${scrollbarWidth}px`;
 
-    // 👇 THIS is the new part
     document.documentElement.style.setProperty(
         '--modal-scrollbar-offset',
         `${scrollbarWidth}px`
     );
+
+    
 
     return () => {
         document.body.classList.remove('modal-open');
@@ -113,12 +130,12 @@ export default function CustomizePopUp({
         <div className="customize-popup-scroll">
           <img
             src={item.image}
-            alt={`${item.name} drink`}
+            alt={`${getDisplayDrinkName(item.name)} drink`}
             className="customize-popup-image"
           />
 
           <div className="customize-popup-header">
-            <h2>{item.name}</h2>
+            <h2>{getDisplayDrinkName(item.name)}</h2>
 
             <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
@@ -126,9 +143,8 @@ export default function CustomizePopUp({
                 {activeHappyHour && (
                     <>
                     <span className="original-price">{currency(item.price)}</span>
-                    <span className="discount-badge">
-                        {Math.round(activeHappyHour.percentOff * 100)}% off
-                    </span>
+                    {/* <span className="discount-price">{currency(basePrice)}</span> */}
+                    <span className="discount-badge">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
                     </>
                 )}
             </p>
@@ -136,25 +152,26 @@ export default function CustomizePopUp({
 
           <div className="customize-scroll">
             <div className="customize-section">
-              <h3>Toppings</h3>
+              <h3>Customize Your Drink!</h3>
 
-              <div className="checkbox-list">
-                {alterations.default?.map((mod) => (
-                  <label key={mod.name} className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={selectedMods.some((entry) => entry.name === mod.name)}
-                      onChange={() => toggleMod(mod)}
-                    />
+              <label className="field">
+                <span>Size</span>
+                <select
+                  value={selectedSize?.name ?? ''}
+                  onChange={(e) =>
+                    setSelectedSize(
+                      sizeOptions.find((option) => option.name === e.target.value) ?? null
+                    )
+                  }
+                >
+                  {sizeOptions.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name} {option.price ? `(${currency(option.price)})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-                    <span>{mod.name}</span>
-                    <span>{currency(mod.price)}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="customize-section">
               <label className="field">
                 <span>Sweetness</span>
                 <select
@@ -194,6 +211,25 @@ export default function CustomizePopUp({
                   ))}
                 </select>
               </label>
+            </div>
+
+            <div className="customize-section">
+              <h3>Toppings</h3>
+
+              <div className="checkbox-list">
+                {alterations.default?.map((mod) => (
+                  <label key={mod.name} className="checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={selectedMods.some((entry) => entry.name === mod.name)}
+                      onChange={() => toggleMod(mod)}
+                    />
+
+                    <span>{mod.name}</span>
+                    <span>{currency(mod.price)}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
 

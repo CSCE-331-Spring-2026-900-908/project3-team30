@@ -1710,7 +1710,101 @@ body.modal-open .chat-hint-bubble {
   right: calc(1.1rem + var(--modal-scrollbar-offset, 0px));
 }
 
-/* adjust this selector to match your accessibility button */
 body.modal-open .a11y-trigger {
   right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
+}
+
+/* High Contrast: Customize Popup */
+.accessibility-high-contrast .customize-backdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+
+.accessibility-high-contrast .customize-popup {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  box-shadow: 0 0 0 2px #fff !important;
+}
+
+.accessibility-high-contrast .customize-popup-image {
+  background: #000 !important;
+  border: 1px solid #fff !important;
+}
+
+.accessibility-high-contrast .customize-popup h2,
+.accessibility-high-contrast .customize-section h3,
+.accessibility-high-contrast .customize-popup-footer strong {
+  color: #fff !important;
+}
+
+.accessibility-high-contrast .customize-popup-price,
+.accessibility-high-contrast .sale-price {
+  color: #ffb6c1 !important;
+}
+
+.accessibility-high-contrast .original-price {
+  color: #ffd84d !important;
+}
+
+.accessibility-high-contrast .discount-badge {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .customize-close {
+  background: #ffd84d !important;
+  color: #000 !important;
+  box-shadow: 0 0 0 2px #fff !important;
+}
+
+.accessibility-high-contrast .customize-popup-footer {
+  border-top-color: #fff !important;
+}
+
+.accessibility-high-contrast .customize-popup-scroll::-webkit-scrollbar-thumb {
+  background: #ffd84d !important;
+}
+
+.accessibility-high-contrast .customize-popup-scroll {
+  scrollbar-color: #ffd84d transparent;
+}
+
+
+/* -------- Customer interface Weather widget -------- */
+.topbar .menu-board-weather {
+  width: 245px;
+  min-height: auto;
+  padding: 0.7rem 0.9rem;
+  border-radius: 18px;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.topbar .weather-icon-container {
+  width: 42px;
+  height: 42px;
+}
+
+.topbar .weather-info {
+  text-align: left;
+}
+
+.topbar .weather-temp {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.topbar .weather-condition {
+  font-size: 0.9rem;
+  margin: 0.12rem 0;
+}
+
+.topbar .weather-location {
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.customer-page .app-shell {
+  padding-top: 0rem; /*adjust to give more spacing of the title and weather from the top of the page*/
 }
