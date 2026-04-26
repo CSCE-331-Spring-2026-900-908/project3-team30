@@ -14,16 +14,18 @@ function getDisplayDrinkName(name) {
 
 export default function CustomizePopUp({
   item,
+  toppings = [],
   alterations,
   activeHappyHour,
   onClose,
   onAddToCart,
 }) {
-  const [selectedMods, setSelectedMods] = useState([]);
+  // const [selectedMods, setSelectedMods] = useState([]);
   const [selectedSweetness, setSelectedSweetness] = useState(null);
   const [selectedIce, setSelectedIce] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [toppingCounts, setToppingCounts] = useState({});
 
   const sizeOptions = [
     { name: 'Small', price: 0 },
@@ -31,8 +33,9 @@ export default function CustomizePopUp({
     { name: 'Large', price: 1.5 },
   ];
 
-  useEffect(() => {
-    setSelectedMods([]);
+  useEffect(() => { // this is the reset useEffect
+    // setSelectedMods([]);
+    setToppingCounts({});
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
     setSelectedSize(sizeOptions[0]);
@@ -40,29 +43,43 @@ export default function CustomizePopUp({
 
   const basePrice = applyDiscount(item.price, activeHappyHour?.percentOff);
 
+  const toppingMods = useMemo(() => {
+    return Object.entries(toppingCounts).flatMap(([name, count]) => {
+      const topping = toppings.find((t) => t.name === name);
+      if (!topping) return [];
+
+      return Array.from({ length: count }, () => ({
+        name: topping.name,
+        price: topping.price,
+      }));
+    });
+  }, [toppingCounts, toppings]);
+
   const runningTotal = useMemo(() => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
-      ...selectedMods,
+      // ...selectedMods,
+      ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
 
     return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
-  }, [basePrice, selectedSize, selectedMods, selectedSweetness, selectedIce]);
+  }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce]);
 
-  const toggleMod = (mod) => {
-    setSelectedMods((prev) =>
-      prev.some((entry) => entry.name === mod.name)
-        ? prev.filter((entry) => entry.name !== mod.name)
-        : [...prev, mod]
-    );
-  };
+  // const toggleMod = (mod) => {
+  //   setSelectedMods((prev) =>
+  //     prev.some((entry) => entry.name === mod.name)
+  //       ? prev.filter((entry) => entry.name !== mod.name)
+  //       : [...prev, mod]
+  //   );
+  // };
 
   const handleAdd = () => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
-      ...selectedMods,
+      // ...selectedMods,
+      ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
@@ -82,6 +99,27 @@ export default function CustomizePopUp({
     setTimeout(() => {
         onClose();
     }, 220);
+  };
+
+  const increaseTopping = (topping) => {
+    setToppingCounts((prev) => ({
+      ...prev,
+      [topping.name]: (prev[topping.name] || 0) + 1,
+    }));
+  };
+
+  const decreaseTopping = (topping) => {
+    setToppingCounts((prev) => {
+      const current = prev[topping.name] || 0;
+      if (current <= 1) {
+        const { [topping.name]: _, ...rest } = prev;
+        return rest;
+      }
+      return {
+        ...prev,
+        [topping.name]: current - 1,
+      };
+    });
   };
 
   useEffect(() => {
@@ -184,7 +222,12 @@ export default function CustomizePopUp({
                     )
                   }
                 >
-                  {alterations.sweetness?.map((option) => (
+                  {[...(alterations.sweetness ?? [])]
+                  .sort((a, b) => {
+                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                    return getPercent(a.name) - getPercent(b.name);
+                  })
+                  .map((option) => (
                     <option key={option.name} value={option.name}>
                       {option.name}
                     </option>
@@ -204,7 +247,12 @@ export default function CustomizePopUp({
                     )
                   }
                 >
-                  {alterations.ice?.map((option) => (
+                  {[...(alterations.ice ?? [])]
+                  .sort((a, b) => {
+                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                    return getPercent(a.name) - getPercent(b.name);
+                  })
+                  .map((option) => (
                     <option key={option.name} value={option.name}>
                       {option.name}
                     </option>
@@ -216,19 +264,37 @@ export default function CustomizePopUp({
             <div className="customize-section">
               <h3>Toppings</h3>
 
-              <div className="checkbox-list">
-                {alterations.default?.map((mod) => (
-                  <label key={mod.name} className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={selectedMods.some((entry) => entry.name === mod.name)}
-                      onChange={() => toggleMod(mod)}
-                    />
+              <div className="topping-list">
+                {toppings.map((topping) => {
+                  const count = toppingCounts[topping.name] || 0;
 
-                    <span>{mod.name}</span>
-                    <span>{currency(mod.price)}</span>
-                  </label>
-                ))}
+                  return (
+                    <div key={topping.name} className="topping-row">
+                      <div className="topping-info">
+                        <span className="topping-name">{topping.name}</span>
+                        <span className="topping-price">{currency(topping.price)} ea.</span>
+                      </div>
+
+                      <div className="topping-controls">
+                        <button
+                          type="button"
+                          onClick={() => decreaseTopping(topping)}
+                        >
+                          -
+                        </button>
+
+                        <span>{count}</span>
+
+                        <button
+                          type="button"
+                          onClick={() => increaseTopping(topping)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

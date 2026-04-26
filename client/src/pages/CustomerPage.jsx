@@ -256,6 +256,7 @@ export default function CustomerPage() {
           {selectedItem && (
             <CustomizePopUp
               item={selectedItem}
+              toppings={alterations.default ?? []}
               alterations={alterations}
               activeHappyHour={activeHappyHour}
               onClose={() => setSelectedItem(null)}
