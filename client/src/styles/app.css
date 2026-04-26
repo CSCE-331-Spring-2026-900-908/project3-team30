@@ -1808,3 +1808,79 @@ body.modal-open .a11y-trigger {
 .customer-page .app-shell {
   padding-top: 0rem; /*adjust to give more spacing of the title and weather from the top of the page*/
 }
+
+/*------- Multiple topping stuff ---------*/
+.topping-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.topping-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.topping-name {
+  font-weight: 600;
+  color: #2a2530;
+}
+
+.topping-price {
+  font-size: 0.85rem;
+  color: #8b7078;
+}
+
+.topping-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: white;
+  border-radius: 999px;
+  padding: 0.25rem 0.3rem;
+
+  border: 1px solid #e8d8dc;
+  box-shadow: 0 2px 6px rgba(121, 84, 96, 0.08);
+}
+
+.topping-controls span {
+  min-width: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.topping-controls button {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: #f4e4e8;
+  color: #2a2530;
+  font-weight: 800;
+}
+
+.topping-controls button:last-child {
+  background: #d36a6a;
+  color: white;
+}
+
+.customize-popup .field {
+  position: relative;
+}
+
+.customize-popup .field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 3rem;
+
+  background-color: white;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 -960 960 960' width='24px' fill='%23000000'%3E%3Cpath d='M480-360 280-560h400L480-360Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 24px 24px;
+}
