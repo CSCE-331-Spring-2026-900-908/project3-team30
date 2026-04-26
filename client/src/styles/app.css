@@ -431,6 +431,7 @@ tr:hover { background: #fff8fa; }
 
 .customer-menu-card {
   width: 100%;
+  padding-top: 0;
 }
 
 
@@ -516,8 +517,6 @@ tr:hover { background: #fff8fa; }
   opacity: 0.9;
 }
 
-
-
 /* Hide Google translate top banner */
 body > .skiptranslate {
   display: none !important;
@@ -559,7 +558,7 @@ html {
   50%       { box-shadow: 0 0 0 6px rgba(211, 106, 106, 0.08); }
 }
 
-/* Chatbot SR Support */
+/* ----------Chatbot SR Support------------ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -803,6 +802,7 @@ html {
   color: #000 !important;
 }
 
+/*------------------- Chatbot Button Stuff -------------------*/
 .chat-message-list {
   max-height: 280px;
   overflow-y: auto;
@@ -849,7 +849,7 @@ html {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin: 0.75rem 0 1rem;
+  margin: 0.75rem 0 1.7rem;
 }
 
 .category-tab {
@@ -938,7 +938,7 @@ html {
 .floating-chat-button {
   position: fixed;
   right: 1.25rem;
-  bottom: 1.25rem; /* EXACT spot Translate used to be */
+  bottom: 1.25rem;
   z-index: 9999;
 
   width: 3.2rem;
@@ -1217,4 +1217,501 @@ html {
 
 .modal-actions button {
   flex: 1;
+}
+
+/*----------- Anisha Kitchen Stuff ---------------*/
+
+.happy-hour-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%);
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+  border: 1.5px solid #f0a8b8;
+  box-shadow: 0 4px 24px rgba(210, 100, 130, 0.15);
+}
+
+.happy-hour-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.happy-hour-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.happy-hour-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #b5365a;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.happy-hour-time {
+  font-size: 13px;
+  font-weight: 500;
+  color: #c26080;
+  letter-spacing: 0.01em;
+}
+
+.happy-hour-discount {
+  font-size: 42px;
+  font-weight: 900;
+  color: #b5365a;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.happy-hour-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c26080;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.happy-hour-remaining {
+  font-size: 28px;
+  font-weight: 900;
+  color: #b5365a;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/*KITCHEN STUFF*/
+
+.board-shell {
+          display: flex;
+          height: 100vh;
+          overflow: hidden;    
+          background: #f5f4f0;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+          width: 145px;
+          flex-shrink: 0;
+          background: #fff;
+          border-right: 0.5px solid #e0dfd8;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 60px 0;
+          gap: 60px;
+          
+        }
+        .sidebar-label {
+          font-size: 15px;
+          color: #999;
+          letter-spacing: 0.05em;
+          margin-bottom: 12px;
+          font-weight: 500;
+        }
+        .view-btn {
+          width: 100px;
+          height: 200px;
+          border-radius: 8px;
+          border: 0.5px solid #ddd;
+          background: transparent;
+          cursor: pointer;
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
+          font-size: 15px;
+          color: #999;
+        }
+        .view-btn--active {
+          background: #e6f1fb;
+          border-color: #378add;
+          color: #185fa5;
+          font-weight: 500;
+        }
+        .view-btn--done {
+          background: #eaf3de;
+          border-color: #639922;
+          color: #3b6d11;
+          font-weight: 500;
+        }
+
+        /* RAIL */
+        .rail-wrapper {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          min-height: 0; 
+        }
+        .rail-header {
+          padding: 28px 32px 24px;
+          background: #fff;
+          border-bottom: 0.5px solid #e0dfd8;
+          display: flex;
+          align-items: center;
+          font-size: 19px;
+          font-weight: 650;
+        }
+        .ticket-count {
+          font-weight: 400;
+          color: #999;
+        }
+        .ticket-rail {
+          flex: 1;
+          min-height: 0;         
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 200px));
+          grid-template-rows: repeat(2, 1fr);
+          grid-auto-flow: column;
+          gap: 12px;
+          padding: 16px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          align-content: start;
+        }
+        .empty {
+          font-size: 13px;
+          color: #bbb;
+        }
+
+        /* TICKETS */
+        .ticket {
+          min-width: 160px;
+          max-width: 200px;
+          background: #fff;
+          border-radius: 12px;
+          border: 0.5px solid #e0dfd8;
+          border-top: 3px solid #378add;
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          min-height: 0;      
+          overflow: hidden;  
+        }
+        .ticket--done {
+          border-top-color: #639922;
+        }
+        .ticket-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .order-num {
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .elapsed {
+          font-size: 11px;
+          color: #bbb;
+        }
+        .ticket-items {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          overflow-y: auto;    
+          min-height: 0;      
+        }
+        .ticket-item {
+          border-top: 0.5px solid #e0dfd8;
+          padding-top: 8px;
+          padding-bottom: 2px;
+        }
+        .item-name {
+          font-size: 13px;
+          font-weight: 500;
+
+        }
+        .mods {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-top: 4px;
+        }
+        .mod-tag {
+          font-size: 11px;
+          background: #f1efe8;
+          color: #666;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+        .ticket-footer {
+          margin-top: auto;
+          padding-top: 8px;
+          border-top: 0.5px solid #e0dfd8;
+        }
+        .action-btn {
+          width: 100%;
+          padding: 10px;
+          font-size: 14px;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 0.5px solid #ddd;
+        }
+        .action-btn--done {
+          background: #eaf3de;
+          color: #3b6d11;
+          border-color: #97c459;
+        }
+        .action-btn--undo {
+          background: #fcebeb;
+          color: #a32d2d;
+          border-color: #f09595;
+        }
+        .complete-time {
+          font-size: 11px;
+          color: #3b6d11;
+          margin-top: -6px;
+        }
+        .ticket-times {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          margin-top: -4px;
+        }
+        .ticket-time-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .time-label {
+          font-size: 11px;
+          color: #bbb;
+        }
+        .time-value {
+          font-size: 11px;
+          color: #888;
+        }
+/*Happy hour for cashier*/
+.happy-hour-banner {
+  background: #fff;
+  border: 1.5px solid #f0d0d8;
+  border-left: 5px solid #b5365a;
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.happy-hour-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #7d4a55;
+}
+
+.happy-hour-time {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #000000;
+  margin-top: 2px;
+}
+
+.happy-hour-discount {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #7d4a55;
+}
+
+
+/*----------- Menu Item Customization Popup (Jade) -----------*/
+.customize-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(42, 37, 48, 0.65); /*was 0.45 before*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overscroll-behavior: contain;
+}
+
+.customize-popup {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 90vh;
+  /* overflow-y: auto; */
+  padding-right: 2rem;
+  position: relative;
+
+  background: #fffafd;
+  border: 1px solid #f0d8dd;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(121, 84, 96, 0.22);
+
+  padding: 1.25rem 1.5rem 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: #b83b6f transparent;
+
+  animation: popupFromCard 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+  overflow: hidden;
+}
+.customize-close:hover {
+  background: #e6a7b3;
+}
+
+@keyframes popupFromCard {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.customize-popup-image {
+  width: 100%;
+  height: 440px;
+  object-fit: fill;
+  object-position: center;
+  background: #f8f4f6;
+
+  border-radius: 22px;
+  display: block;
+  margin-bottom: 1.25rem;
+  padding: 0.5rem;
+}
+.customize-popup-scroll{
+  max-height: calc(90vh - 4rem);
+  overflow-y: auto;
+  padding-top: 0.25rem;
+  margin-top: 0.4rem; /*change these to change scrollbar height*/
+  margin-bottom: 0.4rem;
+
+  width: calc(100% + 1.35rem);
+  padding-right: 1.5rem;
+  padding-left: 0.6rem;
+
+  touch-action: auto;
+  overscroll-behavior: contain;
+}
+.customize-popup-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.customize-popup-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.customize-popup-scroll::-webkit-scrollbar-thumb {
+  background: #a74e73;
+  border-radius: 999px;
+}
+
+.customize-popup-header {
+  padding: 0;
+}
+
+.customize-popup h2 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.7rem;
+  line-height: 1.15;
+}
+
+.customize-popup-price {
+  margin: 1rem 0 1.25rem;
+  font-weight: 700;
+  color: #b83b6f;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.customize-scroll {
+  overflow: visible;
+  max-height: none;
+  padding-top: 0.5rem;
+}
+
+.customize-section {
+  margin-top: 1.25rem;
+}
+
+.customize-section h3 {
+  margin: 0 0 0.8rem;
+}
+
+.customize-popup-footer {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0;
+  border-top: 1px solid #f0d8dd;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.secondary-button {
+  background: #f4e4e8;
+  color: #7d2f5a;
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  border: none;
+}
+
+.secondary-button:hover {
+  background: #e6a7b3;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.discount-badge {
+  background: #f4e4e8;
+  color: #9b3f65;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.customize-popup.popup-closing {
+  animation: popupClose 0.22s ease-in forwards;
+}
+
+@keyframes popupClose {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.94) translateY(18px);
+  }
+}
+
+body.modal-open {
+  position: fixed;
+  width: 100%;
+  overflow-y: hidden; /* keeps scrollbar space = no shift */
+  /* padding-right: 15px; compensate for scrollbar width */
+}
+body.modal-open .floating-chat-button {
+  right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
+}
+
+body.modal-open .chat-hint-bubble {
+  right: calc(1.1rem + var(--modal-scrollbar-offset, 0px));
+}
+
+/* adjust this selector to match your accessibility button */
+body.modal-open .a11y-trigger {
+  right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
 }
