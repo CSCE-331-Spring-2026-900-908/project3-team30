@@ -46,9 +46,9 @@ export default function HappyHourBanner({ activeHappyHour }) {
           overflow: hidden;
           border-radius: 20px;
           margin-bottom: 1.25rem;
-          border: 1.5px solid #f0a8b8;
+          border: 1.5px solid #DA1884;
           box-shadow: 0 4px 24px rgba(210, 100, 130, 0.15);
-          background: linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%);
+          background: linear-gradient(135deg, #e4e7ff 0%, #d6dbff 50%, #e4e7ff 100%);
         }
 
         /* decorative blobs */
@@ -97,7 +97,7 @@ export default function HappyHourBanner({ activeHappyHour }) {
         .hhb__title {
           font-size: 22px;
           font-weight: 800;
-          color: #b5365a;
+          color: #8A497E;
           letter-spacing: -0.02em;
           line-height: 1;
           margin: 0;
@@ -113,7 +113,7 @@ export default function HappyHourBanner({ activeHappyHour }) {
         .hhb__discount {
           font-size: 42px;
           font-weight: 900;
-          color: #b5365a;
+          color: #DA1884;
           line-height: 1;
           letter-spacing: -0.03em;
           margin: 0;
@@ -131,7 +131,7 @@ export default function HappyHourBanner({ activeHappyHour }) {
         .hhb__remaining {
           font-size: 28px;
           font-weight: 900;
-          color: #b5365a;
+          color: #8A497E;
           letter-spacing: -0.03em;
           line-height: 1;
           margin: 0;
