@@ -26,6 +26,7 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const [activeHappyHour, setActiveHappyHour] = useState(null);
   
   const processOrder = async (paymentMethod) => {
     const response = await api.processOrder({
@@ -73,6 +74,12 @@ export default function CheckoutPage() {
           toppings: alterationData.default ?? []
         });
       })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    api.getActiveHappyHour()
+      .then(setActiveHappyHour)
       .catch(console.error);
   }, []);
 
@@ -162,7 +169,7 @@ export default function CheckoutPage() {
           item={editingItem}
           toppings={toppingOptions}
           alterations={alterations}
-          activeHappyHour={null}
+          activeHappyHour={activeHappyHour}
           isEdit={true}
           onClose={() => {
             setEditingItem(null);
