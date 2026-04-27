@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import Modal from '../components/Modal';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
+import CustomizePopUp from '../components/CustomizePopUp';
 
 function summarizeModifications(modifications = []) {
   const counts = modifications.reduce((acc, mod) => {
@@ -20,7 +21,7 @@ function summarizeModifications(modifications = []) {
 }
 
 export default function CheckoutPage() {
-  const { items, clearCart, removeItem, subtotal } = useCart();
+  const { items, clearCart, removeItem, updateItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
 
@@ -53,12 +54,37 @@ export default function CheckoutPage() {
     navigate('/customer');
   };
 
+  const [alterations, setAlterations] = useState({
+    default: [],
+    sweetness: [],
+    ice: [],
+    toppings: []
+  });
+
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+
+  useEffect(() => {
+    api.getAlterations()
+      .then((alterationData) => {
+        setAlterations({
+          ...alterationData,
+          toppings: alterationData.default ?? []
+        });
+      })
+      .catch(console.error);
+  }, []);
+
+  const toppingOptions = alterations.toppings?.length
+    ? alterations.toppings
+    : alterations.default ?? [];
+
   return (
     <PageShell
       title="Checkout"
       actions={<Link className="ghost-link" to="/cashier/menu" aria-label="Back to cashier menu">Back to menu</Link>}
     >
-      <div className="card">
+      <div className="card checkout-cart-card">
         <h2>Current Cart</h2>
         {items.length === 0 ? (
           <p className="subtle">No items in cart.</p>
@@ -78,9 +104,21 @@ export default function CheckoutPage() {
                   <span>{currency(item.totalPrice)}</span>
                   <button
                     className="secondary-button inline"
+                    onClick={() => {
+                      setEditingIndex(index);
+                      setEditingItem(item);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  {/* <button
+                    className="secondary-button inline"
                     onClick={() => removeItem(index)}
                     aria-label={`Remove ${item.name} from cart`}
                   >
+                    Remove
+                  </button> */}
+                  <button className="secondary-button inline" onClick={() => removeItem(index)}>
                     Remove
                   </button>
                 </div>
@@ -90,27 +128,33 @@ export default function CheckoutPage() {
         )}
       </div>
 
-      <div className="page-actions">
-        <span className="pill" role="status" aria-live="polite">Subtotal: {currency(subtotal)}</span>
-        <button className="secondary-button" disabled={!items.length} onClick={cancelOrder} aria-label="Cancel current order">
-          Cancel Order
-        </button>
-        <button
-          className="primary-button inline"
-          disabled={!items.length}
-          onClick={() => processOrder('Cash')}
-          aria-label={`Process cash payment for ${currency(subtotal)}`}
-        >
-          Cash
-        </button>
-        <button
-          className="primary-button inline"
-          disabled={!items.length}
-          onClick={() => processOrder('Card')}
-          aria-label={`Process card payment for ${currency(subtotal)}`}
-        >
-          Process Card Payment
-        </button>
+      <div className="checkout-actions">
+        <div className="checkout-subtotal">
+          <span>Subtotal</span>
+          <strong>{currency(subtotal)}</strong>
+        </div>
+
+        <div className="checkout-buttons">
+          <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
+            Cancel Order
+          </button>
+
+          <button
+            className="primary-button inline"
+            disabled={!items.length}
+            onClick={() => processOrder('Cash')}
+          >
+            Cash
+          </button>
+
+          <button
+            className="primary-button inline"
+            disabled={!items.length}
+            onClick={() => processOrder('Card')}
+          >
+            Process Card Payment
+          </button>
+        </div>
       </div>
 
       <Modal isOpen={showModal} onClose={handleCloseModal}>
@@ -119,6 +163,25 @@ export default function CheckoutPage() {
           Back to menu
         </button>
       </Modal>
+
+      {editingItem && (
+        <CustomizePopUp
+          item={editingItem}
+          toppings={toppingOptions}
+          alterations={alterations}
+          activeHappyHour={null}
+          isEdit={true}
+          onClose={() => {
+            setEditingItem(null);
+            setEditingIndex(null);
+          }}
+          onAddToCart={(updatedCartItem) => {
+            updateItem(editingIndex, updatedCartItem);
+            setEditingItem(null);
+            setEditingIndex(null);
+          }}
+        />
+      )}
     </PageShell>
   );
 }
