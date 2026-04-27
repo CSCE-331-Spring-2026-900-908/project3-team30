@@ -1297,70 +1297,7 @@ html {
 }
 
 /*----------- Anisha Kitchen Stuff ---------------*/
-.happy-hour-banner {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%);
-  border-radius: 20px;
-  margin-bottom: 1.25rem;
-  border: 1.5px solid #f0a8b8;
-  box-shadow: 0 4px 24px rgba(210, 100, 130, 0.15);
-}
 
-.happy-hour-circle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.happy-hour-inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 28px;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.happy-hour-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #b5365a;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.happy-hour-time {
-  font-size: 13px;
-  font-weight: 500;
-  color: #c26080;
-  letter-spacing: 0.01em;
-}
-
-.happy-hour-discount {
-  font-size: 42px;
-  font-weight: 900;
-  color: #b5365a;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.happy-hour-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #c26080;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.happy-hour-remaining {
-  font-size: 28px;
-  font-weight: 900;
-  color: #b5365a;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
 
 /*KITCHEN STUFF*/
 
@@ -2047,4 +1984,26 @@ body.modal-open .a11y-trigger {
   color: #a07080;
   margin: 0;
   line-height: 1.4;
+}
+
+/* ---------- High Contrast: Happy Hour Banner ---------- */
+.accessibility-high-contrast .hhb {
+  background: #2a1118 !important;
+  border-color: #ffb6c1 !important;
+  box-shadow: none !important;
+}
+
+.accessibility-high-contrast .hhb__blob {
+  background: rgba(255, 182, 193, 0.1) !important;
+}
+
+.accessibility-high-contrast .hhb__title,
+.accessibility-high-contrast .hhb__discount,
+.accessibility-high-contrast .hhb__remaining {
+  color: #ffb6c1 !important;
+}
+
+.accessibility-high-contrast .hhb__time,
+.accessibility-high-contrast .hhb__label {
+  color: #ffd84d !important;
 }

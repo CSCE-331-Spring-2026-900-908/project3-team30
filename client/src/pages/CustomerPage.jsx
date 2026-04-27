@@ -9,6 +9,8 @@ import { currency } from '../utils/format';
 import { useNavigate } from 'react-router-dom';
 import CustomizePopUp from '../components/CustomizePopUp';
 import WeatherWidget from '../components/WeatherWidget';
+import HappyHourBanner from '../components/HappyHourBanner';
+
 
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
@@ -150,46 +152,8 @@ export default function CustomerPage() {
         }
       >
       
-      {activeHappyHour && (
-        <div className="happy-hour-banner">
-          <div className="happy-hour-circle" style={{ top: '-28px', right: '-28px', width: '120px', height: '120px', background: 'rgba(255,255,255,0.25)' }} />
-          <div className="happy-hour-circle" style={{ bottom: '-40px', right: '80px', width: '90px', height: '90px', background: 'rgba(255,255,255,0.18)' }} />
-          <div className="happy-hour-circle" style={{ top: '-20px', left: '200px', width: '60px', height: '60px', background: 'rgba(255,255,255,0.2)' }} />
+<HappyHourBanner activeHappyHour={activeHappyHour} />
 
-          <div className="happy-hour-inner">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span className="happy-hour-title">Happy Hour</span>
-              <span className="happy-hour-time">{formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}</span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-              <span className="happy-hour-discount">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
-              <span className="happy-hour-label">all drinks</span>
-            </div>
-
-            {(() => {
-              const now = new Date();
-              const end = activeHappyHour.endTime;
-              let endH, endM;
-              if (Array.isArray(end)) { [endH, endM] = end; }
-              else { [endH, endM] = end.split(':').map(Number); }
-              const endDate = new Date();
-              endDate.setHours(endH, endM, 0, 0);
-              const diffMins = Math.max(0, Math.floor((endDate - now) / 60000));
-              const hours = Math.floor(diffMins / 60);
-              const mins = diffMins % 60;
-              return (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
-                  <span className="happy-hour-remaining">
-                    {hours > 0 ? `${hours}h ${String(mins).padStart(2, '0')}m` : `${mins}m`}
-                  </span>
-                  <span className="happy-hour-label">remaining</span>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-      )}
 
       <div className="card customer-menu-card">
         <h2>Menu Items</h2>
