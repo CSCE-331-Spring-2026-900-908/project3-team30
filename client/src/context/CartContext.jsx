@@ -23,8 +23,29 @@ export function CartProvider({ children }) {
         )
       );
     },
+    increaseQuantity(index) {
+      setItems((prev) =>
+        prev.map((item, i) =>
+          i === index
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            : item
+        )
+      );
+    },
+    decreaseQuantity(index) {
+      setItems((prev) =>
+        prev.map((item, i) =>
+          i === index
+            ? { ...item, quantity: Math.max(1, (item.quantity || 1) - 1) }
+            : item
+        )
+      );
+    },
     get subtotal() {
-      return items.reduce((sum, item) => sum + item.totalPrice, 0);
+      return items.reduce(
+        (sum, item) => sum + item.totalPrice * (item.quantity || 1),
+        0
+      );
     },
   }), [items]);
 
