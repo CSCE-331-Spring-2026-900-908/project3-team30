@@ -129,7 +129,7 @@ export default function CustomerPage() {
   }, [menuItems, selectedCategory]);
 
   return (
-    <main className="customer-page">
+    <section className="customer-page" aria-labelledby="menu-heading">
       <PageShell
         title="Drinks in the Dreamhouse"
         // subtitle="Sip something fabulous."
@@ -279,6 +279,6 @@ export default function CustomerPage() {
             cart={items}
           />
       </PageShell>
-    </main>
+    </section>
   );
 }

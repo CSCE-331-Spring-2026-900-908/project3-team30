@@ -19,7 +19,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .pin-button { background: #fff; border: 1px solid #ebd2d8; border-radius: 18px; padding: 1rem; }
 .pin-button.ghost { background: #fff7f8; }
 .primary-button, .secondary-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.85rem 1.2rem; border-radius: 999px; }
-.primary-button { background: #d36a6a; color: white; }
+.primary-button { background: #bf5050;; color: white; }
 .secondary-button { background: #f4e4e8; color: #7d4a55; }
 .ghost-link { background: transparent; color: #7d4a55; }
 .primary-button.inline, .secondary-button.inline { width: auto; }
