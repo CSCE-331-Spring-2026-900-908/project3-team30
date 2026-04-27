@@ -30,6 +30,7 @@ public class GoogleSecurityConfig {
                     "/error",
                     "/api/login",
                     "/api/menu-**",
+                    "/api/menu-drinks/**",
                     "/api/alterations",
                     "/api/orders/**",
                     "/api/kitchen/**",

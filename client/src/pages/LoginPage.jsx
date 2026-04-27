@@ -20,13 +20,13 @@ export default function LoginPage() {
       const user = await login(pin);
 
       const isCashierRoute = location.pathname.includes('cashier');
-      if (isCashierRoute && user.role !== 'cashier') {
-        setError('Cashier access only');
+      if (isCashierRoute && user.role !== 'cashier' && user.role !== 'manager') {
+        setError('Employee access only');
         setPin('');
         return;
       }
       
-      const fallback = user.role === 'manager' ? '/manager' : '/cashier/menu';
+      const fallback = '/cashier/menu';
       navigate(location.state?.from?.pathname || fallback, { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed');

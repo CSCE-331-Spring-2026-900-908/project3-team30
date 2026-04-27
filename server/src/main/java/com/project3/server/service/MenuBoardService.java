@@ -64,4 +64,25 @@ public class MenuBoardService {
             return toppings;
         }
     }
+
+    public MenuItem getRandomMenuItem() throws Exception {
+        String sql = "SELECT name, price, category, image_url FROM menu_items WHERE image_url IS NOT NULL AND image_url != '' AND category NOT IN ('ice', 'sweetness', 'toppings') ORDER BY RANDOM() LIMIT 1";
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+        
+            MenuItem item = null;
+            
+            if (rs.next()) {
+                item = new MenuItem(
+                    rs.getString("name"),
+                    rs.getDouble("price"),
+                    rs.getString("category"),
+                    rs.getString("image_url")
+                );
+            }
+            
+            return item;
+        }
+    }
 }
