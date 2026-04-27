@@ -60,7 +60,7 @@ public class MenuService {
                 AND ia.amt_in_stock < ia.min_stock_needed
             ) AS available
         FROM menu_items mi
-        WHERE mi.category NOT IN ('ice', 'sweetness', 'toppings')
+        WHERE COALESCE(LOWER(mi.category), '') NOT IN ('ice', 'sweetness', 'toppings')
         ORDER BY mi.category, mi.name
         """;
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);

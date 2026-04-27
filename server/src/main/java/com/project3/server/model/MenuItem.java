@@ -3,6 +3,8 @@ package com.project3.server.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class MenuItem {
     private String name;
     private double price;
@@ -10,13 +12,21 @@ public class MenuItem {
     private String imageURL;
     private List<MenuItemIngredient> ingredients = new ArrayList<>();
 
+    public MenuItem(){
+        this.name = "";
+        this.price = 0.0;
+        this.category = "";
+        this.imageURL = "";
+        this.ingredients = new ArrayList<>();
+    }
+
     public MenuItem(String name, double price, String category){
         this.name = name;
         this.price = price;
         this.category = category;
         this.imageURL = "";
     }
-    
+
     public MenuItem(String name, double price, String category, String imageURL){
         this.name = name;
         this.price = price;
@@ -52,12 +62,17 @@ public class MenuItem {
         return imageURL;
     }
 
+    @JsonAlias({"imageUrl", "image_url"})
     public void setImageURL(String itemURL){
         this.imageURL = itemURL;
     }
 
     public List<MenuItemIngredient> getIngredients(){
         return ingredients;
+    }
+
+    public void setIngredients(List<MenuItemIngredient> ingredients){
+        this.ingredients = ingredients == null ? new ArrayList<>() : ingredients;
     }
 
     public void addIngredient(InventoryItem ingredient, double quantity) {
@@ -72,7 +87,7 @@ public class MenuItem {
             }
         }
     }
-    
+
     public void removeIngredient(InventoryItem ingredient) {
         for (int i = 0; i < this.ingredients.size(); i++) {
             if (this.ingredients.get(i).getIngredient().equals(ingredient)) {

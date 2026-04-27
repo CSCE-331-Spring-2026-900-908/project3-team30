@@ -18,10 +18,15 @@ export default function ManageMenuPage() {
   useEffect(() => { load(); }, []);
 
   const save = async () => {
-    await api.saveMenuItem(form);
-    setStatus(`Saved menu item ${form.name}.`);
-    setForm(emptyForm);
-    load();
+    try {
+      await api.saveMenuItem(form);
+      setStatus(`Saved menu item ${form.name}.`);
+      setForm(emptyForm);
+      load();
+    } catch (err) {
+      console.error('Failed to save menu item:', err);
+      setStatus(err.message || 'Failed to save menu item.');
+    }
   };
 
   const remove = async () => {

@@ -199,11 +199,12 @@ export default function MenuPage() {
   };
 
   const categories = useMemo(() => {
-    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
-    return categoryOrder.filter(
-      (category) =>
-        category === 'All' || menuItems.some((item) => item.category === category)
-    );
+    const smallDrinks = menuItems.filter(isSmallDrink);
+    const databaseCategories = smallDrinks
+      .map((item) => item.category?.trim())
+      .filter(Boolean);
+
+    return ['All', ...Array.from(new Set(databaseCategories)).sort((a, b) => a.localeCompare(b))];
   }, [menuItems]);
 
   const filteredMenuItems = useMemo(() => {
