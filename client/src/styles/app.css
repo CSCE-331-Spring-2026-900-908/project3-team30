@@ -1532,7 +1532,7 @@ html {
 .happy-hour-banner {
   background: #fff;
   border: 1.5px solid #f0d0d8;
-  border-left: 5px solid #b5365a;
+  border-left: 5px solid #DA1884;
   border-radius: 10px;
   padding: 12px 18px;
   display: flex;
@@ -2471,4 +2471,151 @@ body.modal-open .a11y-trigger {
 
 .cart-bump {
   animation: cart-bump 0.8s ease;
+}
+
+/*-------------- Checkout quantities styling ---------------*/
+.checkout-item-actions {
+  /* display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end; */
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: white;
+  border-radius: 999px;
+  padding: 0.25rem 0.3rem;
+
+  /* border: 1px solid #e8d8dc; */
+  /* box-shadow: 0 2px 6px rgba(121, 84, 96, 0.08); */
+}
+
+.checkout-item-price {
+  font-weight: 700;
+  color: #2a2530;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+.checkout-qty {
+  /* padding: 0.25rem 0.3rem; */
+  font-size: 0.85rem;
+  color: #8b7078;
+}
+
+.checkout-qty span {
+  /* min-width: 1.4rem;
+  text-align: center;
+  font-weight: 800;
+  color: #2a2530; */
+  min-width: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.checkout-qty button {
+  /* width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-size: 1.15rem; */
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: #C8CEFA;
+  color: white;
+  font-weight: 800;
+}
+
+.checkout-qty button:first-child {
+  background: #C8CEFA;
+  color: white;
+}
+
+.checkout-qty button:last-child {
+  background: #DA1884;
+  color: white;
+}
+
+/* ========================= */
+/* Kitchen Color Contrast */
+/* ========================= */
+
+.accessibility-high-contrast .board-shell,
+.accessibility-high-contrast .rail-wrapper,
+.accessibility-high-contrast .ticket-rail {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.accessibility-high-contrast .sidebar,
+.accessibility-high-contrast .rail-header {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .ticket {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  border-top-color: #ffd84d !important;
+}
+
+.accessibility-high-contrast .ticket--done {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+  border-top-color: #ffb6c1 !important;
+}
+
+.accessibility-high-contrast .view-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+.accessibility-high-contrast .view-btn--active,
+.accessibility-high-contrast .view-btn--done {
+  background: #ffd84d !important;
+  color: #000 !important;
+  border-color: #fff !important;
+  font-weight: 700;
+}
+
+.accessibility-high-contrast .ticket-count,
+.accessibility-high-contrast .mod-tag {
+  background: #000 !important;
+  color: #ffd84d !important;
+  border: 1px solid #fff !important;
+}
+
+.accessibility-high-contrast .ticket-item,
+.accessibility-high-contrast .ticket-footer {
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .order-num,
+.accessibility-high-contrast .elapsed,
+.accessibility-high-contrast .item-name,
+.accessibility-high-contrast .complete-time,
+.accessibility-high-contrast .time-label,
+.accessibility-high-contrast .time-value,
+.accessibility-high-contrast .empty {
+  color: #fff !important;
+}
+
+.accessibility-high-contrast .action-btn {
+  border: 2px solid #fff !important;
+  font-weight: 700;
+}
+
+.accessibility-high-contrast .action-btn--done {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .action-btn--undo {
+  background: #ffb6c1 !important;
+  color: #000 !important;
 }

@@ -8,12 +8,44 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
 
 @Service
 public class WomanService {
+    RestTemplate restTemplate = new RestTemplate();
 
+    //list blocked occupation terms
+    private static final Set<String> BLOCKED_TERMS = Set.of(
+    "porn", "adult film", "adult model", "erotic", "onlyfans"
+    );
+    
+    //call to fetch for site
     public Map<String, Object> fetchRandomWoman() {
+        for (int attempt = 0; attempt < 5; attempt++) {
+            Map<String, Object> result = fetchOneRandomWoman();
+            if (isAppropriate(result)) {
+                return result;
+            }
+        }
+        // fallback after 5 attempts
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("name", "Error");
+        errorMap.put("fact", "Could not fetch a result.");
+        errorMap.put("image", null);
+        return errorMap;
+    }
+
+    //checks for blocked terms in fact/name
+    private boolean isAppropriate(Map<String, Object> result) {
+        String fact = result.getOrDefault("fact", "").toString().toLowerCase();
+        String name = result.getOrDefault("name", "").toString().toLowerCase();
+        return BLOCKED_TERMS.stream().noneMatch(term -> 
+            fact.contains(term) || name.contains(term)
+        );
+    }
+
+    public Map<String, Object> fetchOneRandomWoman() {
         try {
             String query = """
                 SELECT ?person ?personLabel ?description ?image WHERE {
@@ -23,7 +55,8 @@ public class WomanService {
                             wdt:P21 wd:Q6581072 ;
                             wdt:P18 ?image ;
                             wikibase:sitelinks ?links .
-                    FILTER(?links > 2)
+                    FILTER(?links > 20)
+                    
                     }
                     LIMIT 1
                     OFFSET %d
@@ -35,9 +68,9 @@ public class WomanService {
                 }
                 }
                 
-            """.formatted((int)(Math.random() * 10000));
+            """.formatted((int)(Math.random() * 5000));
 
-            RestTemplate restTemplate = new RestTemplate();
+            
             HttpHeaders headers = new HttpHeaders();
             headers.set("User-Agent", "WomanCardApp/1.0 (nityakhurana@tamu.edu)");
             headers.set("Accept", "application/sparql-results+json");

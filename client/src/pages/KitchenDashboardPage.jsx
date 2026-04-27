@@ -77,7 +77,7 @@ export default function KitchenDashboardPage() {
 
       {/* TICKET RAIL */}
       <div className="rail-wrapper">
-        <div className="rail-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="rail-header">
           <span>{view === 'active' ? 'Active Orders' : 'Completed Orders'}</span>
           <span className="ticket-count">{orders.length} tickets</span>
       </div>
