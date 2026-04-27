@@ -236,11 +236,6 @@ export default function MenuPage() {
           ? `Current Employee: ${user.firstName} ${user.lastName}`
           : "Cashier"
       }
-      actions={
-        <Link className="primary-button inline" to="/cashier/checkout" aria-label={`Go to checkout. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
-          Checkout ({items.length})
-        </Link>
-      }
     >
       {loading && <p>Loading menu...</p>}
       {error && <p className="error-text">{error}</p>}
@@ -265,7 +260,16 @@ export default function MenuPage() {
         <div className="cashier-menu">
           <div className="split-layout">
             <div className="card">
-              <h2>Menu Items</h2>
+              <div className="menu-card-header">
+                <h2>Menu Items</h2>
+                <Link
+                  className="primary-button inline"
+                  to="/cashier/checkout"
+                  aria-label={`Go to checkout. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}
+                >
+                  Checkout ({items.length})
+                </Link>
+              </div>
               <input
                 type="text"
                 className="menu-search-input"
