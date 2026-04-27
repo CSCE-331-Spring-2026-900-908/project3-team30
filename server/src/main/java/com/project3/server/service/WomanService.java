@@ -17,18 +17,21 @@ public class WomanService {
 
     //list blocked occupation terms
     private static final Set<String> BLOCKED_TERMS = Set.of(
-    "porn", "adult film", "adult model", "erotic", "onlyfans"
+    "porn", "adult film", "adult model", "erotic", "onlyfans", "sex", "war criminal",
+                 "concentration camp","neo-nazi", "model","perpetrator","adult actress", "actress"
     );
     
     //call to fetch for site
     public Map<String, Object> fetchRandomWoman() {
-        for (int attempt = 0; attempt < 5; attempt++) {
+        //try up to 10 times
+        for (int attempt = 0; attempt < 10; attempt++) {
             Map<String, Object> result = fetchOneRandomWoman();
             if (isAppropriate(result)) {
                 return result;
             }
         }
-        // fallback after 5 attempts
+        // fallback after attempts
+        
         Map<String, Object> errorMap = new HashMap<>();
         errorMap.put("name", "Error");
         errorMap.put("fact", "Could not fetch a result.");
@@ -40,6 +43,9 @@ public class WomanService {
     private boolean isAppropriate(Map<String, Object> result) {
         String fact = result.getOrDefault("fact", "").toString().toLowerCase();
         String name = result.getOrDefault("name", "").toString().toLowerCase();
+        if (name.matches("q\\d+")) {
+            return false; //exclude invalid names (qids)
+        }
         return BLOCKED_TERMS.stream().noneMatch(term -> 
             fact.contains(term) || name.contains(term)
         );
@@ -68,7 +74,7 @@ public class WomanService {
                 }
                 }
                 
-            """.formatted((int)(Math.random() * 5000));
+            """.formatted((int)(Math.random() * 7000));
 
             
             HttpHeaders headers = new HttpHeaders();
