@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import FormField from '../components/FormField';
+import Modal from '../components/Modal';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
@@ -54,6 +55,8 @@ export default function MenuPage() {
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [addedItemName, setAddedItemName] = useState('');
 
   const sizeOptions = [
     { name: 'Small', label: 'Small (Default)', price: 0 },
@@ -62,35 +65,32 @@ export default function MenuPage() {
 
   const { addItem, items } = useCart();
   const pollRef = useRef(null);
-
-  const {user} = useAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
         setError('');
-
         const [menuData, alterationData, happyHourData] = await Promise.all([
           api.getMenuItems(),
           api.getAlterations(),
-          api.getActiveHappyHour().catch(() => null), // ← won't crash if endpoint missing
-
+          api.getActiveHappyHour().catch(() => null),
         ]);
-
         setMenuItems(menuData);
         if (selectedItem) {
-        const refreshedSelected = menuData.find((item) => item.name === selectedItem.name);
-        if (!refreshedSelected || refreshedSelected.available === false) {
-          setSelectedItem(null);
-        } else {
-          setSelectedItem(refreshedSelected);
+          const refreshedSelected = menuData.find((item) => item.name === selectedItem.name);
+          if (!refreshedSelected || refreshedSelected.available === false) {
+            setSelectedItem(null);
+          } else {
+            setSelectedItem(refreshedSelected);
+          }
         }
-      }
         setAlterations(alterationData);
         setSelectedSweetness(alterationData.sweetness?.[0] ?? null);
         setSelectedIce(alterationData.ice?.[0] ?? null);
-        setActiveHappyHour(happyHourData); // null if none active
+        setActiveHappyHour(happyHourData);
       } catch (err) {
         console.error('Failed to load menu page data:', err);
         setError(err.message || 'Failed to load menu data');
@@ -98,10 +98,8 @@ export default function MenuPage() {
         setLoading(false);
       }
     }
-
     loadData();
 
-    // Poll every 60 seconds so prices update if happy hour starts/ends mid-shift
     pollRef.current = setInterval(async () => {
       try {
         const happyHourData = await api.getActiveHappyHour();
@@ -128,7 +126,6 @@ export default function MenuPage() {
     return Object.entries(toppingCounts).flatMap(([name, count]) => {
       const topping = alterations.default.find((toppingOption) => toppingOption.name === name);
       if (!topping) return [];
-
       return Array.from({ length: count }, () => ({
         name: topping.name,
         price: topping.price,
@@ -138,14 +135,12 @@ export default function MenuPage() {
 
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
-
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
       ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
-
     return getItemPrice(selectedItem) + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
   }, [selectedItem, selectedSize, toppingMods, selectedSweetness, selectedIce, activeHappyHour]);
 
@@ -159,12 +154,10 @@ export default function MenuPage() {
   const decreaseTopping = (topping) => {
     setToppingCounts((prev) => {
       const current = prev[topping.name] || 0;
-
       if (current <= 1) {
         const { [topping.name]: _, ...rest } = prev;
         return rest;
       }
-
       return {
         ...prev,
         [topping.name]: current - 1,
@@ -174,16 +167,13 @@ export default function MenuPage() {
 
   const addToOrder = () => {
     if (!selectedItem) return;
-
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
       ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
-
     const discountedBase = getItemPrice(selectedItem);
-
     addItem({
       name: selectedItem.name,
       basePrice: discountedBase,
@@ -191,41 +181,39 @@ export default function MenuPage() {
       modifications: mods,
       totalPrice: discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0),
     });
-
+    setAddedItemName(getDisplayDrinkName(selectedItem.name));
+    setShowModal(true);
     setToppingCounts({});
     setSelectedSize(sizeOptions[0]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleViewCart = () => {
+    setShowModal(false);
+    navigate('/cashier/checkout');
+  };
+
   const categories = useMemo(() => {
     const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
-
     return categoryOrder.filter(
       (category) =>
         category === 'All' || menuItems.some((item) => item.category === category)
     );
   }, [menuItems]);
 
-  // const filteredMenuItems = useMemo(() => {
-  //   const smallDrinks = menuItems.filter(isSmallDrink);
-
-  //   if (selectedCategory === 'All') return smallDrinks;
-  //   return smallDrinks.filter((item) => item.category === selectedCategory);
-  // }, [menuItems, selectedCategory]);
-
   const filteredMenuItems = useMemo(() => {
     const search = searchTerm.trim().toLowerCase();
-
     const smallDrinks = menuItems.filter(isSmallDrink);
-
     const categoryFiltered =
       selectedCategory === 'All'
         ? smallDrinks
         : smallDrinks.filter((item) => item.category === selectedCategory);
-
     if (!search) return categoryFiltered;
-
     return categoryFiltered.filter((item) => {
       const searchableText = [
         item.name,
@@ -236,7 +224,6 @@ export default function MenuPage() {
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
-
       return searchableText.includes(search);
     });
   }, [menuItems, selectedCategory, searchTerm]);
@@ -257,25 +244,23 @@ export default function MenuPage() {
     >
       {loading && <p>Loading menu...</p>}
       {error && <p className="error-text">{error}</p>}
-
-{activeHappyHour && (
-  <div
-    role="status"
-    aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
-    className="happy-hour-banner"
-  >
-    <div>
-      <p className="happy-hour-title">Happy Hour</p>
-      <p className="happy-hour-time">
-        {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
-      </p>
-    </div>
-    <p className="happy-hour-discount">
-      {Math.round(activeHappyHour.percentOff * 100)}% off
-    </p>
-  </div>
-)}
-
+      {activeHappyHour && (
+        <div
+          role="status"
+          aria-label={`Happy Hour active. ${Math.round(activeHappyHour.percentOff * 100)} percent off all drinks from ${formatTime(activeHappyHour.startTime)} to ${formatTime(activeHappyHour.endTime)}`}
+          className="happy-hour-banner"
+        >
+          <div>
+            <p className="happy-hour-title">Happy Hour</p>
+            <p className="happy-hour-time">
+              {formatTime(activeHappyHour.startTime)} – {formatTime(activeHappyHour.endTime)}
+            </p>
+          </div>
+          <p className="happy-hour-discount">
+            {Math.round(activeHappyHour.percentOff * 100)}% off
+          </p>
+        </div>
+      )}
       {!loading && !error && (
         <div className="cashier-menu">
           <div className="split-layout">
@@ -301,7 +286,6 @@ export default function MenuPage() {
                 ))}
               </div>
               <div className="menu-grid">
-
                 {filteredMenuItems.map((item) => (
                   <button
                     key={item.name}
@@ -321,7 +305,6 @@ export default function MenuPage() {
                 ))}
               </div>
             </div>
-
             <div className="card">
               <h2>Customize Drink</h2>
               {!selectedItem ? (
@@ -336,7 +319,6 @@ export default function MenuPage() {
                       </span>
                     )}
                   </p>
-
                   <FormField label="Size">
                     <select
                       aria-label="Select drink size"
@@ -354,7 +336,6 @@ export default function MenuPage() {
                       ))}
                     </select>
                   </FormField>
-
                   <FormField label="Sweetness">
                     <select
                       aria-label="Select sweetness level"
@@ -374,7 +355,6 @@ export default function MenuPage() {
                         ))}
                     </select>
                   </FormField>
-
                   <FormField label="Ice">
                     <select
                       aria-label="Select ice level"
@@ -394,20 +374,17 @@ export default function MenuPage() {
                         ))}
                     </select>
                   </FormField>
-
                   <div className="customize-section">
                     <h3>Toppings</h3>
                     <div className="topping-list">
                       {alterations.default.map((topping) => {
                         const count = toppingCounts[topping.name] || 0;
-
                         return (
                           <div key={topping.name} className="topping-row">
                             <div className="topping-info">
                               <span className="topping-name">{topping.name}</span>
                               <span className="topping-price">{currency(topping.price)} ea.</span>
                             </div>
-
                             <div className="topping-controls">
                               <button type="button" onClick={() => decreaseTopping(topping)}>-</button>
                               <span>{count}</span>
@@ -418,10 +395,8 @@ export default function MenuPage() {
                       })}
                     </div>
                   </div>
-
                   <div className="customize-popup-footer">
                     <strong>Total: {currency(runningTotal)}</strong>
-
                     <div className="button-group">
                       <button
                         className="secondary-button inline"
@@ -431,7 +406,6 @@ export default function MenuPage() {
                       >
                         Cancel
                       </button>
-
                       <button
                         className="primary-button inline"
                         type="button"
@@ -447,6 +421,18 @@ export default function MenuPage() {
           </div>
         </div>
       )}
+
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <p className="modal-message">{addedItemName} added to cart</p>
+        <div className="modal-actions">
+          <button className="secondary-button" onClick={handleCloseModal}>
+            Back to menu
+          </button>
+          <button className="primary-button" onClick={handleViewCart}>
+            View cart
+          </button>
+        </div>
+      </Modal>
     </PageShell>
   );
 }
