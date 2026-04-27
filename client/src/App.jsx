@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import ManagerLoginPage from './pages/ManagerLoginPage';
 import ManagerDashboardPage from './pages/ManagerDashboardPage';
+import ManagerOrdersPage from './pages/ManagerOrdersPage';
 import CashierDashboardPage from './pages/CashierDashboardPage';
 import MenuPage from './pages/MenuPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -22,7 +23,6 @@ import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
 import Translator from './components/Translator';
 import CustomizePage from './pages/CustomizePage';
-import HappyHourAndManageMenuPage from './pages/HappyHourAndManageMenuPage';
 import HappyHourPage from './pages/HappyHourPage';
 import AccessibilityToolbox from './components/AccessibilityToolbox';
 
@@ -32,7 +32,7 @@ export default function App() {
 
   const hideTranslator =
     location.pathname === '/menu-board';
-    
+
 
   return (
     <>
@@ -53,24 +53,32 @@ export default function App() {
           element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
         />
         <Route
+          path="/manager/orders"
+          element={<ProtectedRoute roles={['manager']}><ManagerOrdersPage /></ProtectedRoute>}
+        />
+        <Route
           path="/manager/employees"
           element={<ProtectedRoute roles={['manager']}><ManageEmployeesPage /></ProtectedRoute>}
         />
         <Route
           path="/manager/menu"
-          element={<ProtectedRoute roles={['manager']}><HappyHourAndManageMenuPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/manager/menu/menu"
           element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
         />
         <Route
-          path="/manager/menu//menu:itemName/ingredients"
+          path="/manager/menu/:itemName/ingredients"
           element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
         />
         <Route
-          path="/manager/menu/happyhour"
+          path="/manager/happy-hour"
           element={<ProtectedRoute roles={['manager']}><HappyHourPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu/menu"
+          element={<Navigate to="/manager/menu" replace />}
+        />
+        <Route
+          path="/manager/menu/happyhour"
+          element={<Navigate to="/manager/happy-hour" replace />}
         />
         <Route
           path="/manager/inventory"
@@ -113,7 +121,7 @@ export default function App() {
         <Route path="/customer/checkout" element={<CustomerCheckoutPage />} />
 
         <Route path="/customize/:name" element={<CustomizePage />} />
-        <Route path="*" element={<Navigate to="/home" replace />} /> 
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );

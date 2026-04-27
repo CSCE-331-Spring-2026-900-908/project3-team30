@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import DataTable from '../components/DataTable';
 import FormField from '../components/FormField';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 import { api } from '../services/api';
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -177,8 +176,7 @@ export default function ManageHappyHourPage() {
   });
 
   return (
-    <PageShell title="Manage Happy Hour" actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
-    >
+    <ManagerLayout title="Manage Happy Hour">
       <div className="split-layout">
         <div>
           <DataTable
@@ -273,6 +271,6 @@ export default function ManageHappyHourPage() {
           {status ? <p className="success-text">{status}</p> : null}
         </div>
       </div>
-    </PageShell>
+    </ManagerLayout>
   );
 }

@@ -8,6 +8,7 @@ const styles = `
     border-radius: 24px;
     max-width: 350px;
     width: 100%;
+    margin-top: 0.5rem;
     box-shadow:
       0 0 0 3px #ff69b4,
       0 0 0 6px #ffb6d9,

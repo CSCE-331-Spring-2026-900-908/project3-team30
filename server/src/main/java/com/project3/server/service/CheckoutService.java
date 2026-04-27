@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class CheckoutService {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, transactionNumber);
-                stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+                stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)));
                 stmt.setDouble(3, total);
                 stmt.setString(4, orderNotes);
                 stmt.executeUpdate();
@@ -180,7 +181,7 @@ public class CheckoutService {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, transactionNumber);
-            stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)));
             stmt.setDouble(3, total);
             stmt.setString(4, orderNotes);
             stmt.setString(5, paymentMethod);

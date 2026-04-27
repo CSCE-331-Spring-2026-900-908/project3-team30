@@ -44,6 +44,7 @@ function isSmallDrink(item) {
 export default function CustomerPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [alterations, setAlterations] = useState({
+    default: [],
     defaults: [],
     sweetness: [],
     ice: []
@@ -161,7 +162,7 @@ export default function CustomerPage() {
   return (
     <section className="customer-page">
       <PageShell
-        title="Drinks in the Dreamhouse"
+        title={<img src="/images/logo.png" alt="Menu" className="menu-board-logo" />}
         // subtitle="Sip something fabulous."
         subtitle={
           <WeatherWidget

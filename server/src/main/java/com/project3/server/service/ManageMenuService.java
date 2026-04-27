@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 
 @Service
 public class ManageMenuService {
+    private static final String DEFAULT_IMAGE_URL = "/images/1686684207354.webp";
     
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -21,13 +22,27 @@ public class ManageMenuService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
+    private void ensureImageColumn(Connection conn) throws Exception {
+        String sql = "ALTER TABLE menu_items ADD COLUMN IF NOT EXISTS image_url TEXT";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
+
+    private String cleanImageUrl(String imageUrl) {
+        return imageUrl == null || imageUrl.trim().isEmpty() ? DEFAULT_IMAGE_URL : imageUrl.trim();
+    }
+
     public MenuItem saveMenuItem(MenuItem item) throws Exception {
         // Check if item exists
         String checkSql = "SELECT name FROM menu_items WHERE name = ?";
-        String insertSql = "INSERT INTO menu_items (name, price, category, image_url) VALUES (?, ?, ?, https://food.fnr.sndimg.com/content/dam/images/food/fullset/2023/6/13/boba-milk-tea.jpg.rend.hgtvcom.1280.1280.85.suffix/1686684207354.webp)";
-        String updateSql = "UPDATE menu_items SET price = ?, category = ? WHERE name = ?";
+        String insertSql = "INSERT INTO menu_items (name, price, category, image_url) VALUES (?, ?, ?, ?)";
+        String updateSql = "UPDATE menu_items SET price = ?, category = ?, image_url = ? WHERE name = ?";
         
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            ensureImageColumn(conn);
+            String imageUrl = cleanImageUrl(item.getImageURL());
+            item.setImageURL(imageUrl);
             
             // Check if exists
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
@@ -39,7 +54,8 @@ public class ManageMenuService {
                     try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                         updateStmt.setDouble(1, item.getPrice());
                         updateStmt.setString(2, item.getCategory());
-                        updateStmt.setString(3, item.getName());
+                        updateStmt.setString(3, imageUrl);
+                        updateStmt.setString(4, item.getName());
                         updateStmt.executeUpdate();
                     }
                 } else {
@@ -48,6 +64,7 @@ public class ManageMenuService {
                         insertStmt.setString(1, item.getName());
                         insertStmt.setDouble(2, item.getPrice());
                         insertStmt.setString(3, item.getCategory());
+                        insertStmt.setString(4, imageUrl);
                         insertStmt.executeUpdate();
                     }
                 }
