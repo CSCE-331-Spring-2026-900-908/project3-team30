@@ -77,8 +77,14 @@ export default function CustomizePopUp({
     }
   }, [item, alterations, toppings, isEdit]);
 
-  const itemPrice = item.price ?? item.basePrice;
-  const basePrice = applyDiscount(itemPrice, activeHappyHour?.percentOff);
+  // const itemPrice = item.price ?? item.basePrice;
+  // const basePrice = applyDiscount(itemPrice, activeHappyHour?.percentOff);
+
+  const itemPrice = item.price ?? item.originalPrice ?? item.basePrice ?? 0;
+
+  const basePrice = isEdit
+    ? item.basePrice
+    : applyDiscount(itemPrice, activeHappyHour?.percentOff);
 
   const toppingMods = useMemo(() => {
     return Object.entries(toppingCounts).flatMap(([name, count]) => {
@@ -123,6 +129,7 @@ export default function CustomizePopUp({
 
     onAddToCart({
       name: item.name,
+      originalPrice: itemPrice,
       basePrice,
       image: item.image,
       modifications: mods,
@@ -215,12 +222,13 @@ export default function CustomizePopUp({
             <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
 
-                {activeHappyHour && (
-                    <>
+                {activeHappyHour && itemPrice !== basePrice && (
+                  <>
                     <span className="original-price">{currency(itemPrice)}</span>
-                    {/* <span className="discount-price">{currency(basePrice)}</span> */}
-                    <span className="discount-badge">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
-                    </>
+                    <span className="discount-badge">
+                      {Math.round(activeHappyHour.percentOff * 100)}% off
+                    </span>
+                  </>
                 )}
             </p>
           </div>
