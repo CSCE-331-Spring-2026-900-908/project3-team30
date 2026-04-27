@@ -78,6 +78,18 @@ export default function CustomerPage() {
     return () => clearInterval(pollRef.current);
   }, []);
 
+  const cartButtonRef = useRef(null);
+
+useEffect(() => {
+  if (items.length === 0) return;
+  const btn = cartButtonRef.current;
+  if (!btn) return;
+  btn.classList.remove('cart-bump');
+  void btn.offsetWidth; // force reflow so animation restarts
+  btn.classList.add('cart-bump');
+}, [items.length]);
+
+
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
     const discountedBase = applyDiscount(selectedItem.price, activeHappyHour?.percentOff);
@@ -170,22 +182,23 @@ export default function CustomerPage() {
             longitude={-96.34}
             locationName="College Station, TX"
           />}
-        actions={
-          <Link
-            className="primary-button inline"
-            to="/customer/checkout"
-            aria-label={`View cart with ${items.length} item${items.length === 1 ? '' : 's'}`}
-          >
-            View Cart ({items.length})
-          </Link>
-        }
       >
       
 <HappyHourBanner activeHappyHour={activeHappyHour} />
 
 
-      <div className="card customer-menu-card">
-        <h2>Menu Items</h2>
+        <div className="card customer-menu-card">
+          <div className="menu-card-header">
+            <h2>Menu Items</h2>
+            <Link
+              ref={cartButtonRef}
+              className="primary-button inline"
+              to="/customer/checkout"
+              aria-label={`View cart with ${items.length} item${items.length === 1 ? '' : 's'}`}
+            >
+              View Cart ({items.length})
+            </Link>
+          </div>
           <input
             type="text"
             className="menu-search-input"

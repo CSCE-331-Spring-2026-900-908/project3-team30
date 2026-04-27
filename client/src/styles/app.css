@@ -2445,3 +2445,30 @@ body.modal-open .a11y-trigger {
   max-height: 180px;
   object-fit: contain;
 }
+
+.menu-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem; 
+}
+
+.menu-card-header h2 {
+  margin: 0;
+}
+.menu-card-header .primary-button {
+  margin-top: 3rem;
+  margin-right: 1rem; 
+
+}
+
+@keyframes cart-bump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.2); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.cart-bump {
+  animation: cart-bump 0.8s ease;
+}
