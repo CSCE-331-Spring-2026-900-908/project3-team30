@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import '../styles/app.css';
 import WomanCard from '../components/WomanCard';
+import MenuItemShowcase from '../components/MenuItemShowcase';
 
 export default function MenuBoardPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -91,7 +92,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
           <div className="menu-board-columns">
             <div className="menu-board-column menu-board-left">
               {Object.entries(groupedItems)
-                .filter(([category]) => category !== 'seasonal')
+                .filter(([category]) => category !== 'Seasonal')
                 .map(([category, items]) => (
                   <div key={category} className="menu-board-section">
                     <h2 className="menu-board-category">{category}</h2>
@@ -120,7 +121,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
 
             <div className="menu-board-column menu-board-center">
               {Object.entries(groupedItems)
-                .filter(([category]) => category === 'seasonal')
+                .filter(([category]) => category === 'Seasonal')
                 .map(([category, items]) => (
                   <div key={category} className="menu-board-section">
                     <h2 className="menu-board-category">{category}</h2>
@@ -150,9 +151,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
                 <p>Happy Hour Placeholder</p>
               </div>
 
-              <div className="menu-board-placeholder">
-                <p>Image Placeholder</p>
-              </div>
+              <MenuItemShowcase />
             </div>
           </div>
         </div>
