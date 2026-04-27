@@ -52,6 +52,7 @@ export default function CustomerPage() {
   const [selectedIce, setSelectedIce] = useState('100% Ice');
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { addItem, items } = useCart();
   const navigate = useNavigate();
@@ -120,13 +121,40 @@ export default function CustomerPage() {
     );
   }, [menuItems]);
 
+  // const filteredMenuItems = useMemo(() => {
+  //   const smallDrinks = menuItems.filter(isSmallDrink);
+
+  //   if (selectedCategory === 'All') return smallDrinks;
+
+  //   return smallDrinks.filter((item) => item.category === selectedCategory);
+  // }, [menuItems, selectedCategory]);
+
   const filteredMenuItems = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+
     const smallDrinks = menuItems.filter(isSmallDrink);
 
-    if (selectedCategory === 'All') return smallDrinks;
+    const categoryFiltered =
+      selectedCategory === 'All'
+        ? smallDrinks
+        : smallDrinks.filter((item) => item.category === selectedCategory);
 
-    return smallDrinks.filter((item) => item.category === selectedCategory);
-  }, [menuItems, selectedCategory]);
+    if (!search) return categoryFiltered;
+
+    return categoryFiltered.filter((item) => {
+      const searchableText = [
+        item.name,
+        item.category,
+        item.description,
+        item.ingredients,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      return searchableText.includes(search);
+    });
+  }, [menuItems, selectedCategory, searchTerm]);
 
   return (
     <section className="customer-page">
@@ -193,6 +221,13 @@ export default function CustomerPage() {
 
       <div className="card customer-menu-card">
         <h2>Menu Items</h2>
+          <input
+            type="text"
+            className="menu-search-input"
+            placeholder="Search drinks or ingredients..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <div className="category-tabs">
             {categories.map((category) => (
               <button
