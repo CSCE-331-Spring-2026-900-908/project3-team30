@@ -65,7 +65,7 @@ export default function App() {
           element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
         />
         <Route
-          path="/manager/menu//menu:itemName/ingredients"
+          path="/manager/menu/:itemName/ingredients"
           element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
         />
         <Route
