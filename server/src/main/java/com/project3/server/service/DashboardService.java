@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.ZoneId;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.Map;
  */
 @Service
 public class DashboardService {
+
+    private static final String DEFAULT_MANAGER_TIME_ZONE = "America/Chicago";
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -34,7 +38,9 @@ public class DashboardService {
      * @return ManagerSummary object containing the summary data
      * @throws Exception if an error occurs while fetching the data
      */
-    public ManagerSummary getManagerSummary() throws Exception {
+    public ManagerSummary getManagerSummary(String timeZone) throws Exception {
+        String safeTimeZone = normalizeTimeZone(timeZone);
+
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
 
             int ordersToday = 0;
@@ -43,45 +49,70 @@ public class DashboardService {
             int activeEmployees = 0;
 
             String ordersSql = """
+                WITH localized_sales AS (
+                    SELECT (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                    FROM sales
+                ), latest_day AS (
+                    SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+                )
                 SELECT COUNT(*) AS orders_today
-                FROM sales
-                WHERE order_time::date = (SELECT MAX(order_time)::date FROM sales)
+                FROM localized_sales, latest_day
+                WHERE local_order_time::date = latest_day.sales_day
                 """;
 
-            try (PreparedStatement ps = conn.prepareStatement(ordersSql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    ordersToday = rs.getInt("orders_today");
+            try (PreparedStatement ps = conn.prepareStatement(ordersSql)) {
+                ps.setString(1, safeTimeZone);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ordersToday = rs.getInt("orders_today");
+                    }
                 }
             }
 
             String revenueSql = """
+                WITH localized_sales AS (
+                    SELECT total_cost, (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                    FROM sales
+                ), latest_day AS (
+                    SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+                )
                 SELECT COALESCE(SUM(total_cost), 0) AS revenue_today
-                FROM sales
-                WHERE order_time::date = (SELECT MAX(order_time)::date FROM sales)
+                FROM localized_sales, latest_day
+                WHERE local_order_time::date = latest_day.sales_day
                 """;
 
-            try (PreparedStatement ps = conn.prepareStatement(revenueSql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    revenueToday = rs.getDouble("revenue_today");
+            try (PreparedStatement ps = conn.prepareStatement(revenueSql)) {
+                ps.setString(1, safeTimeZone);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        revenueToday = rs.getDouble("revenue_today");
+                    }
                 }
             }
 
             String topItemSql = """
+                WITH localized_sales AS (
+                    SELECT transaction_number, (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                    FROM sales
+                ), latest_day AS (
+                    SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+                )
                 SELECT items_purchased.item_name, COUNT(*) AS cnt
                 FROM items_purchased
-                JOIN sales ON items_purchased.transaction_number = sales.transaction_number
-                WHERE sales.order_time::date = (SELECT MAX(order_time)::date FROM sales)
+                JOIN localized_sales ON items_purchased.transaction_number = localized_sales.transaction_number
+                CROSS JOIN latest_day
+                WHERE localized_sales.local_order_time::date = latest_day.sales_day
                 GROUP BY items_purchased.item_name
                 ORDER BY cnt DESC
                 LIMIT 1
                 """;
 
-            try (PreparedStatement ps = conn.prepareStatement(topItemSql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    topItem = rs.getString("item_name");
+            try (PreparedStatement ps = conn.prepareStatement(topItemSql)) {
+                ps.setString(1, safeTimeZone);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        topItem = rs.getString("item_name");
+                    }
                 }
             }
 
@@ -101,23 +132,30 @@ public class DashboardService {
         }
     }
 
-    public Map<String, Object> getManagerInsights() throws Exception {
+    public Map<String, Object> getManagerInsights(String timeZone) throws Exception {
+        String safeTimeZone = normalizeTimeZone(timeZone);
+
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             Map<String, Object> insights = new LinkedHashMap<>();
-            insights.put("hourlySales", loadHourlySales(conn));
-            insights.put("categorySales", loadCategorySales(conn));
-            insights.put("topItems", loadTopItems(conn));
+            insights.put("hourlySales", loadHourlySales(conn, safeTimeZone));
+            insights.put("categorySales", loadCategorySales(conn, safeTimeZone));
+            insights.put("topItems", loadTopItems(conn, safeTimeZone));
             return insights;
         }
     }
 
-    public List<Map<String, Object>> getManagerOrders(String search, String status, String sort) throws Exception {
+    public List<Map<String, Object>> getManagerOrders(String search, String status, String sort, String timeZone) throws Exception {
+        String safeTimeZone = normalizeTimeZone(timeZone);
+
         StringBuilder sql = new StringBuilder("""
             SELECT
                 s.transaction_number,
-                s.order_time,
+                to_char((s.order_time AT TIME ZONE 'UTC' AT TIME ZONE ?), 'YYYY-MM-DD"T"HH24:MI:SS') AS order_time_local,
                 s.complete,
-                s.complete_time,
+                CASE
+                    WHEN s.complete_time IS NULL THEN NULL
+                    ELSE to_char((s.complete_time AT TIME ZONE 'UTC' AT TIME ZONE ?), 'YYYY-MM-DD"T"HH24:MI:SS')
+                END AS complete_time_local,
                 s.total_cost,
                 COALESCE(STRING_AGG(i.item_name, ', ' ORDER BY i.item_name), '') AS items,
                 COALESCE(STRING_AGG(NULLIF(i.notes, ''), '; ' ORDER BY i.item_name), '') AS notes
@@ -127,6 +165,8 @@ public class DashboardService {
             """);
 
         List<Object> params = new ArrayList<>();
+        params.add(safeTimeZone);
+        params.add(safeTimeZone);
 
         if ("active".equalsIgnoreCase(status)) {
             sql.append(" AND s.complete = false\n");
@@ -166,9 +206,9 @@ public class DashboardService {
                 while (rs.next()) {
                     Map<String, Object> order = new LinkedHashMap<>();
                     order.put("orderNum", rs.getInt("transaction_number"));
-                    order.put("orderTime", rs.getTimestamp("order_time"));
+                    order.put("orderTime", rs.getString("order_time_local"));
                     order.put("complete", rs.getBoolean("complete"));
-                    order.put("completeTime", rs.getTimestamp("complete_time"));
+                    order.put("completeTime", rs.getString("complete_time_local"));
                     order.put("totalCost", rs.getDouble("total_cost"));
                     order.put("items", rs.getString("items"));
                     order.put("notes", rs.getString("notes"));
@@ -179,59 +219,95 @@ public class DashboardService {
         }
     }
 
-    private List<Map<String, Object>> loadHourlySales(Connection conn) throws Exception {
+    private List<Map<String, Object>> loadHourlySales(Connection conn, String timeZone) throws Exception {
         String sql = """
-            SELECT EXTRACT(HOUR FROM order_time)::int AS hour, COALESCE(SUM(total_cost), 0) AS revenue, COUNT(*) AS orders
-            FROM sales
-            WHERE order_time::date = (SELECT MAX(order_time)::date FROM sales)
-            GROUP BY EXTRACT(HOUR FROM order_time)
+            WITH localized_sales AS (
+                SELECT total_cost, (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                FROM sales
+            ), latest_day AS (
+                SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+            )
+            SELECT EXTRACT(HOUR FROM local_order_time)::int AS hour,
+                   COALESCE(SUM(total_cost), 0) AS revenue,
+                   COUNT(*) AS orders
+            FROM localized_sales, latest_day
+            WHERE local_order_time::date = latest_day.sales_day
+            GROUP BY EXTRACT(HOUR FROM local_order_time)
             ORDER BY hour
             """;
-        return loadChartRows(conn, sql, "hour", "revenue", "orders");
+        return loadChartRows(conn, sql, timeZone, "hour", "revenue", "orders");
     }
 
-    private List<Map<String, Object>> loadCategorySales(Connection conn) throws Exception {
+    private List<Map<String, Object>> loadCategorySales(Connection conn, String timeZone) throws Exception {
         String sql = """
+            WITH localized_sales AS (
+                SELECT transaction_number, (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                FROM sales
+            ), latest_day AS (
+                SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+            )
             SELECT COALESCE(mi.category, 'Uncategorized') AS category,
                    COALESCE(SUM(mi.price), 0) AS revenue,
                    COUNT(*) AS orders
             FROM items_purchased ip
-            JOIN sales s ON s.transaction_number = ip.transaction_number
+            JOIN localized_sales s ON s.transaction_number = ip.transaction_number
+            CROSS JOIN latest_day
             LEFT JOIN menu_items mi ON mi.name = ip.item_name
-            WHERE s.order_time::date = (SELECT MAX(order_time)::date FROM sales)
+            WHERE s.local_order_time::date = latest_day.sales_day
             GROUP BY COALESCE(mi.category, 'Uncategorized')
             ORDER BY revenue DESC
             LIMIT 8
             """;
-        return loadChartRows(conn, sql, "category", "revenue", "orders");
+        return loadChartRows(conn, sql, timeZone, "category", "revenue", "orders");
     }
 
-    private List<Map<String, Object>> loadTopItems(Connection conn) throws Exception {
+    private List<Map<String, Object>> loadTopItems(Connection conn, String timeZone) throws Exception {
         String sql = """
+            WITH localized_sales AS (
+                SELECT transaction_number, (order_time AT TIME ZONE 'UTC' AT TIME ZONE ?) AS local_order_time
+                FROM sales
+            ), latest_day AS (
+                SELECT MAX(local_order_time::date) AS sales_day FROM localized_sales
+            )
             SELECT ip.item_name AS item, COUNT(*) AS orders, COALESCE(SUM(mi.price), 0) AS revenue
             FROM items_purchased ip
-            JOIN sales s ON s.transaction_number = ip.transaction_number
+            JOIN localized_sales s ON s.transaction_number = ip.transaction_number
+            CROSS JOIN latest_day
             LEFT JOIN menu_items mi ON mi.name = ip.item_name
-            WHERE s.order_time::date = (SELECT MAX(order_time)::date FROM sales)
+            WHERE s.local_order_time::date = latest_day.sales_day
             GROUP BY ip.item_name
             ORDER BY orders DESC, revenue DESC
             LIMIT 5
             """;
-        return loadChartRows(conn, sql, "item", "orders", "revenue");
+        return loadChartRows(conn, sql, timeZone, "item", "orders", "revenue");
     }
 
-    private List<Map<String, Object>> loadChartRows(Connection conn, String sql, String labelColumn, String firstValueColumn, String secondValueColumn) throws Exception {
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            List<Map<String, Object>> rows = new ArrayList<>();
-            while (rs.next()) {
-                Map<String, Object> row = new LinkedHashMap<>();
-                row.put("label", rs.getObject(labelColumn));
-                row.put(firstValueColumn, rs.getDouble(firstValueColumn));
-                row.put(secondValueColumn, rs.getDouble(secondValueColumn));
-                rows.add(row);
+    private List<Map<String, Object>> loadChartRows(Connection conn, String sql, String timeZone, String labelColumn, String firstValueColumn, String secondValueColumn) throws Exception {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, timeZone);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Map<String, Object>> rows = new ArrayList<>();
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("label", rs.getObject(labelColumn));
+                    row.put(firstValueColumn, rs.getDouble(firstValueColumn));
+                    row.put(secondValueColumn, rs.getDouble(secondValueColumn));
+                    rows.add(row);
+                }
+                return rows;
             }
-            return rows;
+        }
+    }
+
+    private String normalizeTimeZone(String timeZone) {
+        if (timeZone == null || timeZone.isBlank()) {
+            return DEFAULT_MANAGER_TIME_ZONE;
+        }
+
+        try {
+            return ZoneId.of(timeZone).getId();
+        } catch (DateTimeException ex) {
+            return DEFAULT_MANAGER_TIME_ZONE;
         }
     }
 }

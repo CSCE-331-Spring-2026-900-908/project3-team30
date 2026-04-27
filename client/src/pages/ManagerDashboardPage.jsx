@@ -6,16 +6,7 @@ import StatCard from '../components/StatCard';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
-
-function formatOrderDate(value) {
-  if (!value) return '—';
-  return new Date(value).toLocaleString([], {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
-}
+import { formatOrderDate, getBrowserTimeZone } from '../utils/time';
 
 export default function ManagerDashboardPage() {
   const [summary, setSummary] = useState(null);
@@ -49,10 +40,11 @@ export default function ManagerDashboardPage() {
     setLoading(true);
     setFeedback('Loading manager dashboard...');
     try {
+      const timeZone = getBrowserTimeZone();
       const [summaryData, insightData, orderData] = await Promise.all([
-        api.getManagerSummary(),
-        api.getManagerInsights(),
-        api.getManagerOrders({ status: 'all', sort: 'newest' })
+        api.getManagerSummary(timeZone),
+        api.getManagerInsights(timeZone),
+        api.getManagerOrders({ status: 'all', sort: 'newest', timeZone })
       ]);
       setSummary(summaryData);
       setInsights({
@@ -73,7 +65,7 @@ export default function ManagerDashboardPage() {
   return (
     <ManagerLayout
       title="Manager Dashboard"
-      subtitle="Today’s store performance at a glance."
+      subtitle="Today's store performance at a glance."
       actions={
         <button className="secondary-button" onClick={loadDashboard} disabled={loading}>Refresh dashboard</button>
       }
@@ -106,7 +98,7 @@ export default function ManagerDashboardPage() {
             <div className="dashboard-card-heading">
               <div>
                 <h2>Recent Orders</h2>
-                <p className="subtle">Newest orders from the order system.</p>
+                {/* <p className="subtle">Newest orders from the order system.</p> */}
               </div>
               <Link className="ghost-link" to="/manager/orders">View all</Link>
             </div>

@@ -1,4 +1,5 @@
 import { ingredientMap, inventoryItems, menuItems, reports, users } from './mockData';
+import { DEFAULT_MANAGER_TIME_ZONE } from '../utils/time';
 
 const sleep = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -49,9 +50,10 @@ export const api = {
    * @return an object with the manager summary data (total sales, total orders, etc.)
    * @throws an error if the request fails
    */
-  async getManagerSummary() {
+  async getManagerSummary(timeZone = DEFAULT_MANAGER_TIME_ZONE) {
 
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary`);
+    const params = new URLSearchParams({ timeZone });
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary?${params.toString()}`);
     if (!res.ok) {
       throw new Error('Failed to load manager summary');
     }
@@ -59,16 +61,17 @@ export const api = {
     
   },
 
-  async getManagerInsights() {
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-insights`);
+  async getManagerInsights(timeZone = DEFAULT_MANAGER_TIME_ZONE) {
+    const params = new URLSearchParams({ timeZone });
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-insights?${params.toString()}`);
     if (!res.ok) {
       throw new Error('Failed to load manager dashboard insights');
     }
     return res.json();
   },
 
-  async getManagerOrders({ search = '', status = 'all', sort = 'newest' } = {}) {
-    const params = new URLSearchParams({ search, status, sort });
+  async getManagerOrders({ search = '', status = 'all', sort = 'newest', timeZone = DEFAULT_MANAGER_TIME_ZONE } = {}) {
+    const params = new URLSearchParams({ search, status, sort, timeZone });
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-orders?${params.toString()}`);
     if (!res.ok) {
       const errorText = await res.text();

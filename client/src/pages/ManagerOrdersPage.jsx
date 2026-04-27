@@ -2,16 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ManagerLayout from '../components/ManagerLayout';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
-
-function formatOrderDate(value) {
-  if (!value) return '—';
-  return new Date(value).toLocaleString([], {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
-}
+import { formatOrderDate, getBrowserTimeZone } from '../utils/time';
 
 export default function ManagerOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -28,7 +19,7 @@ export default function ManagerOrdersPage() {
     setLoading(true);
     setFeedback('Loading orders...');
     try {
-      const orderData = await api.getManagerOrders(filters);
+      const orderData = await api.getManagerOrders({ ...filters, timeZone: getBrowserTimeZone() });
       setOrders(orderData);
       setFeedback(`Showing ${orderData.length} matching order${orderData.length === 1 ? '' : 's'}.`);
     } catch (err) {
