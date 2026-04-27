@@ -112,7 +112,7 @@ export default function CustomerPage() {
   };
 
   const categories = useMemo(() => {
-    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'seasonal'];
+    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
 
     return categoryOrder.filter(
       (category) =>
