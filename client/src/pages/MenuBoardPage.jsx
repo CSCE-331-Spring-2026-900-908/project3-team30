@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import '../styles/app.css';
 import WomanCard from '../components/WomanCard';
+import MenuItemShowcase from '../components/MenuItemShowcase';
 
 export default function MenuBoardPage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -83,50 +84,94 @@ const groupedItems = menuItems.reduce((acc, item) => {
   }
 
   return (
-    <div className="menu-board-container">
-      <div className="menu-board-left">
-        <h1 className="menu-board-title">Menu</h1>
-        
-        {Object.entries(groupedItems).map(([category, items]) => (
-          <div key={category} className="menu-board-section">
-            <h2 className="menu-board-category">{category}</h2>
+    <div className="menu-board-wrapper">
+      <div className="menu-board-container">
+        <div className="menu-board-left-center">
+          <h1 className="menu-board-title">Menu</h1>
+          
+          <div className="menu-board-columns">
+            <div className="menu-board-column menu-board-left">
+              {Object.entries(groupedItems)
+                .filter(([category]) => category !== 'Seasonal')
+                .map(([category, items]) => (
+                  <div key={category} className="menu-board-section">
+                    <h2 className="menu-board-category">{category}</h2>
+                    <div className="menu-board-items">
+                      {items.map(item => (
+                        <div key={item.baseName || item.name} className="menu-board-row">
+                          <span className="menu-board-item-name">{item.name}</span>
+                          <span className="menu-board-dots"></span>
+                          <span className="menu-board-price">
+                            {item.smallPrice && item.largePrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.smallPrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)}</>
+                            ) : item.largePrice ? (
+                              <>L: ${item.largePrice.toFixed(2)}</>
+                            ) : (
+                              <>${item.price.toFixed(2)}</>
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            <div className="menu-board-column menu-board-center">
+              {Object.entries(groupedItems)
+                .filter(([category]) => category === 'Seasonal')
+                .map(([category, items]) => (
+                  <div key={category} className="menu-board-section">
+                    <h2 className="menu-board-category">{category}</h2>
+                    <div className="menu-board-items">
+                      {items.map(item => (
+                        <div key={item.baseName || item.name} className="menu-board-row">
+                          <span className="menu-board-item-name">{item.name}</span>
+                          <span className="menu-board-dots"></span>
+                          <span className="menu-board-price">
+                            {item.smallPrice && item.largePrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.smallPrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)}</>
+                            ) : item.largePrice ? (
+                              <>L: ${item.largePrice.toFixed(2)}</>
+                            ) : (
+                              <>${item.price.toFixed(2)}</>
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              
+              <div className="menu-board-placeholder">
+                <p>Happy Hour Placeholder</p>
+              </div>
+
+              <MenuItemShowcase />
+            </div>
+          </div>
+        </div>
+
+        <div className="menu-board-column menu-board-right">
+          <div className="menu-board-toppings">
+            <h2 className="menu-board-category">Toppings</h2>
             <div className="menu-board-items">
-              {items.map(item => (
-                <div key={item.baseName || item.name} className="menu-board-row">
-                  <span className="menu-board-item-name">{item.name}</span>
+              {toppings.map(topping => (
+                <div key={topping.name} className="menu-board-row">
+                  <span className="menu-board-item-name">{topping.name}</span>
                   <span className="menu-board-dots"></span>
-                  <span className="menu-board-price">
-                    {item.smallPrice && item.largePrice ? (
-                      <>Small: ${item.smallPrice.toFixed(2)} | Large: ${item.largePrice.toFixed(2)}</>
-                    ) : item.smallPrice ? (
-                      <>Small: ${item.smallPrice.toFixed(2)}</>
-                    ) : item.largePrice ? (
-                      <>Large: ${item.largePrice.toFixed(2)}</>
-                    ) : (
-                      <>${item.price.toFixed(2)}</>
-                    )}
-                  </span>
+                  <span className="menu-board-price">${topping.price.toFixed(2)}</span>
                 </div>
               ))}
             </div>
           </div>
-        ))}
-      </div>
 
-      <div className="menu-board-right">
-        <div className="menu-board-toppings">
-          <h2 className="menu-board-category">Toppings</h2>
-          <div className="menu-board-items">
-            {toppings.map(topping => (
-              <div key={topping.name} className="menu-board-row">
-                <span className="menu-board-item-name">{topping.name}</span>
-                <span className="menu-board-dots"></span>
-                <span className="menu-board-price">${topping.price.toFixed(2)}</span>
-              </div>
-            ))}
-          </div>
+          <WomanCard />
         </div>
-        <WomanCard></WomanCard>
       </div>
     </div>
   );

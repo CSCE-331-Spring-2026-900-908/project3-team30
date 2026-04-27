@@ -7,12 +7,21 @@ public class MenuItem {
     private String name;
     private double price;
     private String category;
+    private String imageURL;
     private List<MenuItemIngredient> ingredients = new ArrayList<>();
 
     public MenuItem(String name, double price, String category){
         this.name = name;
         this.price = price;
         this.category = category;
+        this.imageURL = "";
+    }
+    
+    public MenuItem(String name, double price, String category, String imageURL){
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.imageURL = imageURL;
     }
 
     public String getName(){
@@ -39,6 +48,13 @@ public class MenuItem {
         this.category = category;
     }
 
+    public String getImageURL(){
+        return imageURL;
+    }
+
+    public void setImageURL(String itemURL){
+        this.imageURL = itemURL;
+    }
 
     public List<MenuItemIngredient> getIngredients(){
         return ingredients;
