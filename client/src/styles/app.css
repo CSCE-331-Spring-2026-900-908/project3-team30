@@ -2537,3 +2537,85 @@ body.modal-open .a11y-trigger {
   background: #DA1884;
   color: white;
 }
+
+/* ========================= */
+/* Kitchen Color Contrast */
+/* ========================= */
+
+.accessibility-high-contrast .board-shell,
+.accessibility-high-contrast .rail-wrapper,
+.accessibility-high-contrast .ticket-rail {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.accessibility-high-contrast .sidebar,
+.accessibility-high-contrast .rail-header {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .ticket {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  border-top-color: #ffd84d !important;
+}
+
+.accessibility-high-contrast .ticket--done {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+  border-top-color: #ffb6c1 !important;
+}
+
+.accessibility-high-contrast .view-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+.accessibility-high-contrast .view-btn--active,
+.accessibility-high-contrast .view-btn--done {
+  background: #ffd84d !important;
+  color: #000 !important;
+  border-color: #fff !important;
+  font-weight: 700;
+}
+
+.accessibility-high-contrast .ticket-count,
+.accessibility-high-contrast .mod-tag {
+  background: #000 !important;
+  color: #ffd84d !important;
+  border: 1px solid #fff !important;
+}
+
+.accessibility-high-contrast .ticket-item,
+.accessibility-high-contrast .ticket-footer {
+  border-color: #fff !important;
+}
+
+.accessibility-high-contrast .order-num,
+.accessibility-high-contrast .elapsed,
+.accessibility-high-contrast .item-name,
+.accessibility-high-contrast .complete-time,
+.accessibility-high-contrast .time-label,
+.accessibility-high-contrast .time-value,
+.accessibility-high-contrast .empty {
+  color: #fff !important;
+}
+
+.accessibility-high-contrast .action-btn {
+  border: 2px solid #fff !important;
+  font-weight: 700;
+}
+
+.accessibility-high-contrast .action-btn--done {
+  background: #ffd84d !important;
+  color: #000 !important;
+}
+
+.accessibility-high-contrast .action-btn--undo {
+  background: #ffb6c1 !important;
+  color: #000 !important;
+}
