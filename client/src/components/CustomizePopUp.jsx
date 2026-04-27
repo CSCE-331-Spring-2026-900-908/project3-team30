@@ -19,6 +19,7 @@ export default function CustomizePopUp({
   activeHappyHour,
   onClose,
   onAddToCart,
+  isEdit = false
 }) {
   // const [selectedMods, setSelectedMods] = useState([]);
   const [selectedSweetness, setSelectedSweetness] = useState(null);
@@ -33,15 +34,51 @@ export default function CustomizePopUp({
     { name: 'Large', price: 1.5 },
   ];
 
-  useEffect(() => { // this is the reset useEffect
-    // setSelectedMods([]);
-    setToppingCounts({});
-    setSelectedSweetness(alterations.sweetness?.[0] ?? null);
-    setSelectedIce(alterations.ice?.[0] ?? null);
-    setSelectedSize(sizeOptions[0]);
-  }, [item, alterations]);
+  // useEffect(() => { // this is the reset useEffect
+  //   // setSelectedMods([]);
+  //   setToppingCounts({});
+  //   setSelectedSweetness(alterations.sweetness?.[0] ?? null);
+  //   setSelectedIce(alterations.ice?.[0] ?? null);
+  //   setSelectedSize(sizeOptions[0]);
+  // }, [item, alterations]);
 
-  const basePrice = applyDiscount(item.price, activeHappyHour?.percentOff);
+  useEffect(() => {
+    if (isEdit && item.modifications?.length) {
+      const sizeMod = item.modifications.find((mod) =>
+        sizeOptions.some((option) => option.name === mod.name)
+      );
+
+      const sweetnessMod = item.modifications.find((mod) =>
+        alterations.sweetness?.some((option) => option.name === mod.name)
+      );
+
+      const iceMod = item.modifications.find((mod) =>
+        alterations.ice?.some((option) => option.name === mod.name)
+      );
+
+      const toppingMods = item.modifications.filter((mod) =>
+        toppings.some((topping) => topping.name === mod.name)
+      );
+
+      const counts = toppingMods.reduce((acc, mod) => {
+        acc[mod.name] = (acc[mod.name] || 0) + 1;
+        return acc;
+      }, {});
+
+      setSelectedSize(sizeMod ?? sizeOptions[0]);
+      setSelectedSweetness(sweetnessMod ?? alterations.sweetness?.[0] ?? null);
+      setSelectedIce(iceMod ?? alterations.ice?.[0] ?? null);
+      setToppingCounts(counts);
+    } else {
+      setToppingCounts({});
+      setSelectedSweetness(alterations.sweetness?.[0] ?? null);
+      setSelectedIce(alterations.ice?.[0] ?? null);
+      setSelectedSize(sizeOptions[0]);
+    }
+  }, [item, alterations, toppings, isEdit]);
+
+  const itemPrice = item.price ?? item.basePrice;
+  const basePrice = applyDiscount(itemPrice, activeHappyHour?.percentOff);
 
   const toppingMods = useMemo(() => {
     return Object.entries(toppingCounts).flatMap(([name, count]) => {
@@ -180,7 +217,7 @@ export default function CustomizePopUp({
 
                 {activeHappyHour && (
                     <>
-                    <span className="original-price">{currency(item.price)}</span>
+                    <span className="original-price">{currency(itemPrice)}</span>
                     {/* <span className="discount-price">{currency(basePrice)}</span> */}
                     <span className="discount-badge">{Math.round(activeHappyHour.percentOff * 100)}% off</span>
                     </>
@@ -315,7 +352,7 @@ export default function CustomizePopUp({
                 type="button"
                 onClick={handleAdd}
                 >
-                Add to Cart
+                {isEdit ? 'Save Changes' : 'Add to Cart'}
                 </button>
             </div>
           </div>

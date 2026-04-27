@@ -16,6 +16,13 @@ export function CartProvider({ children }) {
     removeItem(index) {
       setItems((prev) => prev.filter((_, i) => i !== index));
     },
+    updateItem(index, updatedItem) {
+      setItems((prevItems) =>
+        prevItems.map((item, i) =>
+          i === index ? updatedItem : item
+        )
+      );
+    },
     get subtotal() {
       return items.reduce((sum, item) => sum + item.totalPrice, 0);
     },
