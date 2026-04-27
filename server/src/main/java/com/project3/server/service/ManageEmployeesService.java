@@ -28,11 +28,16 @@ public class ManageEmployeesService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
-    int code = 0;
-    String firstName = "";
-    String lastName = "";
-    // boolean isManager = false;
-    boolean role = false;
+    private void ensureEmailColumn(Connection conn) throws Exception {
+        String sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
+
+    private String cleanEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
+    }
 
     /**
      * Retrieves the list of all employees
@@ -41,7 +46,8 @@ public class ManageEmployeesService {
      */
     public List<ManageEmployees> getEmployeeList() throws Exception { //this will be refresh table
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            String getEmployees = "SELECT code, first_name, last_name, is_manager FROM users ORDER BY code";
+            ensureEmailColumn(conn);
+            String getEmployees = "SELECT code, first_name, last_name, is_manager, email FROM users ORDER BY code";
             try (PreparedStatement ps = conn.prepareStatement(getEmployees);
                  ResultSet rs = ps.executeQuery()) {
                 List<ManageEmployees> employees = new ArrayList<>();
@@ -52,7 +58,8 @@ public class ManageEmployeesService {
                         rs.getInt("code"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        role
+                        role,
+                        rs.getString("email")
                     ));
                 }
                 return employees;
@@ -70,28 +77,20 @@ public class ManageEmployeesService {
      */
     public void addEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            if (employee == null
-                || employee.getCode() == 0
-                || employee.getFirstName() == null
-                || employee.getFirstName().trim().isEmpty()
-                || employee.getLastName() == null
-                || employee.getLastName().trim().isEmpty()) {
-            
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All fields are required.");
-            }
+            ensureEmailColumn(conn);
+            validateEmployee(employee);
 
-            String addUser = "INSERT INTO users (code, first_name, last_name, is_manager) VALUES (?, ?, ?, ?)";
+            String addUser = "INSERT INTO users (code, first_name, last_name, is_manager, email) VALUES (?, ?, ?, ?, ?)";
 
             try (PreparedStatement ps = conn.prepareStatement(addUser)) {
                 ps.setInt(1, employee.getCode());
                 ps.setString(2, employee.getFirstName());
                 ps.setString(3, employee.getLastName());
-                // ps.setBoolean(4, employee.getRole().equals("manager"));
                 ps.setBoolean(4, "manager".equals(employee.getRole()));
+                ps.setString(5, cleanEmail(employee.getEmail()));
 
                 ps.executeUpdate();
                 System.out.println("Added user " + employee.getCode());
-                // getEmployeeList();
             } catch (Exception e) {
                 System.err.println("Error executing add user query: " + e.getMessage()); 
                 throw e; // Rethrow the exception to be handled by the controller
@@ -106,33 +105,55 @@ public class ManageEmployeesService {
      */
     public void updateEmployee(ManageEmployees employee) throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            if (employee == null
-                || employee.getCode() == 0
-                || employee.getFirstName() == null
-                || employee.getFirstName().trim().isEmpty()
-                || employee.getLastName() == null
-                || employee.getLastName().trim().isEmpty()) {
-            
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All fields are required.");
-            }
+            ensureEmailColumn(conn);
+            validateEmployee(employee);
 
-            String updateUser = "UPDATE users SET first_name = ?, last_name = ?, is_manager = ? WHERE code = ?";
+            String updateUser = "UPDATE users SET first_name = ?, last_name = ?, is_manager = ?, email = ? WHERE code = ?";
             try (PreparedStatement ps = conn.prepareStatement(updateUser)) {
                 ps.setString(1, employee.getFirstName());
                 ps.setString(2, employee.getLastName());
                 ps.setBoolean(3, "manager".equals(employee.getRole()));
-                ps.setInt(4, employee.getCode());
+                ps.setString(4, cleanEmail(employee.getEmail()));
+                ps.setInt(5, employee.getCode());
 
                 int updated = ps.executeUpdate();
                 if (updated == 0){
-                    // System.err.println("No user found with code " + employee.getCode());
-                    // throw new Exception("No user found with code " + employee.getCode());
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No employee found with code " + employee.getCode());
                 }
                 System.out.println("Updated user " + employee.getCode());
             } catch (Exception e) {
                 System.err.println("Error executing update user query: " + e.getMessage()); 
                 throw e;
+            }
+        }
+    }
+
+    private void validateEmployee(ManageEmployees employee) {
+        if (employee == null
+            || employee.getCode() == 0
+            || employee.getFirstName() == null
+            || employee.getFirstName().trim().isEmpty()
+            || employee.getLastName() == null
+            || employee.getLastName().trim().isEmpty()) {
+        
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code, first name, and last name are required.");
+        }
+    }
+
+    public boolean isAuthorizedManagerEmail(String email) throws Exception {
+        String cleanedEmail = cleanEmail(email);
+        if (cleanedEmail.isEmpty()) {
+            return false;
+        }
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            ensureEmailColumn(conn);
+            String sql = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?) AND is_manager = true LIMIT 1";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, cleanedEmail);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
             }
         }
     }
@@ -153,8 +174,6 @@ public class ManageEmployeesService {
                 ps.setInt(1, employee.getCode());
                 int deleted = ps.executeUpdate();
                 if (deleted == 0){
-                    // System.err.println("No user found with code " + employee.getCode());
-                    // throw new Exception("No user found with code " + employee.getCode());
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No employee found with code " + employee.getCode());
                 }
                 System.out.println("Deleted user " + employee.getCode());

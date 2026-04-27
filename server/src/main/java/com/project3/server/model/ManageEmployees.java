@@ -9,6 +9,7 @@ public class ManageEmployees {
     private String firstName;
     private String lastName;
     private String role;
+    private String email;
 
     /**
      * Constructor for ManageEmployees
@@ -24,10 +25,15 @@ public class ManageEmployees {
      * @param role
      */
     public ManageEmployees(int code, String firstName, String lastName, String role) {
+        this(code, firstName, lastName, role, "");
+    }
+
+    public ManageEmployees(int code, String firstName, String lastName, String role, String email) {
         this.code = code;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
+        this.email = email;
     }
 
     /**
@@ -92,5 +98,13 @@ public class ManageEmployees {
      */
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

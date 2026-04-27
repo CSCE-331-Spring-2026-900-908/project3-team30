@@ -2428,3 +2428,20 @@ body.modal-open .a11y-trigger {
 .accessibility-high-contrast .hhb__label {
   color: #ffd84d !important;
 }
+
+.menu-image-preview {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  border: 1px dashed #ddb8c1;
+  border-radius: 18px;
+  background: #fff8fa;
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+}
+
+.menu-image-preview img {
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}

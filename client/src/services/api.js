@@ -33,6 +33,32 @@ const fetchWithCredentials = (url, options = {}) => {
   });
 };
 
+async function fetchJsonWithFallback(paths, errorMessage) {
+  let lastErrorText = '';
+
+  for (const path of paths) {
+    const res = await fetchWithCredentials(`${API_BASE_URL}${path}`);
+    if (res.ok) {
+      return res.json();
+    }
+
+    lastErrorText = await res.text().catch(() => '');
+    if (res.status !== 404) {
+      throw new Error(lastErrorText || errorMessage);
+    }
+  }
+
+  throw new Error(lastErrorText || errorMessage);
+}
+
+function managerEndpointPaths(endpoint, params) {
+  const query = params ? `?${params.toString()}` : '';
+  return [
+    `/api/${endpoint}${query}`,
+    `/api/dashboard/${endpoint}${query}`,
+  ];
+}
+
 export const api = {
   async login(pin) {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/login?pin=${encodeURIComponent(pin)}`);
@@ -51,33 +77,27 @@ export const api = {
    * @throws an error if the request fails
    */
   async getManagerSummary(timeZone = DEFAULT_MANAGER_TIME_ZONE) {
-
     const params = new URLSearchParams({ timeZone });
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-summary?${params.toString()}`);
-    if (!res.ok) {
-      throw new Error('Failed to load manager summary');
-    }
-    return res.json();
-    
+    return fetchJsonWithFallback(
+      managerEndpointPaths('manager-summary', params),
+      'Failed to load manager summary'
+    );
   },
 
   async getManagerInsights(timeZone = DEFAULT_MANAGER_TIME_ZONE) {
     const params = new URLSearchParams({ timeZone });
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-insights?${params.toString()}`);
-    if (!res.ok) {
-      throw new Error('Failed to load manager dashboard insights');
-    }
-    return res.json();
+    return fetchJsonWithFallback(
+      managerEndpointPaths('manager-insights', params),
+      'Failed to load manager dashboard insights'
+    );
   },
 
   async getManagerOrders({ search = '', status = 'all', sort = 'newest', timeZone = DEFAULT_MANAGER_TIME_ZONE } = {}) {
     const params = new URLSearchParams({ search, status, sort, timeZone });
-    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-orders?${params.toString()}`);
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to load manager orders');
-    }
-    return res.json();
+    return fetchJsonWithFallback(
+      managerEndpointPaths('manager-orders', params),
+      'Failed to load manager orders'
+    );
   },
 
   async saveUser(payload) {
