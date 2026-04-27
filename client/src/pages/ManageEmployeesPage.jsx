@@ -5,7 +5,7 @@ import FormField from '../components/FormField';
 import PageShell from '../components/PageShell';
 import { api } from '../services/api';
 
-const emptyForm = { code: '', firstName: '', lastName: '', role: 'cashier' };
+const emptyForm = { code: '', firstName: '', lastName: '', role: 'cashier', email: '' };
 const USERS_CACHE_KEY = 'manageEmployees_users';
 
 export default function ManageEmployeesPage() {
@@ -64,6 +64,7 @@ export default function ManageEmployeesPage() {
         firstName: form.firstName,
         lastName: form.lastName,
         role: form.role,
+        email: form.email.trim(),
       };
 
       const existingUser = users.find((user) => user.code === codeNumber);
@@ -113,6 +114,7 @@ export default function ManageEmployeesPage() {
             { key: 'firstName', label: 'First Name' },
             { key: 'lastName', label: 'Last Name' },
             { key: 'role', label: 'Role' },
+            { key: 'email', label: 'Google Auth Email' },
           ]}
           rows={users}
           onRowClick={(row) =>
@@ -121,6 +123,7 @@ export default function ManageEmployeesPage() {
               firstName: row.firstName,
               lastName: row.lastName,
               role: row.role,
+              email: row.email ?? '',
             })
           }
         />
@@ -159,6 +162,15 @@ export default function ManageEmployeesPage() {
               <option value="cashier">Cashier</option>
               <option value="manager">Manager</option>
             </select>
+          </FormField>
+
+          <FormField label="Google Auth Email">
+            <input
+              type="email"
+              placeholder="manager@tamu.edu"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
           </FormField>
 
           <div className="inline-actions">

@@ -23,7 +23,6 @@ import CustomerCheckoutPage from './pages/CustomerCheckoutPage';
 import KitchenDashboardPage from './pages/KitchenDashboardPage';
 import Translator from './components/Translator';
 import CustomizePage from './pages/CustomizePage';
-import HappyHourAndManageMenuPage from './pages/HappyHourAndManageMenuPage';
 import HappyHourPage from './pages/HappyHourPage';
 import AccessibilityToolbox from './components/AccessibilityToolbox';
 
@@ -33,7 +32,7 @@ export default function App() {
 
   const hideTranslator =
     location.pathname === '/menu-board';
-    
+
 
   return (
     <>
@@ -63,10 +62,6 @@ export default function App() {
         />
         <Route
           path="/manager/menu"
-          element={<ProtectedRoute roles={['manager']}><HappyHourAndManageMenuPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/manager/menu/menu"
           element={<ProtectedRoute roles={['manager']}><ManageMenuPage /></ProtectedRoute>}
         />
         <Route
@@ -74,8 +69,16 @@ export default function App() {
           element={<ProtectedRoute roles={['manager']}><IngredientEditorPage /></ProtectedRoute>}
         />
         <Route
-          path="/manager/menu/happyhour"
+          path="/manager/happy-hour"
           element={<ProtectedRoute roles={['manager']}><HappyHourPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/menu/menu"
+          element={<Navigate to="/manager/menu" replace />}
+        />
+        <Route
+          path="/manager/menu/happyhour"
+          element={<Navigate to="/manager/happy-hour" replace />}
         />
         <Route
           path="/manager/inventory"
@@ -118,7 +121,7 @@ export default function App() {
         <Route path="/customer/checkout" element={<CustomerCheckoutPage />} />
 
         <Route path="/customize/:name" element={<CustomizePage />} />
-        <Route path="*" element={<Navigate to="/home" replace />} /> 
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );

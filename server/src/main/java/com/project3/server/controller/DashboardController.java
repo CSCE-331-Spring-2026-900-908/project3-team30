@@ -33,21 +33,21 @@ public class DashboardController {
      * @return the manager summary
      * @throws Exception
      */
-    @GetMapping("/manager-summary")
+    @GetMapping({"/manager-summary", "/dashboard/manager-summary"})
     public ManagerSummary getManagerSummary(
             @RequestParam(required = false, defaultValue = "America/Chicago") String timeZone
     ) throws Exception {
         return dashboardService.getManagerSummary(timeZone);
     }
 
-    @GetMapping("/manager-insights")
+    @GetMapping({"/manager-insights", "/dashboard/manager-insights"})
     public Map<String, Object> getManagerInsights(
             @RequestParam(required = false, defaultValue = "America/Chicago") String timeZone
     ) throws Exception {
         return dashboardService.getManagerInsights(timeZone);
     }
 
-    @GetMapping("/manager-orders")
+    @GetMapping({"/manager-orders", "/dashboard/manager-orders"})
     public List<Map<String, Object>> getManagerOrders(
             @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(required = false, defaultValue = "all") String status,

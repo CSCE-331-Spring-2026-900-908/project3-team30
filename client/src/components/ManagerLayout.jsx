@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 const managerNavItems = [
   { label: 'Dashboard', to: '/manager', end: true },
   { label: 'Orders', to: '/manager/orders' },
-  { label: 'Menu', to: '/manager/menu' },
+  { label: 'Manage Menu', to: '/manager/menu' },
+  { label: 'Happy Hour', to: '/manager/happy-hour' },
   { label: 'Inventory', to: '/manager/inventory' },
   { label: 'Employees', to: '/manager/employees' },
   { label: 'Reports', to: '/manager/reports' }

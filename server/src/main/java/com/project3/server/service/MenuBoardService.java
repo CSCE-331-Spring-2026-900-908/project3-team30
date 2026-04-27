@@ -24,7 +24,7 @@ public class MenuBoardService {
     private String dbPassword;
 
     public List<MenuItem> getDrinks() throws Exception{
-        String sql = "SELECT name, price, category FROM menu_items WHERE category NOT IN ('ice', 'sweetness', 'toppings')";
+        String sql = "SELECT name, price, category, image_url FROM menu_items WHERE category NOT IN ('ice', 'sweetness', 'toppings')";
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -36,7 +36,8 @@ public class MenuBoardService {
                 drinks.add(new MenuItem(
                         rs.getString("name"),
                         rs.getDouble("price"),
-                        rs.getString("category")
+                        rs.getString("category"),
+                        rs.getString("image_url")
                 ));
             }
 
@@ -45,7 +46,7 @@ public class MenuBoardService {
     }
 
     public List<MenuItem> getToppings() throws Exception{
-        String sql = "SELECT name, price, category FROM menu_items WHERE category = 'toppings'";
+        String sql = "SELECT name, price, category, image_url FROM menu_items WHERE category = 'toppings'";
 
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -57,7 +58,8 @@ public class MenuBoardService {
                 toppings.add(new MenuItem(
                         rs.getString("name"),
                         rs.getDouble("price"),
-                        rs.getString("category")
+                        rs.getString("category"),
+                        rs.getString("image_url")
                 ));
             }
 
