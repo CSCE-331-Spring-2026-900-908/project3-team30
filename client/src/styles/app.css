@@ -1961,3 +1961,90 @@ body.modal-open .a11y-trigger {
   background-position: right 1rem center;
   background-size: 24px 24px;
 }
+.happy-hour-widget {
+  background: #fff7f9;
+  border: 2px solid #d36a6a;
+  border-radius: 20px;
+  padding: 10px 16px;
+  margin-bottom: 1rem;
+  font-family: Inter, system-ui, sans-serif;
+  box-shadow:
+    0 0 0 4px #ffe4f0,
+    0 0 0 6px #d36a6a;
+}
+
+.hhw-header {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #7d4a55;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.hhw-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f0d0da;
+  border-bottom: 1px solid #f0d0da;
+  padding: 8px 0;
+  gap: 8px;
+}
+
+.hhw-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.hhw-cell-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #c471a0;
+  margin: 0;
+}
+
+.hhw-cell-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #b5365a;
+  margin: 0;
+  line-height: 1;
+}
+
+.hhw-cell-sublabel {
+  font-size: 0.6rem;
+  color: #a07080;
+  margin: 0;
+}
+
+.hhw-cell-pill {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d36a6a;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin: 0;
+  line-height: 1;
+}
+
+.hhw-separator {
+  width: 1px;
+  height: 40px;
+  background: #f0d0da;
+  flex-shrink: 0;
+}
+.hhw-cell-value-light {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a07080;
+  margin: 0;
+  line-height: 1.4;
+}

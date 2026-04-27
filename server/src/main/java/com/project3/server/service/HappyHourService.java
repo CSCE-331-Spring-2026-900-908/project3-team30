@@ -11,8 +11,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HappyHourService {
@@ -205,5 +209,51 @@ public class HappyHourService {
         }
 
         return null; // No active happy hour
+    }
+
+    public Optional<HappyHour> getNextHappyHour() throws Exception {
+        String sql = """
+                SELECT day, start_time, end_time, percent_off
+                FROM happy_hour
+                WHERE start_time IS NOT NULL
+                AND end_time IS NOT NULL
+                AND percent_off IS NOT NULL
+                """;
+
+        java.time.ZoneId zone = java.time.ZoneId.of("America/Chicago");
+        LocalDateTime now = LocalDateTime.now(zone);
+        LocalTime currentTime = now.toLocalTime();
+
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+
+            List<HappyHour> scheduled = new ArrayList<>();
+            while (rs.next()) {
+                scheduled.add(new HappyHour(
+                    rs.getString("day"),
+                    rs.getTime("start_time").toLocalTime(),
+                    rs.getTime("end_time").toLocalTime(),
+                    rs.getDouble("percent_off")
+                ));
+            }
+
+            for (int i = 0; i < 7; i++) {
+                DayOfWeek day = now.getDayOfWeek().plus(i);
+                String dayName = day.name().charAt(0) + day.name().substring(1).toLowerCase();
+
+                HappyHour hh = scheduled.stream()
+                    .filter(h -> h.getDay().equalsIgnoreCase(dayName))
+                    .findFirst()
+                    .orElse(null);
+
+                if (hh == null) continue;
+                if (i == 0 && currentTime.isAfter(hh.getEndTime())) continue;
+
+                return Optional.of(hh);
+            }
+        }
+
+        return Optional.empty();
     }
 }

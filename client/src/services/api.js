@@ -538,4 +538,5 @@ export const api = {
     }
     return res.json();
   },
+  getNextHappyHour: () => fetch(`${API_BASE_URL}/api/happy-hour/next-happy-hour`).then(r => r.ok ? r.json() : null),
 };

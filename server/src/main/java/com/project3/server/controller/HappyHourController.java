@@ -41,4 +41,11 @@ public class HappyHourController {
         }
         return ResponseEntity.ok(active);
     }
+
+    @GetMapping("/happy-hour/next-happy-hour")
+    public ResponseEntity<?> getNextHappyHour() throws Exception {
+        return happyHourService.getNextHappyHour()
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.noContent().build());
+    }
 }
