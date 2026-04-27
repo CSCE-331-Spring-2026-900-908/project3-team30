@@ -162,7 +162,7 @@ export default function CustomerPage() {
   return (
     <section className="customer-page">
       <PageShell
-        title="Drinks in the Dreamhouse"
+        title={<img src="/images/logo.png" alt="Menu" className="menu-board-logo" />}
         // subtitle="Sip something fabulous."
         subtitle={
           <WeatherWidget
