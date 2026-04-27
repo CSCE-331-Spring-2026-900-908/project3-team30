@@ -21,7 +21,7 @@ export default function LoginPage() {
 
       const isCashierRoute = location.pathname.includes('cashier');
       if (isCashierRoute && user.role !== 'cashier' && user.role !== 'manager') {
-        setError('Cashier access only');
+        setError('Employee access only');
         setPin('');
         return;
       }
