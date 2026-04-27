@@ -99,8 +99,8 @@ export default function CustomizePage() {
       {/* Total — only change from original */}
       <p role="status" aria-live="polite">Total: {currency(runningTotal)}</p>
 
-      <button type="button" onClick={addToCart} aria-label={`Add ${item.name} to cart. Total ${currency(runningTotal)}`}>Add to Cart</button>
-      <button type="button" onClick={() => navigate("/customer")} aria-label="Cancel customization and return to customer menu">Cancel</button>
+      <button type="button" className="primary-button inline" onClick={addToCart} aria-label={`Add ${item.name} to cart. Total ${currency(runningTotal)}`}>Add to Cart</button>
+      <button type="button" className="primary-button inline" onClick={() => navigate("/customer")} aria-label="Cancel customization and return to customer menu">Cancel</button>
     </div>
   );
 }

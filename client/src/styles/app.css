@@ -19,7 +19,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .pin-button { background: #fff; border: 1px solid #ebd2d8; border-radius: 18px; padding: 1rem; }
 .pin-button.ghost { background: #fff7f8; }
 .primary-button, .secondary-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.85rem 1.2rem; border-radius: 999px; }
-.primary-button { background: #bf5050;; color: white; }
+.primary-button { background: #bf5050; color: white; }
 .secondary-button { background: #f4e4e8; color: #7d4a55; }
 .ghost-link { background: transparent; color: #7d4a55; }
 .primary-button.inline, .secondary-button.inline { width: auto; }
@@ -937,13 +937,35 @@ html {
   padding: 0.55rem 1rem;
   font-weight: 700;
   cursor: pointer;
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
-.category-tab:hover,
+/* .category-tab:hover,
 .category-tab.active {
   background: #bf5050;
   color: white;
   border-color: #d36a6a;
+} */
+
+.category-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(121, 84, 96, 0.12);
+
+  background: #fff0f3;
+  border-color: #d36a6a;
+
+  /* box-shadow: 0 8px 18px rgba(121, 84, 96, 0.12),
+              0 0 0 2px rgba(211, 106, 106, 0.15); */
+}
+
+.category-tab.active {
+  background: #bf5050;
+  color: white;
+  border-color: #d36a6a;
+
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(121, 84, 96, 0.18);
 }
 
 /* ----- Cashier weird cards fix ---- */
@@ -1297,70 +1319,7 @@ html {
 }
 
 /*----------- Anisha Kitchen Stuff ---------------*/
-.happy-hour-banner {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #f9c5d1 0%, #fde8ec 50%, #f9c5d1 100%);
-  border-radius: 20px;
-  margin-bottom: 1.25rem;
-  border: 1.5px solid #f0a8b8;
-  box-shadow: 0 4px 24px rgba(210, 100, 130, 0.15);
-}
 
-.happy-hour-circle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.happy-hour-inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 28px;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.happy-hour-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #b5365a;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.happy-hour-time {
-  font-size: 13px;
-  font-weight: 500;
-  color: #c26080;
-  letter-spacing: 0.01em;
-}
-
-.happy-hour-discount {
-  font-size: 42px;
-  font-weight: 900;
-  color: #b5365a;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
-.happy-hour-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #c26080;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.happy-hour-remaining {
-  font-size: 28px;
-  font-weight: 900;
-  color: #b5365a;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
 
 /*KITCHEN STUFF*/
 
@@ -2105,4 +2064,192 @@ body.modal-open .a11y-trigger {
   .manager-sidebar {
     position: static;
   }
+}
+/*--------- Menu Search Input ---------*/
+.menu-search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 16px;
+  /* margin: auto auto auto auto; */
+  display: block;
+
+  border: 2px solid #e8c4cc;
+  border-radius: 999px;
+  font-size: 1rem;
+
+  background-color: #fff7f8;
+  color: #3b2a1f;
+  outline: none;
+}
+
+/* .menu-search-input:focus {
+  border-color: #9b6f47;
+  box-shadow: 0 0 0 3px rgba(155, 111, 71, 0.2);
+} */
+
+.menu-search-input::placeholder {
+  color: #8a7a6d;
+}
+.menu-search-input:hover,
+.menu-search-input.active {
+  background: #f9e0e3;
+  /* color: white; */
+  /* border-color: #d36a6a; */
+}
+
+/*-------- Anisha happy hour widget update --------*/
+.happy-hour-widget {
+  background: #fff7f9;
+  border: 2px solid #d36a6a;
+  border-radius: 20px;
+  padding: 10px 16px;
+  margin-bottom: 1rem;
+  font-family: Inter, system-ui, sans-serif;
+  box-shadow:
+    0 0 0 4px #ffe4f0,
+    0 0 0 6px #d36a6a;
+}
+
+.hhw-header {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #7d4a55;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.hhw-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f0d0da;
+  border-bottom: 1px solid #f0d0da;
+  padding: 8px 0;
+  gap: 8px;
+}
+
+.hhw-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.hhw-cell-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #c471a0;
+  margin: 0;
+}
+
+.hhw-cell-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #b5365a;
+  margin: 0;
+  line-height: 1;
+}
+
+.hhw-cell-sublabel {
+  font-size: 0.6rem;
+  color: #a07080;
+  margin: 0;
+}
+
+.hhw-cell-pill {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d36a6a;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin: 0;
+  line-height: 1;
+}
+
+.hhw-separator {
+  width: 1px;
+  height: 40px;
+  background: #f0d0da;
+  flex-shrink: 0;
+}
+.hhw-cell-value-light {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a07080;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/*-------- Checkout Overhaul --------*/
+.checkout-cart-card {
+  padding: 1.75rem;
+  border-radius: 28px;
+}
+
+.checkout-actions {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fffafd;
+  border: 1px solid #f0d8dd;
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(121, 84, 96, 0.08);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.checkout-subtotal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.checkout-subtotal span {
+  color: #7d4a55;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+}
+
+.checkout-subtotal strong {
+  font-size: 1.8rem;
+  color: #b83b6f;
+}
+
+.checkout-buttons {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- High Contrast: Happy Hour Banner ---------- */
+.accessibility-high-contrast .hhb {
+  background: #2a1118 !important;
+  border-color: #ffb6c1 !important;
+  box-shadow: none !important;
+}
+
+.accessibility-high-contrast .hhb__blob {
+  background: rgba(255, 182, 193, 0.1) !important;
+}
+
+.accessibility-high-contrast .hhb__title,
+.accessibility-high-contrast .hhb__discount,
+.accessibility-high-contrast .hhb__remaining {
+  color: #ffb6c1 !important;
+}
+
+.accessibility-high-contrast .hhb__time,
+.accessibility-high-contrast .hhb__label {
+  color: #ffd84d !important;
 }

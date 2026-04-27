@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import Modal from '../components/Modal';
@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
 import { useNavigate } from 'react-router-dom';
+import CustomizePopUp from '../components/CustomizePopUp';
 
 function summarizeModifications(modifications = []) {
   const counts = modifications.reduce((acc, mod) => {
@@ -21,10 +22,11 @@ function summarizeModifications(modifications = []) {
 }
 
 export default function CheckoutPage() {
-  const { items, clearCart, removeItem, subtotal } = useCart();
+  const { items, clearCart, removeItem, updateItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const [activeHappyHour, setActiveHappyHour] = useState(null);
   
   const processOrder = async (paymentMethod) => {
     const response = await api.processOrder({
@@ -53,12 +55,44 @@ export default function CheckoutPage() {
     navigate('/customer');
   };
 
+  const [alterations, setAlterations] = useState({
+    defaults: [],
+    sweetness: [],
+    ice: [],
+    toppings: []
+  });
+
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+
+  useEffect(() => {
+    api.getAlterations()
+      .then((alterationData) => {
+        // console.log("alterationData:", alterationData);
+        setAlterations({
+          ...alterationData,
+          toppings: alterationData.default ?? []
+        });
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    api.getActiveHappyHour()
+      .then(setActiveHappyHour)
+      .catch(console.error);
+  }, []);
+
+  const toppingOptions = alterations.toppings?.length
+    ? alterations.toppings
+    : alterations.default ?? [];
+
   return (
     <PageShell
       title="Checkout"
       actions={<Link className="ghost-link" to="/customer">Back to menu</Link>}
     >
-      <div className="card">
+      <div className="card checkout-cart-card">
         <h2>Current Cart</h2>
         {items.length === 0 ? (
           <p className="subtle">No items in cart.</p>
@@ -76,17 +110,13 @@ export default function CheckoutPage() {
                 </div>
                 <div className="inline-actions">
                   <span>{currency(item.totalPrice)}</span>
-                  <button className="secondary-button inline" onClick={() => {
-                        const itemToEdit = items[index];
-                        removeItem(index);
-                        navigate(`/customize/${encodeURIComponent(itemToEdit.name)}`, {
-                          state: {
-                            item: itemToEdit,
-                            index,
-                            isEdit: true
-                          }
-                        });
-                      }}>
+                  <button
+                    className="secondary-button inline"
+                    onClick={() => {
+                      setEditingIndex(index);
+                      setEditingItem(item);
+                    }}
+                  >
                     Edit
                   </button>
                   <button className="secondary-button inline" onClick={() => removeItem(index)}>
@@ -98,25 +128,33 @@ export default function CheckoutPage() {
           </div>
         )}
       </div>
-      <div className="page-actions">
-        <span className="pill">Subtotal: {currency(subtotal)}</span>
-        <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
-          Cancel Order
-        </button>
-        <button
-          className="primary-button inline"
-          disabled={!items.length}
-          onClick={() => processOrder('Cash')}
-        >
-          Cash
-        </button>
-        <button
-          className="primary-button inline"
-          disabled={!items.length}
-          onClick={() => processOrder('Card')}
-        >
-          Process Card Payment
-        </button>
+      <div className="checkout-actions">
+        <div className="checkout-subtotal">
+          <span>Subtotal</span>
+          <strong>{currency(subtotal)}</strong>
+        </div>
+
+        <div className="checkout-buttons">
+          <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
+            Cancel Order
+          </button>
+
+          <button
+            className="primary-button inline"
+            disabled={!items.length}
+            onClick={() => processOrder('Cash')}
+          >
+            Cash
+          </button>
+
+          <button
+            className="primary-button inline"
+            disabled={!items.length}
+            onClick={() => processOrder('Card')}
+          >
+            Process Card Payment
+          </button>
+        </div>
       </div>
 
       <Modal isOpen={showModal} onClose={handleCloseModal}>
@@ -125,6 +163,25 @@ export default function CheckoutPage() {
           Back to menu
         </button>
       </Modal>
+
+      {editingItem && (
+        <CustomizePopUp
+          item={editingItem}
+          toppings={toppingOptions}
+          alterations={alterations}
+          activeHappyHour={activeHappyHour}
+          isEdit={true}
+          onClose={() => {
+            setEditingItem(null);
+            setEditingIndex(null);
+          }}
+          onAddToCart={(updatedCartItem) => {
+            updateItem(editingIndex, updatedCartItem);
+            setEditingItem(null);
+            setEditingIndex(null);
+          }}
+        />
+      )}
     </PageShell>
   );
 }
