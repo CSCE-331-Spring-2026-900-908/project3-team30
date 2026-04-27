@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import ManagerLoginPage from './pages/ManagerLoginPage';
 import ManagerDashboardPage from './pages/ManagerDashboardPage';
+import ManagerOrdersPage from './pages/ManagerOrdersPage';
 import CashierDashboardPage from './pages/CashierDashboardPage';
 import MenuPage from './pages/MenuPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -51,6 +52,10 @@ export default function App() {
         <Route
           path="/manager"
           element={<ProtectedRoute roles={['manager']}><ManagerDashboardPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/manager/orders"
+          element={<ProtectedRoute roles={['manager']}><ManagerOrdersPage /></ProtectedRoute>}
         />
         <Route
           path="/manager/employees"
