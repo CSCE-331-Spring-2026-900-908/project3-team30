@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 import DataTable from '../components/DataTable';
 import { api } from '../services/api';
 
@@ -29,10 +28,7 @@ export default function SalesReportPage() {
   const totalRevenue = rows.reduce((sum, row) => sum + Number(row.revenue), 0);
 
   return (
-    <PageShell
-      title="Sales Report"
-      actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
-    >
+    <ManagerLayout title="Sales Report">
       <div className="card form-card" style={{ marginBottom: '1.5rem' }}>
         <h2>Select a start and end date, then click Generate</h2>
 
@@ -82,6 +78,6 @@ export default function SalesReportPage() {
           ${totalRevenue.toFixed(2)}
         </span>
       </div>
-    </PageShell>
+    </ManagerLayout>
   );
 }

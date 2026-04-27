@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 
 export default function SalesAndTrendsPage() {
   return (
-    <PageShell
-      title="Sales & Trends"
-      actions={<Link className="ghost-link" to="/manager">Back to dashboard</Link>}
-    >
+    <ManagerLayout title="Sales & Trends">
       <div className="quick-grid two-col">
         <Link className="quick-link card" to="/manager/reports/sales">
           Sales Report
@@ -21,6 +18,6 @@ export default function SalesAndTrendsPage() {
           Restock Report
         </Link>
       </div>
-    </PageShell>
+    </ManagerLayout>
   );
 }

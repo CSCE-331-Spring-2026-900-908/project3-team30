@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import DataTable from '../components/DataTable';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 import { api } from '../services/api';
 
 export default function RestockReportPage() {
@@ -21,10 +20,9 @@ export default function RestockReportPage() {
   }, []);
 
   return (
-    <PageShell
+    <ManagerLayout
       title="Restock Report"
       subtitle="Items below minimum stock threshold"
-      actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
     >
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -37,6 +35,6 @@ export default function RestockReportPage() {
         ]}
         rows={rows}
       />
-    </PageShell>
+    </ManagerLayout>
   );
 }

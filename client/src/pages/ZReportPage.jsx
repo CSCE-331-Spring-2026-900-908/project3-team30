@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 import StatCard from '../components/StatCard';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
@@ -49,7 +48,6 @@ export default function ZReportPage() {
       } else {
         setMessage('Unable to generate: Z report has already been generated for today');
       }
-
     } catch (err) {
       console.error('Failed to generate Z report:', err);
       setError(err.message || 'Failed to generate Z report');
@@ -63,7 +61,7 @@ export default function ZReportPage() {
   }, []);
 
   return (
-    <PageShell
+    <ManagerLayout
       title="Z Report"
       subtitle={
         report
@@ -71,38 +69,25 @@ export default function ZReportPage() {
           : 'Loading...'
       }
       actions={
-        <div
+        <button
+          type="button"
+          onClick={generateZReport}
+          disabled={loading}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            flexWrap: 'wrap',
+            background: loading ? '#6b7280' : '#5b21b6',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '10px',
+            padding: '10px 18px',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            boxShadow: loading ? 'none' : '0 6px 16px rgba(91, 33, 182, 0.28)',
+            transition: 'all 0.2s ease',
           }}
         >
-          <Link className="ghost-link" to="/manager/reports">
-            Back to sales & trends
-          </Link>
-
-          <button
-            type="button"
-            onClick={generateZReport}
-            disabled={loading}
-            style={{
-              background: loading ? '#6b7280' : '#5b21b6',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '10px',
-              padding: '10px 18px',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              boxShadow: loading ? 'none' : '0 6px 16px rgba(91, 33, 182, 0.28)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            {loading ? 'Working...' : 'Generate Report'}
-          </button>
-        </div>
+          {loading ? 'Working...' : 'Generate Report'}
+        </button>
       }
     >
       {message && (
@@ -139,6 +124,6 @@ export default function ZReportPage() {
         />
         <StatCard label="Net Total" value={report ? currency(report.netTotal) : '—'} />
       </section>
-    </PageShell>
+    </ManagerLayout>
   );
 }
