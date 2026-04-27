@@ -135,7 +135,7 @@ export default function Translator() {
 
   return (
     <div className="translator" ref={translatorRef}>
-      <div id="google_translate_element" className="hidden-google-translate"></div>
+      <div id="google_translate_element" className="hidden-google-translate" aria-hidden="true"/>
 
       {selectedLanguage && (
         <button
