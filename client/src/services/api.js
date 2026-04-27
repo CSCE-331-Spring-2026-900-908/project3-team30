@@ -59,6 +59,24 @@ export const api = {
     
   },
 
+  async getManagerInsights() {
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-insights`);
+    if (!res.ok) {
+      throw new Error('Failed to load manager dashboard insights');
+    }
+    return res.json();
+  },
+
+  async getManagerOrders({ search = '', status = 'all', sort = 'newest' } = {}) {
+    const params = new URLSearchParams({ search, status, sort });
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/manager-orders?${params.toString()}`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to load manager orders');
+    }
+    return res.json();
+  },
+
   async saveUser(payload) {
     await sleep();
     const index = localUsers.findIndex((user) => user.code === Number(payload.code));
@@ -321,8 +339,11 @@ export const api = {
 
     const data = await res.json();
 
+    const defaults = data.defaults ?? data.default ?? [];
+
     return {
-      default: data.defaults ?? [],
+      default: defaults,
+      defaults,
       sweetness: data.sweetness ?? [],
       ice: data.ice ?? [],
     };
@@ -443,12 +464,20 @@ export const api = {
    * @author Rylee Hunt
    */
   async sendChatMessage(payload) {
-    const res = await fetch(`${API_BASE_URL}/api/chat`, {
+    const normalizedPayload = {
+      ...payload,
+      alterations: {
+        ...(payload.alterations || {}),
+        defaults: payload.alterations?.defaults ?? payload.alterations?.default ?? []
+      }
+    };
+
+    const res = await fetchWithCredentials(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(normalizedPayload)
     });
 
     let data = null;

@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function PageShell({ title, subtitle, actions, children }) {
+export default function PageShell({ title, subtitle, actions, children, titleClassName = '' }) {
   const { user } = useAuth();
 
   return (
     <div className="app-shell">
       <header className="topbar" role="banner">
         <div>
-          <h1>{title}</h1>
+          <h1 className={titleClassName}>{title}</h1>
           {subtitle ? <p className="subtle">{subtitle}</p> : null}
         </div>
       </header>
