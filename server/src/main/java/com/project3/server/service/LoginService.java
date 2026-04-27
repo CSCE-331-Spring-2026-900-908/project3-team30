@@ -55,7 +55,6 @@ public class LoginService {
             rs.close();
             pstmt.close();
             conn.close();
-            System.out.println("Returning: role=" + role + ", firstName=" + firstName + ", lastName=" + lastName);
             return new LoginResponse(role, "Login successful", firstName, lastName);
         }
 

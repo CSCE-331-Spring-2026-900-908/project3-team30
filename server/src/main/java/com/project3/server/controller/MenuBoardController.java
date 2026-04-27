@@ -24,5 +24,10 @@ public class MenuBoardController {
     public List<MenuItem> getToppings() throws Exception{
         return menuBoardService.getToppings();
     }
+
+    @GetMapping("/menu-drinks/random")
+    public MenuItem getRandomMenuItem() throws Exception {
+        return menuBoardService.getRandomMenuItem();
+    }
     
 }

@@ -6,7 +6,7 @@ const styles = `
   .barbie-card {
     background: linear-gradient(160deg, #fff0f7 0%, #ffe4f0 100%);
     border-radius: 24px;
-    max-width: 300px;
+    max-width: 350px;
     width: 100%;
     box-shadow:
       0 0 0 3px #ff69b4,
@@ -18,13 +18,13 @@ const styles = `
 
   .barbie-card-header {
     background: linear-gradient(135deg, #ff69b4, #ff1493);
-    padding: 12px 16px 10px;
+    padding: 8px 14px 6px;
     text-align: center;
   }
 
   .barbie-card-logo {
     font-family: 'Pacifico', cursive;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     color: white;
     text-shadow: 2px 2px 0 #c71585;
     margin: 0;
@@ -42,7 +42,7 @@ const styles = `
 
   .barbie-card-image-frame {
     background: linear-gradient(180deg, #ff69b4 0%, #ffb6d9 100%);
-    padding: 12px 16px 0;
+    padding: 0 14px 0;
     display: flex;
     justify-content: center;
     position: relative;
@@ -72,7 +72,7 @@ const styles = `
 
   .barbie-card-img {
     width: 150px;
-    height: 180px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     object-position: top;
@@ -82,7 +82,7 @@ const styles = `
 
   .barbie-card-img-placeholder {
     width: 120px;
-    height: 120px;
+    height: 100px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ffb6d9, #ff69b4);
     display: flex;
@@ -93,7 +93,7 @@ const styles = `
   }
 
   .barbie-card-body {
-    padding: 14px 18px 18px;
+    padding: 0 14px 0;
     text-align: center;
   }
 
@@ -101,7 +101,7 @@ const styles = `
     font-family: 'Pacifico', cursive;
     font-size: 1.2rem;
     color: #c71585;
-    margin: 0 0 6px;
+    margin: 6px 0 0;
     text-shadow: 1px 1px 0 #ffb6d9;
   }
 
@@ -109,7 +109,6 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 6px;
-    margin: 8px 0;
     color: #ff69b4;
     font-size: 0.8rem;
   }
@@ -118,7 +117,7 @@ const styles = `
   .barbie-card-divider::after {
     content: '';
     flex: 1;
-    height: 1px;
+    height: 0.5px;
     background: linear-gradient(90deg, transparent, #ffb6d9, transparent);
   }
 
@@ -131,7 +130,7 @@ const styles = `
     border-radius: 12px;
     padding: 10px 12px;
     border: 1.5px dashed #ffb6d9;
-    margin: 8px 0 14px;
+    margin: 4px 0 14px;
   }
 
   .barbie-card-btn {

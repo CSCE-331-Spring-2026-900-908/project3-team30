@@ -168,6 +168,12 @@ export const api = {
     if (!res.ok) throw new Error("Failed to load toppings");
     return res.json();
   },
+  async getRandomMenuItem() {
+    const res = await fetch(`${API_BASE_URL}/api/menu-drinks/random`);
+    if (!res.ok) throw new Error('Failed to load random menu item');
+    return res.json();
+  },
+
   async getMenuItems() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/menu-items`);
     if (!res.ok) throw new Error('Failed to load menu items');
@@ -532,4 +538,5 @@ export const api = {
     }
     return res.json();
   },
+  getNextHappyHour: () => fetch(`${API_BASE_URL}/api/happy-hour/next-happy-hour`).then(r => r.ok ? r.json() : null),
 };
