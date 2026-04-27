@@ -439,6 +439,7 @@ tr:hover { background: #fff8fa; }
 .hidden-google-translate {
   position: absolute;
   left: -9999px;
+  display: none;
 }
 
 .translator {
@@ -864,7 +865,7 @@ html {
 
 .category-tab:hover,
 .category-tab.active {
-  background: #d36a6a;
+  background: #bf5050;
   color: white;
   border-color: #d36a6a;
 }

@@ -13,7 +13,7 @@ export default function PageShell({ title, subtitle, actions, children }) {
         </div>
         {subtitle ? <p className="subtle">{subtitle}</p> : null}
       </header>
-      {actions ? <div className="page-actions">{actions}</div> : null}
+      {actions ? <nav className="page-actions" aria-label="Page actions">{actions}</nav> : null}
       <main>{children}</main>
     </div>
   );

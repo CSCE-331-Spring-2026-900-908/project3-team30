@@ -129,7 +129,7 @@ export default function CustomerPage() {
   }, [menuItems, selectedCategory]);
 
   return (
-    <div className="customer-page">
+    <main className="customer-page">
       <PageShell
         title="Drinks in the Dreamhouse"
         // subtitle="Sip something fabulous."
@@ -140,7 +140,11 @@ export default function CustomerPage() {
             locationName="College Station, TX"
           />}
         actions={
-          <Link className="primary-button inline" to="/customer/checkout" aria-label={`View cart. Cart has ${items.length} item${items.length === 1 ? '' : 's'}`}>
+          <Link
+            className="primary-button inline"
+            to="/customer/checkout"
+            aria-label={`View cart with ${items.length} item${items.length === 1 ? '' : 's'}`}
+          >
             View Cart ({items.length})
           </Link>
         }
@@ -275,6 +279,6 @@ export default function CustomerPage() {
             cart={items}
           />
       </PageShell>
-    </div>
+    </main>
   );
 }
