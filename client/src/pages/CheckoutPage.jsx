@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
 import CustomizePopUp from '../components/CustomizePopUp';
+import { useNavigate } from 'react-router-dom';
 
 function summarizeModifications(modifications = []) {
   const counts = modifications.reduce((acc, mod) => {
@@ -50,10 +51,7 @@ export default function CheckoutPage() {
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    navigate('/customer');
-  };
+
 
   const [alterations, setAlterations] = useState({
     default: [],
@@ -85,6 +83,12 @@ export default function CheckoutPage() {
   const toppingOptions = alterations.toppings?.length
     ? alterations.toppings
     : alterations.default ?? [];
+
+  const navigate = useNavigate();
+  const handleCloseModal = () => {
+  setShowModal(false);
+  navigate('/cashier/menu');
+};
 
   return (
     <PageShell
