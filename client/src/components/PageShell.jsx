@@ -9,9 +9,8 @@ export default function PageShell({ title, subtitle, actions, children }) {
       <header className="topbar" role="banner">
         <div>
           <h1>{title}</h1>
-          
+          {subtitle ? <p className="subtle">{subtitle}</p> : null}
         </div>
-        {subtitle ? <p className="subtle">{subtitle}</p> : null}
       </header>
       {actions ? <nav className="page-actions" aria-label="Page actions">{actions}</nav> : null}
       <main>{children}</main>
