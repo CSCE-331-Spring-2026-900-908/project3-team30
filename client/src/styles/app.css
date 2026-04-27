@@ -1961,3 +1961,148 @@ body.modal-open .a11y-trigger {
   background-position: right 1rem center;
   background-size: 24px 24px;
 }
+
+/* Manager dashboard revamp */
+.manager-dashboard-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.manager-sidebar {
+  position: sticky;
+  top: 1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.manager-sidebar a {
+  display: block;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  color: #7d4a55;
+  font-weight: 600;
+}
+
+.manager-sidebar a:hover,
+.manager-sidebar a:focus {
+  background: #fff0f3;
+  outline: none;
+}
+
+.manager-dashboard-main {
+  display: grid;
+  gap: 1rem;
+}
+
+.feedback-banner {
+  background: #fff;
+  border: 1px solid #edd8df;
+  border-left: 6px solid #d36a6a;
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  color: #7d4a55;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgba(121, 84, 96, 0.06);
+}
+
+.manager-action-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard-graph-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.dashboard-card-heading h2 {
+  margin: 0;
+  color: #7d4a55;
+}
+
+.mini-chart {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.mini-chart-row {
+  display: grid;
+  grid-template-columns: minmax(80px, 0.8fr) 2fr minmax(76px, auto);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.mini-chart-label {
+  color: #7e6b72;
+  font-size: 0.92rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-chart-track {
+  min-height: 14px;
+  border-radius: 999px;
+  background: #f7e8ec;
+  overflow: hidden;
+}
+
+.mini-chart-bar {
+  min-height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e7a0a0, #d36a6a);
+}
+
+.mini-chart-value {
+  text-align: right;
+  color: #7d4a55;
+  font-size: 0.92rem;
+}
+
+.manager-orders-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.manager-order-controls {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 0.8fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 1.5rem;
+  color: #7e6b72;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-graph-grid,
+  .manager-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .manager-dashboard-layout,
+  .dashboard-graph-grid,
+  .manager-action-grid,
+  .manager-order-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-sidebar {
+    position: static;
+  }
+}

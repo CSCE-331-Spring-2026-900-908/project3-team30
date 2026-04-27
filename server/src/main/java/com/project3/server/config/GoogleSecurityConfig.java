@@ -11,73 +11,62 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class GoogleSecurityConfig {
 
-    @Value("${FRONTEND_BASE_URL}")
+    @Value("${FRONTEND_BASE_URL:http://localhost:5173}")
     private String frontendBaseUrl;
-    // private final String frontendBaseUrl = "http://localhost:5173";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/woman",
-                    "/oauth2/**",
-                    "/login/**",
-                    "/error",
-                    "/api/login",
-                    "/api/menu-**",
-                    "/api/menu-drinks/**",
-                    "/api/alterations",
-                    "/api/orders/**",
-                    "/api/kitchen/**",
-                    "/api/chat", 
-                    "/api/happy-hour/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/oauth2/**",
+                                "/login/**",
+                                "/error",
+                                "/api/login",
+                                "/api/menu-**",
+                                "/api/alterations",
+                                "/api/orders/**",
+                                "/api/kitchen/**",
+                                "/api/chat")
+                        .permitAll()
+                        .anyRequest().authenticated())
 
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
 
-            .oauth2Login(oauth -> oauth
-                .successHandler((request, response, authentication) -> {
-                    OAuth2User user = (OAuth2User) authentication.getPrincipal();
-                    String email = user.getAttribute("email");
+                .oauth2Login(oauth -> oauth
+                        .successHandler((request, response, authentication) -> {
+                            OAuth2User user = (OAuth2User) authentication.getPrincipal();
+                            String email = user.getAttribute("email");
 
-                    System.out.println("=== OAUTH SUCCESS HANDLER HIT ===");
-                    System.out.println("Authenticated email: " + email);
+                            System.out.println("=== OAUTH SUCCESS HANDLER HIT ===");
+                            System.out.println("Authenticated email: " + email);
 
-                    if (
-                        email != null && (
-                            email.equalsIgnoreCase("reveille.bubbletea@gmail.com") ||
-                            email.equalsIgnoreCase("karlasanchz@tamu.edu") ||
-                            email.equalsIgnoreCase("sanchezkarly14@gmail.com") ||
-                            email.equalsIgnoreCase("jazahar@tamu.edu") ||
-                            email.equalsIgnoreCase("rhunt@tamu.edu") ||
-                            email.equalsIgnoreCase("nityakhurana@tamu.edu") ||
-                            email.equalsIgnoreCase("e_pugliese@tamu.edu") ||
-                            email.equalsIgnoreCase("anishatx@tamu.edu")
-                        )
-                    ) {
-                        response.sendRedirect(frontendBaseUrl + "/manager?oauth=success");
-                    } else {
-                        response.sendRedirect(frontendBaseUrl + "/manager-login?error=unauthorized");
-                    }
-                })
+                            if (email != null && (email.equalsIgnoreCase("reveille.bubbletea@gmail.com") ||
+                                    email.equalsIgnoreCase("karlasanchz@tamu.edu") ||
+                                    email.equalsIgnoreCase("sanchezkarly14@gmail.com") ||
+                                    email.equalsIgnoreCase("jazahar@tamu.edu") ||
+                                    email.equalsIgnoreCase("rhunt@tamu.edu") ||
+                                    email.equalsIgnoreCase("nityakhurana@tamu.edu") ||
+                                    email.equalsIgnoreCase("e_pugliese@tamu.edu") ||
+                                    email.equalsIgnoreCase("anishatx@tamu.edu"))) {
+                                response.sendRedirect(frontendBaseUrl + "/manager?oauth=success");
+                            } else {
+                                response.sendRedirect(frontendBaseUrl + "/manager-login?error=unauthorized");
+                            }
+                        })
 
-                .failureHandler((request, response, exception) -> {
-                    response.sendRedirect(frontendBaseUrl + "/manager-login?error=oauth_failed");
-                })
-            )
+                        .failureHandler((request, response, exception) -> {
+                            response.sendRedirect(frontendBaseUrl + "/manager-login?error=oauth_failed");
+                        }))
 
-            .logout(logout -> logout
-                .logoutSuccessUrl("/")
-                .permitAll()
-            );
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .permitAll());
 
         return http.build();
     }

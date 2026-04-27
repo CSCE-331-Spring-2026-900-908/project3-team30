@@ -42,6 +42,7 @@ function isSmallDrink(item) {
 export default function CustomerPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [alterations, setAlterations] = useState({
+    default: [],
     defaults: [],
     sweetness: [],
     ice: []
