@@ -2472,3 +2472,68 @@ body.modal-open .a11y-trigger {
 .cart-bump {
   animation: cart-bump 0.8s ease;
 }
+
+/*-------------- Checkout quantities styling ---------------*/
+.checkout-item-actions {
+  /* display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end; */
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: white;
+  border-radius: 999px;
+  padding: 0.25rem 0.3rem;
+
+  /* border: 1px solid #e8d8dc; */
+  /* box-shadow: 0 2px 6px rgba(121, 84, 96, 0.08); */
+}
+
+.checkout-item-price {
+  font-weight: 700;
+  color: #2a2530;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+.checkout-qty {
+  /* padding: 0.25rem 0.3rem; */
+  font-size: 0.85rem;
+  color: #8b7078;
+}
+
+.checkout-qty span {
+  /* min-width: 1.4rem;
+  text-align: center;
+  font-weight: 800;
+  color: #2a2530; */
+  min-width: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.checkout-qty button {
+  /* width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-size: 1.15rem; */
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: #C8CEFA;
+  color: white;
+  font-weight: 800;
+}
+
+.checkout-qty button:first-child {
+  background: #C8CEFA;
+  color: white;
+}
+
+.checkout-qty button:last-child {
+  background: #DA1884;
+  color: white;
+}

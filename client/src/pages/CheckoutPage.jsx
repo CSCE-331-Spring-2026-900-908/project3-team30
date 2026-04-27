@@ -22,7 +22,7 @@ function summarizeModifications(modifications = []) {
 }
 
 export default function CheckoutPage() {
-  const { items, clearCart, removeItem, updateItem, subtotal } = useCart();
+  const { items, clearCart, removeItem, updateItem, increaseQuantity, decreaseQuantity, subtotal } = useCart();
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [activeHappyHour, setActiveHappyHour] = useState(null);
@@ -111,8 +111,17 @@ export default function CheckoutPage() {
                     .join(', ') || 'No modifications'}
                   </p>
                 </div>
-                <div className="inline-actions">
-                  <span>{currency(item.totalPrice)}</span>
+                <div className="checkout-item-actions">
+                  <span className="checkout-item-price">
+                    {currency(item.totalPrice * (item.quantity || 1))}
+                  </span>
+
+                  <div className="checkout-qty topping-controls">
+                    <button onClick={() => decreaseQuantity(index)}>-</button>
+                    <span>{item.quantity || 1}</span>
+                    <button onClick={() => increaseQuantity(index)}>+</button>
+                  </div>
+
                   <button
                     className="secondary-button inline"
                     onClick={() => {
@@ -122,13 +131,7 @@ export default function CheckoutPage() {
                   >
                     Edit
                   </button>
-                  {/* <button
-                    className="secondary-button inline"
-                    onClick={() => removeItem(index)}
-                    aria-label={`Remove ${item.name} from cart`}
-                  >
-                    Remove
-                  </button> */}
+
                   <button className="secondary-button inline" onClick={() => removeItem(index)}>
                     Remove
                   </button>
