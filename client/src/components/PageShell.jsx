@@ -6,7 +6,7 @@ export default function PageShell({ title, subtitle, actions, children }) {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
+      <header className="topbar" role="banner">
         <div>
           <h1>{title}</h1>
           
