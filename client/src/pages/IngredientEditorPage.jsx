@@ -58,7 +58,7 @@ export default function IngredientEditorPage() {
               onChange={(e) => setForm({ ...form, ingredient: e.target.value })} 
             />
           </FormField>
-          <FormField label="Quantity Used">
+          <FormField label="Quantity Used (oz)">
             <input 
               type="number" 
               step="0.01" 

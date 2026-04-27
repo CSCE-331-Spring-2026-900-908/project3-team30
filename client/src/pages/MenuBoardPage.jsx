@@ -141,7 +141,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
     <div className="menu-board-wrapper">
       <div className="menu-board-container">
         <div className="menu-board-left-center">
-          <h1 className="menu-board-title">Menu</h1>
+          <img src="/images/logo.png" alt="Menu" className="menu-board-logo" />
           
           <div className="menu-board-columns">
             <div className="menu-board-column menu-board-left">
