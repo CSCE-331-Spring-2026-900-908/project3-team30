@@ -27,17 +27,37 @@ function formatTime(localTime) {
   return `${hour}${minute} ${period}`;
 }
 
+function getDisplayDrinkName(name) {
+  return name
+    .replace(/^(Small|Large)\s+/i, '')
+    .trim();
+}
+
+function isSmallDrink(item) {
+  return /^Small\s+/i.test(item.name);
+}
+
+function getPercent(option) {
+  return parseInt(option.name.match(/\d+/)?.[0] ?? 0);
+}
+
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [alterations, setAlterations] = useState({ default: [], sweetness: [], ice: [] });
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedMods, setSelectedMods] = useState([]);
+  const [toppingCounts, setToppingCounts] = useState({});
+  const [selectedSize, setSelectedSize] = useState({ name: 'Small', label: 'Small (Default)', price: 0 });
   const [selectedSweetness, setSelectedSweetness] = useState(null);
   const [selectedIce, setSelectedIce] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const sizeOptions = [
+    { name: 'Small', label: 'Small (Default)', price: 0 },
+    { name: 'Large', label: 'Large (+$1.50)', price: 1.5 },
+  ];
 
   const { addItem, items } = useCart();
   const pollRef = useRef(null);
@@ -93,32 +113,70 @@ export default function MenuPage() {
     return () => clearInterval(pollRef.current);
   }, []);
 
+  useEffect(() => {
+    setToppingCounts({});
+    setSelectedSize(sizeOptions[0]);
+    setSelectedSweetness(alterations.sweetness?.[0] ?? null);
+    setSelectedIce(alterations.ice?.[0] ?? null);
+  }, [selectedItem, alterations]);
+
   const getItemPrice = (item) =>
     applyDiscount(item.price, activeHappyHour?.percentOff);
 
+  const toppingMods = useMemo(() => {
+    return Object.entries(toppingCounts).flatMap(([name, count]) => {
+      const topping = alterations.default.find((toppingOption) => toppingOption.name === name);
+      if (!topping) return [];
+
+      return Array.from({ length: count }, () => ({
+        name: topping.name,
+        price: topping.price,
+      }));
+    });
+  }, [toppingCounts, alterations.default]);
+
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
-    return (
-      getItemPrice(selectedItem) +
-      selectedMods.reduce((sum, mod) => sum + mod.price, 0) +
-      (selectedSweetness?.price ?? 0) +
-      (selectedIce?.price ?? 0)
-    );
-  }, [selectedItem, selectedMods, selectedSweetness, selectedIce, activeHappyHour]);
 
-  const toggleMod = (mod) => {
-    setSelectedMods((prev) =>
-      prev.some((entry) => entry.name === mod.name)
-        ? prev.filter((entry) => entry.name !== mod.name)
-        : [...prev, mod]
-    );
+    const mods = [
+      ...(selectedSize ? [selectedSize] : []),
+      ...toppingMods,
+      ...(selectedSweetness ? [selectedSweetness] : []),
+      ...(selectedIce ? [selectedIce] : []),
+    ];
+
+    return getItemPrice(selectedItem) + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+  }, [selectedItem, selectedSize, toppingMods, selectedSweetness, selectedIce, activeHappyHour]);
+
+  const increaseTopping = (topping) => {
+    setToppingCounts((prev) => ({
+      ...prev,
+      [topping.name]: (prev[topping.name] || 0) + 1,
+    }));
+  };
+
+  const decreaseTopping = (topping) => {
+    setToppingCounts((prev) => {
+      const current = prev[topping.name] || 0;
+
+      if (current <= 1) {
+        const { [topping.name]: _, ...rest } = prev;
+        return rest;
+      }
+
+      return {
+        ...prev,
+        [topping.name]: current - 1,
+      };
+    });
   };
 
   const addToOrder = () => {
     if (!selectedItem) return;
 
     const mods = [
-      ...selectedMods,
+      ...(selectedSize ? [selectedSize] : []),
+      ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
@@ -130,16 +188,17 @@ export default function MenuPage() {
       basePrice: discountedBase,
       image: selectedItem.image,
       modifications: mods,
-      totalPrice: discountedBase + mods.reduce((sum, mod) => sum + mod.price, 0),
+      totalPrice: discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0),
     });
 
-    setSelectedMods([]);
+    setToppingCounts({});
+    setSelectedSize(sizeOptions[0]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
   };
 
   const categories = useMemo(() => {
-    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'seasonal'];
+    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
 
     return categoryOrder.filter(
       (category) =>
@@ -148,8 +207,10 @@ export default function MenuPage() {
   }, [menuItems]);
 
   const filteredMenuItems = useMemo(() => {
-    if (selectedCategory === 'All') return menuItems;
-    return menuItems.filter((item) => item.category === selectedCategory);
+    const smallDrinks = menuItems.filter(isSmallDrink);
+
+    if (selectedCategory === 'All') return smallDrinks;
+    return smallDrinks.filter((item) => item.category === selectedCategory);
   }, [menuItems, selectedCategory]);
 
   return (
@@ -213,13 +274,13 @@ export default function MenuPage() {
                     className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''} ${item.available === false ? 'unavailable' : ''}`}
                     disabled={item.available === false}
                     aria-pressed={selectedItem?.name === item.name}
-                    aria-label={`${item.name}. ${currency(getItemPrice(item))}. ${item.available === false ? 'Unavailable' : 'Select to customize'}`}
+                    aria-label={`${getDisplayDrinkName(item.name)}. ${currency(getItemPrice(item))}. ${item.available === false ? 'Unavailable' : 'Select to customize'}`}
                     onClick={() => {
                       if (item.available === false) return;
                       setSelectedItem(item);
                     }}
                   >
-                    <span>{item.name}</span>
+                    <span>{getDisplayDrinkName(item.name)}</span>
                     <strong>{currency(getItemPrice(item))}</strong>
                   </button>
                 ))}
@@ -233,7 +294,7 @@ export default function MenuPage() {
               ) : (
                 <>
                   <p>
-                    <strong>{selectedItem.name}</strong> · {currency(getItemPrice(selectedItem))}
+                    <strong>{getDisplayDrinkName(selectedItem.name)}</strong> · {currency(getItemPrice(selectedItem))}
                     {activeHappyHour && (
                       <span className="subtle" style={{ marginLeft: '0.5rem', textDecoration: 'line-through' }}>
                         {currency(selectedItem.price)}
@@ -241,20 +302,23 @@ export default function MenuPage() {
                     )}
                   </p>
 
-                  <div className="checkbox-list">
-                    {alterations.default.map((mod) => (
-                      <label key={mod.name} className="checkbox-row">
-                        <input
-                          type="checkbox"
-                          checked={selectedMods.some((entry) => entry.name === mod.name)}
-                          onChange={() => toggleMod(mod)}
-                          aria-label={`${mod.name} topping. Adds ${currency(mod.price)}`}
-                        />
-                        <span>{mod.name}</span>
-                        <span>{currency(mod.price)}</span>
-                      </label>
-                    ))}
-                  </div>
+                  <FormField label="Size">
+                    <select
+                      aria-label="Select drink size"
+                      value={selectedSize?.name ?? ''}
+                      onChange={(e) =>
+                        setSelectedSize(
+                          sizeOptions.find((option) => option.name === e.target.value) ?? sizeOptions[0]
+                        )
+                      }
+                    >
+                      {sizeOptions.map((option) => (
+                        <option key={option.name} value={option.name}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </FormField>
 
                   <FormField label="Sweetness">
                     <select
@@ -266,11 +330,13 @@ export default function MenuPage() {
                         )
                       }
                     >
-                      {alterations.sweetness.map((option) => (
-                        <option key={option.name} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
+                      {[...(alterations.sweetness ?? [])]
+                        .sort((a, b) => getPercent(a) - getPercent(b))
+                        .map((option) => (
+                          <option key={option.name} value={option.name}>
+                            {option.name}
+                          </option>
+                        ))}
                     </select>
                   </FormField>
 
@@ -284,24 +350,61 @@ export default function MenuPage() {
                         )
                       }
                     >
-                      {alterations.ice.map((option) => (
-                        <option key={option.name} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
+                      {[...(alterations.ice ?? [])]
+                        .sort((a, b) => getPercent(a) - getPercent(b))
+                        .map((option) => (
+                          <option key={option.name} value={option.name}>
+                            {option.name}
+                          </option>
+                        ))}
                     </select>
                   </FormField>
 
-                  <div className="inline-actions">
-                    <span className="pill" role="status" aria-live="polite">Current total: {currency(runningTotal)}</span>
-                    <button
-                      className="primary-button inline"
-                      onClick={addToOrder}
-                      disabled={!selectedItem || selectedItem.available === false}
-                      aria-label={selectedItem ? `Add ${selectedItem.name} to order. Current total ${currency(runningTotal)}` : 'Add selected drink to order'}
-                    >
-                      Add to order
-                    </button>
+                  <div className="customize-section">
+                    <h3>Toppings</h3>
+                    <div className="topping-list">
+                      {alterations.default.map((topping) => {
+                        const count = toppingCounts[topping.name] || 0;
+
+                        return (
+                          <div key={topping.name} className="topping-row">
+                            <div className="topping-info">
+                              <span className="topping-name">{topping.name}</span>
+                              <span className="topping-price">{currency(topping.price)} ea.</span>
+                            </div>
+
+                            <div className="topping-controls">
+                              <button type="button" onClick={() => decreaseTopping(topping)}>-</button>
+                              <span>{count}</span>
+                              <button type="button" onClick={() => increaseTopping(topping)}>+</button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="customize-popup-footer">
+                    <strong>Total: {currency(runningTotal)}</strong>
+
+                    <div className="button-group">
+                      <button
+                        className="secondary-button inline"
+                        type="button"
+                        onClick={() => setSelectedItem(null)}
+                        aria-label="Cancel drink customization"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        className="primary-button inline"
+                        type="button"
+                        onClick={addToOrder}
+                      >
+                        Add to order
+                      </button>
+                    </div>
                   </div>
                 </>
               )}

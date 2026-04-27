@@ -6,6 +6,19 @@ import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
 
+function summarizeModifications(modifications = []) {
+  const counts = modifications.reduce((acc, mod) => {
+    const key = mod.name;
+    acc[key] = acc[key]
+      ? { ...acc[key], count: acc[key].count + 1 }
+      : { ...mod, count: 1 };
+
+    return acc;
+  }, {});
+
+  return Object.values(counts);
+}
+
 export default function CheckoutPage() {
   const { items, clearCart, removeItem, subtotal } = useCart();
   const [message, setMessage] = useState('');
@@ -56,7 +69,9 @@ export default function CheckoutPage() {
                 <div>
                   <strong>{item.name}</strong>
                   <p className="subtle">
-                    {item.modifications.map((mod) => mod.name).join(', ') || 'No modifications'}
+                    {summarizeModifications(item.modifications)
+                    .map((mod) => `${mod.name}${mod.count > 1 ? ` ×${mod.count}` : ''}`)
+                    .join(', ') || 'No modifications'}
                   </p>
                 </div>
                 <div className="inline-actions">
