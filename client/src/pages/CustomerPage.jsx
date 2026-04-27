@@ -129,7 +129,7 @@ export default function CustomerPage() {
   }, [menuItems, selectedCategory]);
 
   return (
-    <section className="customer-page" aria-labelledby="menu-heading">
+    <section className="customer-page">
       <PageShell
         title="Drinks in the Dreamhouse"
         // subtitle="Sip something fabulous."
@@ -219,7 +219,7 @@ export default function CustomerPage() {
                 <div className="menu-item-content">
                   <img
                     src={item.image}
-                    alt={`${getDisplayDrinkName(item.name)} drink image`}
+                    alt={`${getDisplayDrinkName(item.name)} drink`}
                     className="menu-item-image"
                   />
 
