@@ -36,6 +36,7 @@ public class ModificationService {
 
     public AlterationOptionsResponse getAlterations() throws Exception {
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            ensureHotIceOption(conn);
             return new AlterationOptionsResponse(
                     loadByCategory(conn, "toppings", false),
                     loadByCategory(conn, "sweetness", false),
@@ -44,11 +45,26 @@ public class ModificationService {
         }
     }
 
+    private void ensureHotIceOption(Connection conn) throws Exception {
+        String checkSql = "SELECT 1 FROM menu_items WHERE LOWER(name) = 'hot' AND category = 'ice' LIMIT 1";
+        try (PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+             ResultSet rs = checkStmt.executeQuery()) {
+            if (rs.next()) {
+                return;
+            }
+        }
+
+        String insertSql = "INSERT INTO menu_items (name, price, category) VALUES ('Hot', 0, 'ice')";
+        try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+            insertStmt.executeUpdate();
+        }
+    }
+
     /**
      * Loads modifications from menu_items for one category.
      *
-     * For ice percentages, numeric sorting is used so things like
-     * 0%, 25%, 50%, 100% stay in the expected order.
+     * For ice percentages, numeric sorting is used for percent-based values, while
+     * non-percent options like Hot are still allowed and will not crash the query.
      */
     private List<Modification> loadByCategory(Connection conn, String category, boolean sortPercent) throws Exception {
         String sql = sortPercent
@@ -56,7 +72,11 @@ public class ModificationService {
                     SELECT name, price
                     FROM menu_items
                     WHERE category = ?
-                    ORDER BY CAST(SPLIT_PART(name, '%', 1) AS INTEGER)
+                    ORDER BY
+                        CASE WHEN LOWER(name) = 'hot' THEN 0 ELSE 1 END,
+                        CASE WHEN name ~ '^[0-9]+%' THEN 0 ELSE 1 END,
+                        CASE WHEN name ~ '^[0-9]+%' THEN CAST(SPLIT_PART(name, '%', 1) AS INTEGER) ELSE 999 END,
+                        name
                     """
                 : """
                     SELECT name, price

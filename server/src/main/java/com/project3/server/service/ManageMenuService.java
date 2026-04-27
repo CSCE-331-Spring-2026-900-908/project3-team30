@@ -22,10 +22,30 @@ public class ManageMenuService {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
-    private void ensureImageColumn(Connection conn) throws Exception {
-        String sql = "ALTER TABLE menu_items ADD COLUMN IF NOT EXISTS image_url TEXT";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+    private boolean hasImageColumn(Connection conn) {
+        String sql = """
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'menu_items'
+                  AND column_name = 'image_url'
+                LIMIT 1
+                """;
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        } catch (Exception e) {
+            System.err.println("Could not check image_url column: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean ensureImageColumn(Connection conn) {
+        try (PreparedStatement ps = conn.prepareStatement("ALTER TABLE menu_items ADD COLUMN IF NOT EXISTS image_url TEXT")) {
             ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Could not create image_url column; continuing without menu images: " + e.getMessage());
+            return hasImageColumn(conn);
         }
     }
 
@@ -34,37 +54,43 @@ public class ManageMenuService {
     }
 
     public MenuItem saveMenuItem(MenuItem item) throws Exception {
-        // Check if item exists
-        String checkSql = "SELECT name FROM menu_items WHERE name = ?";
-        String insertSql = "INSERT INTO menu_items (name, price, category, image_url) VALUES (?, ?, ?, ?)";
-        String updateSql = "UPDATE menu_items SET price = ?, category = ?, image_url = ? WHERE name = ?";
-        
         try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            ensureImageColumn(conn);
+            boolean imageColumnAvailable = ensureImageColumn(conn);
             String imageUrl = cleanImageUrl(item.getImageURL());
             item.setImageURL(imageUrl);
+
+            String checkSql = "SELECT name FROM menu_items WHERE name = ?";
+            String insertSql = imageColumnAvailable
+                    ? "INSERT INTO menu_items (name, price, category, image_url) VALUES (?, ?, ?, ?)"
+                    : "INSERT INTO menu_items (name, price, category) VALUES (?, ?, ?)";
+            String updateSql = imageColumnAvailable
+                    ? "UPDATE menu_items SET price = ?, category = ?, image_url = ? WHERE name = ?"
+                    : "UPDATE menu_items SET price = ?, category = ? WHERE name = ?";
             
-            // Check if exists
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setString(1, item.getName());
                 ResultSet rs = checkStmt.executeQuery();
                 
                 if (rs.next()) {
-                    // Update existing item
                     try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                         updateStmt.setDouble(1, item.getPrice());
                         updateStmt.setString(2, item.getCategory());
-                        updateStmt.setString(3, imageUrl);
-                        updateStmt.setString(4, item.getName());
+                        if (imageColumnAvailable) {
+                            updateStmt.setString(3, imageUrl);
+                            updateStmt.setString(4, item.getName());
+                        } else {
+                            updateStmt.setString(3, item.getName());
+                        }
                         updateStmt.executeUpdate();
                     }
                 } else {
-                    // Insert new item
                     try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                         insertStmt.setString(1, item.getName());
                         insertStmt.setDouble(2, item.getPrice());
                         insertStmt.setString(3, item.getCategory());
-                        insertStmt.setString(4, imageUrl);
+                        if (imageColumnAvailable) {
+                            insertStmt.setString(4, imageUrl);
+                        }
                         insertStmt.executeUpdate();
                     }
                 }
