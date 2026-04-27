@@ -937,13 +937,32 @@ html {
   padding: 0.55rem 1rem;
   font-weight: 700;
   cursor: pointer;
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
-.category-tab:hover,
+/* .category-tab:hover,
 .category-tab.active {
   background: #bf5050;
   color: white;
   border-color: #d36a6a;
+} */
+
+.category-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(121, 84, 96, 0.12);
+
+  background: #fff0f3;
+  border-color: #d36a6a;
+}
+
+.category-tab.active {
+  background: #bf5050;
+  color: white;
+  border-color: #d36a6a;
+
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(121, 84, 96, 0.18);
 }
 
 /* ----- Cashier weird cards fix ---- */
