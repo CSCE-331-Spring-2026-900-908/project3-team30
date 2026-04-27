@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import PageShell from '../components/PageShell';
+import ManagerLayout from '../components/ManagerLayout';
 import StatCard from '../components/StatCard';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
@@ -27,14 +26,13 @@ export default function XReportPage() {
   };
 
   return (
-    <PageShell
+    <ManagerLayout
       title="X Report"
       subtitle={
         report
           ? `LIVE REPORT (as of ${formatTime(report.runAt)})`
           : 'Loading...'
       }
-      actions={<Link className="ghost-link" to="/manager/reports">Back to sales & trends</Link>}
     >
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -45,6 +43,6 @@ export default function XReportPage() {
         <StatCard label="Cancelled / Voided" value={report ? `${report.numCancelled} / ${report.numVoided}` : '—'} />
         <StatCard label="Net Total" value={report ? currency(report.netTotal) : '—'} />
       </section>
-    </PageShell>
+    </ManagerLayout>
   );
 }
