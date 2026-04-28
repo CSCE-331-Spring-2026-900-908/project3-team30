@@ -28,6 +28,7 @@ export default function CustomizePopUp({
   const [isClosing, setIsClosing] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [toppingCounts, setToppingCounts] = useState({});
+  const [quantity, setQuantity] = useState(item.quantity || 1);
 
   const sizeOptions = [
     { name: 'Small', price: 0 },
@@ -76,6 +77,7 @@ export default function CustomizePopUp({
       setSelectedIce(alterations.ice?.[0] ?? null);
       setSelectedSize(sizeOptions[0]);
     }
+    setQuantity(item.quantity || 1);
   }, [item, alterations, toppings, isEdit]);
 
   // const itemPrice = item.price ?? item.basePrice;
@@ -108,8 +110,12 @@ export default function CustomizePopUp({
       ...(selectedIce ? [selectedIce] : []),
     ];
 
-    return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
-  }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce]);
+    // return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+    const singleDrinkTotal =
+      basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+
+    return singleDrinkTotal * quantity;
+  }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce, quantity]);
 
   // const toggleMod = (mod) => {
   //   setSelectedMods((prev) =>
@@ -122,11 +128,13 @@ export default function CustomizePopUp({
   const handleAdd = () => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
-      // ...selectedMods,
       ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
+
+    const singleDrinkTotal =
+      basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
 
     onAddToCart({
       name: item.name,
@@ -134,7 +142,8 @@ export default function CustomizePopUp({
       basePrice,
       image: item.image,
       modifications: mods,
-      totalPrice: runningTotal,
+      totalPrice: singleDrinkTotal,
+      quantity,
     });
   };
 
@@ -211,20 +220,19 @@ export default function CustomizePopUp({
     <div className="customize-backdrop" role="dialog" aria-modal="true" onClick={closeWithAnimation}>
       <div className={`customize-popup ${isClosing ? 'popup-closing' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="customize-popup-scroll">
-          <div className = "customize-popup-topbar">
-
+          <div className="customize-popup-image-wrap">
+            <img
+              src={item.image}
+              alt={`${getDisplayDrinkName(item.name)} drink`}
+              className="customize-popup-image"
+            />
+          </div>
           
-          <img
-            src={item.image}
-            alt={`${getDisplayDrinkName(item.name)} drink`}
-            className="customize-popup-image"
-          />
+          <div className="customize-floating-panel">
+            <div className="customize-popup-header">
+              <h2>{getDisplayDrinkName(item.name)}</h2>
 
-          <div className="customize-popup-header">
-            <h2>{getDisplayDrinkName(item.name)}</h2>
-            
-
-            <p className="customize-popup-price">
+              <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
 
                 {activeHappyHour && itemPrice !== basePrice && (
@@ -235,84 +243,102 @@ export default function CustomizePopUp({
                     </span>
                   </>
                 )}
-            </p>
-            <p>{item.name}</p>
-            <NutritionInfo itemName={item.name} />
-          </div>
-          </div>
+              </p>
+            </div>
 
+            <div className="customize-quantity-row">
+              <span>Quantity</span>
 
-          <div className="customize-scroll">
-            <div className="customize-section">
-              <h3>Customize Your Drink!</h3>
-                
-              <label className="field">
-                <span>Size</span>
-                <select
-                  value={selectedSize?.name ?? ''}
-                  onChange={(e) =>
-                    setSelectedSize(
-                      sizeOptions.find((option) => option.name === e.target.value) ?? null
-                    )
-                  }
+              <div className="topping-controls">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                 >
-                  {sizeOptions.map((option) => (
-                    <option key={option.name} value={option.name}>
-                      {option.name} {option.price ? `(${currency(option.price)})` : ''}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  -
+                </button>
 
-              <label className="field">
-                <span>Sweetness</span>
-                <select
-                  value={selectedSweetness?.name ?? ''}
-                  onChange={(e) =>
-                    setSelectedSweetness(
-                      alterations.sweetness?.find(
-                        (option) => option.name === e.target.value
-                      ) ?? null
-                    )
-                  }
-                >
-                  {[...(alterations.sweetness ?? [])]
-                  .sort((a, b) => {
-                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                    return getPercent(a.name) - getPercent(b.name);
-                  })
-                  .map((option) => (
-                    <option key={option.name} value={option.name}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                <span>{quantity}</span>
 
-              <label className="field">
-                <span>Ice</span>
-                <select
-                  value={selectedIce?.name ?? ''}
-                  onChange={(e) =>
-                    setSelectedIce(
-                      alterations.ice?.find(
-                        (option) => option.name === e.target.value
-                      ) ?? null
-                    )
-                  }
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => prev + 1)}
                 >
-                  {[...(alterations.ice ?? [])]
-                  .sort((a, b) => {
-                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                    return getPercent(a.name) - getPercent(b.name);
-                  })
-                  .map((option) => (
-                    <option key={option.name} value={option.name}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="customize-scroll">
+              <div className="customize-section">
+                <h3>Customize Your Drink!</h3>
+
+                <label className="field">
+                  <span>Size</span>
+                  <select
+                    value={selectedSize?.name ?? ''}
+                    onChange={(e) =>
+                      setSelectedSize(
+                        sizeOptions.find((option) => option.name === e.target.value) ?? null
+                      )
+                    }
+                  >
+                    {sizeOptions.map((option) => (
+                      <option key={option.name} value={option.name}>
+                        {option.name} {option.price ? `(${currency(option.price)})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="field">
+                  <span>Sweetness</span>
+                  <select
+                    value={selectedSweetness?.name ?? ''}
+                    onChange={(e) =>
+                      setSelectedSweetness(
+                        alterations.sweetness?.find(
+                          (option) => option.name === e.target.value
+                        ) ?? null
+                      )
+                    }
+                  >
+                    {[...(alterations.sweetness ?? [])]
+                    .sort((a, b) => {
+                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                      return getPercent(a.name) - getPercent(b.name);
+                    })
+                    .map((option) => (
+                      <option key={option.name} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="field">
+                  <span>Ice</span>
+                  <select
+                    value={selectedIce?.name ?? ''}
+                    onChange={(e) =>
+                      setSelectedIce(
+                        alterations.ice?.find(
+                          (option) => option.name === e.target.value
+                        ) ?? null
+                      )
+                    }
+                  >
+                    {[...(alterations.ice ?? [])]
+                    .sort((a, b) => {
+                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                      return getPercent(a.name) - getPercent(b.name);
+                    })
+                    .map((option) => (
+                      <option key={option.name} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
             </div>
 
             <div className="customize-section">

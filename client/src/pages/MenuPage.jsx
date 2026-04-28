@@ -57,6 +57,7 @@ export default function MenuPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [addedItemName, setAddedItemName] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   const sizeOptions = [
     { name: 'Small', label: 'Small (Default)', price: 0 },
@@ -117,6 +118,7 @@ export default function MenuPage() {
     setSelectedSize(sizeOptions[0]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
+    setQuantity(1);
   }, [selectedItem, alterations]);
 
   const getItemPrice = (item) =>
@@ -141,8 +143,11 @@ export default function MenuPage() {
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
-    return getItemPrice(selectedItem) + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
-  }, [selectedItem, selectedSize, toppingMods, selectedSweetness, selectedIce, activeHappyHour]);
+    const singleDrinkTotal =
+      getItemPrice(selectedItem) + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+
+    return singleDrinkTotal * quantity;
+  }, [selectedItem, selectedSize, toppingMods, selectedSweetness, selectedIce, activeHappyHour, quantity]);
 
   const increaseTopping = (topping) => {
     setToppingCounts((prev) => ({
@@ -174,12 +179,16 @@ export default function MenuPage() {
       ...(selectedIce ? [selectedIce] : []),
     ];
     const discountedBase = getItemPrice(selectedItem);
+    const singleDrinkTotal =
+      discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+
     addItem({
       name: selectedItem.name,
       basePrice: discountedBase,
       image: selectedItem.image,
       modifications: mods,
-      totalPrice: discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0),
+      totalPrice: singleDrinkTotal,
+      quantity,
     });
     setAddedItemName(getDisplayDrinkName(selectedItem.name));
     setShowModal(true);
@@ -187,6 +196,7 @@ export default function MenuPage() {
     setSelectedSize(sizeOptions[0]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
+    setQuantity(1);
   };
 
   const handleCloseModal = () => {
@@ -199,11 +209,12 @@ export default function MenuPage() {
   };
 
   const categories = useMemo(() => {
-    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
-    return categoryOrder.filter(
-      (category) =>
-        category === 'All' || menuItems.some((item) => item.category === category)
-    );
+    const smallDrinks = menuItems.filter(isSmallDrink);
+    const databaseCategories = smallDrinks
+      .map((item) => item.category?.trim())
+      .filter(Boolean);
+
+    return ['All', ...Array.from(new Set(databaseCategories)).sort((a, b) => a.localeCompare(b))];
   }, [menuItems]);
 
   const filteredMenuItems = useMemo(() => {
@@ -324,10 +335,27 @@ export default function MenuPage() {
                     )}
                     
                   </p>
-                  
-                  
-                  
+                  <div className="customize-quantity-row cashier-quantity-row">
+                    <span>Quantity</span>
 
+                    <div className="topping-controls">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                      >
+                        -
+                      </button>
+
+                      <span>{quantity}</span>
+
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => prev + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
                   <FormField label="Size">
                     <select
                       aria-label="Select drink size"
