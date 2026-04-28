@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { currency } from '../utils/format';
+import NutritionInfo from './NutritionInfo';
 
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
