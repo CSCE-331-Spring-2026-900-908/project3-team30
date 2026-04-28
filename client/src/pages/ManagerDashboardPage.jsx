@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DashboardChartCard from '../components/DashboardChartCard';
 import ManagerLayout from '../components/ManagerLayout';
@@ -13,7 +13,8 @@ export default function ManagerDashboardPage() {
   const [insights, setInsights] = useState({ hourlySales: [], categorySales: [], topItems: [] });
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState('Loading manager dashboard...');
+  const hasLoadedDashboard = useRef(false);
   const { user, setManagerUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,6 +25,11 @@ export default function ManagerDashboardPage() {
 
     if (oauth === 'success') {
       setManagerUser();
+      if (!hasLoadedDashboard.current) {
+        hasLoadedDashboard.current = true;
+        loadDashboard();
+      }
+
       navigate('/manager', { replace: true });
       return;
     }
@@ -33,7 +39,10 @@ export default function ManagerDashboardPage() {
       return;
     }
 
-    loadDashboard();
+    if (!hasLoadedDashboard.current) {
+      hasLoadedDashboard.current = true;
+      loadDashboard();
+    }
   }, [location.search, user, setManagerUser, navigate]);
 
   async function loadDashboard() {
