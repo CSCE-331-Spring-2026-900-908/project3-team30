@@ -1773,8 +1773,9 @@ body.modal-open .a11y-trigger {
 .nutrition-card {
   margin: 0.75rem 0;
   padding: 0.75rem 1rem;
+  
   background: #fff7f8;
-  border: 1px solid #f0d8dd;
+  border: 1px solid #DA1884;
   border-radius: 16px;
 }
 .nutrition-grid {
@@ -2678,7 +2679,6 @@ body.modal-open .a11y-trigger {
   width: 40%;
   height: 50%;
   object-fit: cover;
-
   object-position: center 100%;
   /* position: absolute; */
 }
