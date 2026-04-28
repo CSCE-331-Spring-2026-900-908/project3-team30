@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { currency } from '../utils/format';
 import NutritionInfo from './NutritionInfo';
 
+
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
   return Math.round(basePrice * (1 - percentOff) * 100) / 100;
@@ -110,7 +111,7 @@ export default function CustomizePopUp({
       ...(selectedIce ? [selectedIce] : []),
     ];
 
-    // return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+    //return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
     const singleDrinkTotal =
       basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
 
@@ -128,6 +129,7 @@ export default function CustomizePopUp({
   const handleAdd = () => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
+      // ...selectedMods,
       ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
@@ -142,8 +144,7 @@ export default function CustomizePopUp({
       basePrice,
       image: item.image,
       modifications: mods,
-      totalPrice: singleDrinkTotal,
-      quantity,
+      totalPrice: singleDrinkTotal, quantity
     });
   };
 
@@ -220,19 +221,20 @@ export default function CustomizePopUp({
     <div className="customize-backdrop" role="dialog" aria-modal="true" onClick={closeWithAnimation}>
       <div className={`customize-popup ${isClosing ? 'popup-closing' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="customize-popup-scroll">
-          <div className="customize-popup-image-wrap">
-            <img
-              src={item.image}
-              alt={`${getDisplayDrinkName(item.name)} drink`}
-              className="customize-popup-image"
-            />
-          </div>
-          
-          <div className="customize-floating-panel">
-            <div className="customize-popup-header">
-              <h2>{getDisplayDrinkName(item.name)}</h2>
+          <div className = "customize-popup-topbar">
 
-              <p className="customize-popup-price">
+          
+          <img
+            src={item.image}
+            alt={`${getDisplayDrinkName(item.name)} drink`}
+            className="customize-popup-image"
+          />
+
+          <div className="customize-popup-header">
+            <h2>{getDisplayDrinkName(item.name)}</h2>
+            
+
+            <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
 
                 {activeHappyHour && itemPrice !== basePrice && (
@@ -243,10 +245,13 @@ export default function CustomizePopUp({
                     </span>
                   </>
                 )}
-              </p>
-            </div>
+            </p>
+            <p></p>
+            <NutritionInfo itemName={item.name} />
+          </div>
+          </div>
 
-            <div className="customize-quantity-row">
+                <div className="customize-quantity-row">
               <span>Quantity</span>
 
               <div className="topping-controls">
@@ -267,78 +272,77 @@ export default function CustomizePopUp({
                 </button>
               </div>
             </div>
-            <div className="customize-scroll">
-              <div className="customize-section">
-                <h3>Customize Your Drink!</h3>
+          <div className="customize-scroll">
+            <div className="customize-section">
+              <h3>Customize Your Drink!</h3>
+                
+              <label className="field">
+                <span>Size</span>
+                <select
+                  value={selectedSize?.name ?? ''}
+                  onChange={(e) =>
+                    setSelectedSize(
+                      sizeOptions.find((option) => option.name === e.target.value) ?? null
+                    )
+                  }
+                >
+                  {sizeOptions.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name} {option.price ? `(${currency(option.price)})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-                <label className="field">
-                  <span>Size</span>
-                  <select
-                    value={selectedSize?.name ?? ''}
-                    onChange={(e) =>
-                      setSelectedSize(
-                        sizeOptions.find((option) => option.name === e.target.value) ?? null
-                      )
-                    }
-                  >
-                    {sizeOptions.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name} {option.price ? `(${currency(option.price)})` : ''}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+              <label className="field">
+                <span>Sweetness</span>
+                <select
+                  value={selectedSweetness?.name ?? ''}
+                  onChange={(e) =>
+                    setSelectedSweetness(
+                      alterations.sweetness?.find(
+                        (option) => option.name === e.target.value
+                      ) ?? null
+                    )
+                  }
+                >
+                  {[...(alterations.sweetness ?? [])]
+                  .sort((a, b) => {
+                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                    return getPercent(a.name) - getPercent(b.name);
+                  })
+                  .map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-                <label className="field">
-                  <span>Sweetness</span>
-                  <select
-                    value={selectedSweetness?.name ?? ''}
-                    onChange={(e) =>
-                      setSelectedSweetness(
-                        alterations.sweetness?.find(
-                          (option) => option.name === e.target.value
-                        ) ?? null
-                      )
-                    }
-                  >
-                    {[...(alterations.sweetness ?? [])]
-                    .sort((a, b) => {
-                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                      return getPercent(a.name) - getPercent(b.name);
-                    })
-                    .map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="field">
-                  <span>Ice</span>
-                  <select
-                    value={selectedIce?.name ?? ''}
-                    onChange={(e) =>
-                      setSelectedIce(
-                        alterations.ice?.find(
-                          (option) => option.name === e.target.value
-                        ) ?? null
-                      )
-                    }
-                  >
-                    {[...(alterations.ice ?? [])]
-                    .sort((a, b) => {
-                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                      return getPercent(a.name) - getPercent(b.name);
-                    })
-                    .map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+              <label className="field">
+                <span>Ice</span>
+                <select
+                  value={selectedIce?.name ?? ''}
+                  onChange={(e) =>
+                    setSelectedIce(
+                      alterations.ice?.find(
+                        (option) => option.name === e.target.value
+                      ) ?? null
+                    )
+                  }
+                >
+                  {[...(alterations.ice ?? [])]
+                  .sort((a, b) => {
+                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                    return getPercent(a.name) - getPercent(b.name);
+                  })
+                  .map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             <div className="customize-section">
