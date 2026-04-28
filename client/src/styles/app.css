@@ -1452,11 +1452,11 @@ html {
           align-items: center;
         }
         .order-num {
-          font-size: 15px;
+          font-size: 18px;
           font-weight: 600;
         }
         .elapsed {
-          font-size: 12px;
+          font-size: 14px;
           color: #bbb;
         }
         .ticket-items {
@@ -1472,8 +1472,8 @@ html {
           padding-bottom: 2px;
         }
         .item-name {
-          font-size: 15px;
-          font-weight: 600;
+          font-size: 19px;
+          font-weight: 700;
 
         }
         .mods {
@@ -1483,10 +1483,10 @@ html {
           margin-top: 4px;
         }
         .mod-tag {
-          font-size: 12px;
+          font-size: 14px;
           background: #f1efe8;
           color: #666;
-          padding: 2px 6px;
+          padding: 3px 8px;
           border-radius: 4px;
         }
         .ticket-footer {
@@ -1496,9 +1496,9 @@ html {
         }
         .action-btn {
           width: 100%;
-          padding: 10px;
-          font-size: 15px;
-          font-weight: 600;
+          padding: 12px;
+          font-size: 18px;
+          font-weight: 700;
           border-radius: 8px;
           cursor: pointer;
           border: 0.5px solid #ddd;
@@ -1514,7 +1514,7 @@ html {
           border-color: #f09595;
         }
         .complete-time {
-          font-size: 12px;
+          font-size: 14px;
           color: #3b6d11;
           margin-top: -6px;
         }
@@ -1530,11 +1530,11 @@ html {
           align-items: center;
         }
         .time-label {
-          font-size: 12px;
+          font-size: 14px;
           color: #bbb;
         }
         .time-value {
-          font-size: 12px;
+          font-size: 14px;
           color: #888;
         }
 /*Happy hour for cashier*/
