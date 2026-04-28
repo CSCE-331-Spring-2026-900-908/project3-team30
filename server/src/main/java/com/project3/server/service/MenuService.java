@@ -6,15 +6,14 @@
 package com.project3.server.service;
 
 import com.project3.server.model.Drink;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 /**
  * Loads cashier/customer menu items from the database.
@@ -22,15 +21,11 @@ import java.util.List;
  */
 @Service
 public class MenuService {
+    private final DataSource dataSource;
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
-    @Value("${spring.datasource.username}")
-    private String dbUser;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
+    public MenuService(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Returns all main menu items.
@@ -63,7 +58,7 @@ public class MenuService {
         WHERE COALESCE(LOWER(mi.category), '') NOT IN ('ice', 'sweetness', 'toppings')
         ORDER BY mi.category, mi.name
         """;
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 

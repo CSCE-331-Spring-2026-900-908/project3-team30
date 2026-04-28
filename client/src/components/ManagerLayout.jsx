@@ -22,7 +22,6 @@ export default function ManagerLayout({ title, subtitle, actions, children }) {
       actions={
         <div className="inline-actions manager-top-actions">
           {actions}
-          <button className="secondary-button" onClick={logout}>Log out</button>
         </div>
       }
     >

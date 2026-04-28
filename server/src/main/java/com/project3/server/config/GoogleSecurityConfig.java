@@ -25,6 +25,7 @@ public class GoogleSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/woman",
+                    "/api/nutrition/**",
                     "/oauth2/**",
                     "/login/**",
                     "/error",
