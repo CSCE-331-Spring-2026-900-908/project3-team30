@@ -12,7 +12,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class GeminiChatService {
@@ -26,8 +31,12 @@ public class GeminiChatService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public String getChatReply(ChatRequest request) throws IOException, InterruptedException {
+        if (request == null) {
+            return "Ask me about drinks, toppings, sweetness, or ice levels.";
+        }
+
         if (apiKey == null || apiKey.isBlank()) {
-            return fallbackReply(request.getMessage());
+            return fallbackReply(request);
         }
 
         String prompt = buildPrompt(request);
@@ -58,12 +67,12 @@ public class GeminiChatService {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            return "Sorry, I can't help with that! Try asking about our menu or modifications.";
+            return fallbackReply(request);
         }
 
         String text = extractTextFromGeminiResponse(response.body());
         if (text == null || text.isBlank()) {
-            return "I’m not sure how to answer that. Try asking about sweetness, toppings, or drink recommendations.";
+            return fallbackReply(request);
         }
 
         return text.trim();
@@ -134,7 +143,13 @@ public class GeminiChatService {
               .append(item.getName())
               .append(" ($")
               .append(item.getPrice())
-              .append(")\n");
+              .append(")");
+
+            if (item.getCategory() != null && !item.getCategory().isBlank()) {
+                sb.append(" - ").append(item.getCategory());
+            }
+
+            sb.append("\n");
         }
     }
 
@@ -169,27 +184,142 @@ public class GeminiChatService {
         }
     }
 
-    private String fallbackReply(String message) {
-        if (message == null) {
-            return "Ask me about drinks, toppings, sweetness, or ice levels.";
+    private String fallbackReply(ChatRequest request) {
+        String message = request.getMessage() == null ? "" : request.getMessage();
+        String lower = message.toLowerCase(Locale.ROOT);
+        List<Drink> availableDrinks = getAvailableDrinks(request.getMenuItems());
+
+        if (availableDrinks.isEmpty()) {
+            return "I can help with recommendations, but I don't see any available menu items right now.";
         }
 
-        String lower = message.toLowerCase();
+        if (mentions(lower, "topping", "boba", "foam", "jelly", "pearl", "popping")) {
+            List<String> toppings = getToppingNames(request.getAlterations());
+            if (toppings.isEmpty()) {
+                return "I don't see topping options loaded right now, but I can still help you choose a drink.";
+            }
 
-        if (lower.contains("sweet")) {
-            return "If you want something sweet, try a milk tea with 100% sweetness or 75% sweetness, and consider adding boba.";
-        }
-        if (lower.contains("refresh") || lower.contains("light")) {
-            return "For something refreshing, try a fruit tea with medium sweetness and your preferred ice level.";
-        }
-        if (lower.contains("topping")) {
-            return "A classic topping choice is boba. If you want something different, try one of the fruitier topping options.";
-        }
-        if (lower.contains("selected drink") || lower.contains("goes well")) {
-            return "Your selected drink would probably pair well with boba and either 75% or 100% sweetness, depending on how sweet you like it.";
+            return "For toppings, I recommend " + joinOptions(toppings, 3)
+                    + ". Boba is usually best with milk tea, while lighter toppings work well with fruit teas or slushes.";
         }
 
-        return "I can help you choose a drink, topping, sweetness, or ice level. Tell me what flavors you like.";
+        if (mentions(lower, "sweetness", "sugar", "sweet")) {
+            String drinkName = request.getSelectedItem() != null ? request.getSelectedItem().getName() : availableDrinks.get(0).getName();
+            return "For " + drinkName + ", I’d start with 50% or 75% sugar if you want balanced flavor. Choose 100% sugar if you like it very sweet.";
+        }
+
+        if (mentions(lower, "ice")) {
+            return "For ice, regular ice is best for slushes and cold fruit teas. Less ice is better if you want the flavor to stay stronger as it melts.";
+        }
+
+        if (request.getSelectedItem() != null && mentions(lower, "goes well", "pair", "with my selected", "selected drink")) {
+            String toppings = joinOptions(getToppingNames(request.getAlterations()), 2);
+            if (toppings.isBlank()) {
+                toppings = "boba";
+            }
+            return request.getSelectedItem().getName() + " would go well with " + toppings
+                    + " and 50% or 75% sugar for a balanced drink.";
+        }
+
+        if (mentions(lower, "hot", "summer", "refresh", "refreshing", "cool", "cold", "light", "fruity", "fruit")) {
+            List<Drink> refreshing = findDrinks(availableDrinks,
+                    List.of("fruit", "green tea", "lemon", "mango", "strawberry", "peach", "lychee", "slush", "smoothie", "refresher"));
+
+            if (refreshing.isEmpty()) {
+                refreshing = availableDrinks;
+            }
+
+            return "For a hot summer day, I’d recommend " + joinDrinkOptions(refreshing, 3)
+                    + ". I’d pair it with 50% sugar and regular ice so it stays refreshing.";
+        }
+
+        if (mentions(lower, "recommend", "best", "good", "popular", "favorite", "choose", "pick", "what should i get")) {
+            List<Drink> recommendations = availableDrinks.stream()
+                    .sorted(Comparator.comparingInt(this::recommendationScore).reversed())
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            return "I’d recommend " + joinDrinkOptions(recommendations, 3)
+                    + ". If you want something lighter, choose a fruit tea; if you want something creamier, choose a milk tea.";
+        }
+
+        return "I can help you choose from real menu items like " + joinDrinkOptions(availableDrinks, 3)
+                + ". Tell me whether you want something fruity, creamy, sweet, or refreshing.";
+    }
+
+    private List<Drink> getAvailableDrinks(List<Drink> menuItems) {
+        if (menuItems == null) {
+            return new ArrayList<>();
+        }
+
+        return menuItems.stream()
+                .filter(Objects::nonNull)
+                .filter(Drink::isAvailable)
+                .filter(drink -> drink.getName() != null && !drink.getName().isBlank())
+                .collect(Collectors.toList());
+    }
+
+    private List<Drink> findDrinks(List<Drink> drinks, List<String> keywords) {
+        return drinks.stream()
+                .filter(drink -> {
+                    String haystack = ((drink.getName() == null ? "" : drink.getName()) + " "
+                            + (drink.getCategory() == null ? "" : drink.getCategory())).toLowerCase(Locale.ROOT);
+                    return keywords.stream().anyMatch(haystack::contains);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private int recommendationScore(Drink drink) {
+        String haystack = ((drink.getName() == null ? "" : drink.getName()) + " "
+                + (drink.getCategory() == null ? "" : drink.getCategory())).toLowerCase(Locale.ROOT);
+
+        int score = 0;
+        if (haystack.contains("fruit")) score += 5;
+        if (haystack.contains("green tea")) score += 4;
+        if (haystack.contains("mango")) score += 4;
+        if (haystack.contains("slush")) score += 3;
+        if (haystack.contains("milk tea")) score += 2;
+        if (haystack.contains("classic")) score += 1;
+        return score;
+    }
+
+    private List<String> getToppingNames(AlterationOptionsResponse alterations) {
+        if (alterations == null || alterations.getDefaults() == null) {
+            return new ArrayList<>();
+        }
+
+        return alterations.getDefaults().stream()
+                .filter(Objects::nonNull)
+                .map(Modification::getName)
+                .filter(name -> name != null && !name.isBlank())
+                .filter(name -> {
+                    String lower = name.toLowerCase(Locale.ROOT);
+                    return !lower.contains("ice") && !lower.contains("sugar") && !lower.contains("sweet");
+                })
+                .collect(Collectors.toList());
+    }
+
+    private String joinDrinkOptions(List<Drink> drinks, int limit) {
+        return drinks.stream()
+                .limit(limit)
+                .map(Drink::getName)
+                .collect(Collectors.joining(", "));
+    }
+
+    private String joinOptions(List<String> options, int limit) {
+        return options.stream()
+                .filter(option -> option != null && !option.isBlank())
+                .limit(limit)
+                .collect(Collectors.joining(", "));
+    }
+
+    private boolean mentions(String lowerMessage, String... keywords) {
+        for (String keyword : keywords) {
+            if (lowerMessage.contains(keyword)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String escapeJson(String value) {

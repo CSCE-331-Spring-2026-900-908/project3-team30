@@ -128,12 +128,12 @@ useEffect(() => {
   };
 
   const categories = useMemo(() => {
-    const categoryOrder = ['All', 'Milk Teas', 'Brewed Teas', 'Fruit Teas', 'Seasonal'];
+    const smallDrinks = menuItems.filter(isSmallDrink);
+    const databaseCategories = smallDrinks
+      .map((item) => item.category?.trim())
+      .filter(Boolean);
 
-    return categoryOrder.filter(
-      (category) =>
-        category === 'All' || menuItems.some((item) => item.category === category)
-    );
+    return ['All', ...Array.from(new Set(databaseCategories)).sort((a, b) => a.localeCompare(b))];
   }, [menuItems]);
 
   // const filteredMenuItems = useMemo(() => {
@@ -221,7 +221,7 @@ useEffect(() => {
           <div className="menu-grid">
             {filteredMenuItems.map((item) => (
               <button
-                key={getDisplayDrinkName(item.name)}
+                key={item.name}
                 type="button"
                 className={`menu-item ${selectedItem?.name === item.name ? 'selected' : ''
                   } ${item.available === false ? 'unavailable' : ''}`}

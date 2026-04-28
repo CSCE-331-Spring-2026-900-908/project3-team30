@@ -210,6 +210,9 @@ export default function CustomizePopUp({
     <div className="customize-backdrop" role="dialog" aria-modal="true" onClick={closeWithAnimation}>
       <div className={`customize-popup ${isClosing ? 'popup-closing' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="customize-popup-scroll">
+          <div className = "customize-popup-topbar">
+
+          
           <img
             src={item.image}
             alt={`${getDisplayDrinkName(item.name)} drink`}
@@ -232,6 +235,8 @@ export default function CustomizePopUp({
                 )}
             </p>
           </div>
+          </div>
+
 
           <div className="customize-scroll">
             <div className="customize-section">

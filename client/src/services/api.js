@@ -229,7 +229,12 @@ export const api = {
       },
       body: JSON.stringify(item),
     });
-    if (!res.ok) throw new Error("Failed to save menu item");
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to save menu item");
+    }
+
     return res.json();
   },
 
@@ -270,7 +275,7 @@ export const api = {
     if (!res.ok) throw new Error("Failed to delete ingredient for menu item");
   },
 
-    async getInventory() {
+  async getInventory() {
     const res = await fetchWithCredentials(`${API_BASE_URL}/api/inventory`);
     if (!res.ok) {
       const errorText = await res.text();

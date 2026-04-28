@@ -1,15 +1,14 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
 export default function PageShell({ title, subtitle, actions, children, titleClassName = '' }) {
-  const { user } = useAuth();
+  const renderedSubtitle = typeof subtitle === 'string'
+    ? <p className="subtle">{subtitle}</p>
+    : <div className="subtle">{subtitle}</div>;
 
   return (
     <div className="app-shell">
       <header className="topbar" role="banner">
         <div>
           <h1 className={titleClassName}>{title}</h1>
-          {subtitle ? <p className="subtle">{subtitle}</p> : null}
+          {subtitle ? renderedSubtitle : null}
         </div>
       </header>
       {actions ? <nav className="page-actions" aria-label="Page actions">{actions}</nav> : null}
