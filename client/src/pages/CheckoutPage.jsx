@@ -116,7 +116,7 @@ export default function CheckoutPage() {
                     {currency(item.totalPrice * (item.quantity || 1))}
                   </span>
 
-                  <div className="checkout-qty topping-controls">
+                  <div className="topping-controls">
                     <button onClick={() => decreaseQuantity(index)}>-</button>
                     <span>{item.quantity || 1}</span>
                     <button onClick={() => increaseQuantity(index)}>+</button>
