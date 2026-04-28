@@ -3,9 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 
+const KITCHEN_CACHE_KEYS = {
+  active: 'kitchen_orders_active',
+  completed: 'kitchen_orders_completed',
+};
+
+function getCachedOrders(view) {
+  try {
+    const raw = localStorage.getItem(KITCHEN_CACHE_KEYS[view]);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedOrders(view, orders) {
+  try {
+    localStorage.setItem(KITCHEN_CACHE_KEYS[view], JSON.stringify(orders));
+  } catch {
+    // Ignore storage failures; network fetch still updates state.
+  }
+}
+
 export default function KitchenDashboardPage() {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState(() => getCachedOrders('active') || []);
   const [view, setView] = useState('active');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -15,25 +40,40 @@ export default function KitchenDashboardPage() {
   }, []);
 
   const loadOrders = async (v) => {
+    setIsLoading(true);
     try {
       const data = v === 'active'
         ? await api.getActiveOrders()
         : await api.getCompletedOrders();
       setOrders(data);
+      setCachedOrders(v, data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const switchView = async (newView) => {
+    setView(newView);
+    const cached = getCachedOrders(newView);
+    if (cached) {
+      setOrders(cached);
+    } else {
+      setOrders([]);
+    }
+    setIsLoading(true);
+
     try {
       const data = newView === 'active'
         ? await api.getActiveOrders()
         : await api.getCompletedOrders();
       setOrders(data);
-      setView(newView);
+      setCachedOrders(newView, data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +123,9 @@ export default function KitchenDashboardPage() {
       </div>
 
         <div className="ticket-rail">
-          {orders.length === 0 ? (
+          {isLoading && orders.length === 0 ? (
+            <p className="empty">loading orders...</p>
+          ) : orders.length === 0 ? (
             <p className="empty">no orders</p>
           ) : (
             orders.map((order) => (
