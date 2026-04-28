@@ -1367,18 +1367,19 @@ html {
           transform: rotate(180deg);
           font-size: 15px;
           color: #999;
+          font-weight: 700;
         }
         .view-btn--active {
           background: #e6f1fb;
           border-color: #378add;
           color: #185fa5;
-          font-weight: 500;
+          font-weight: 800;
         }
         .view-btn--done {
           background: #eaf3de;
           border-color: #639922;
           color: #3b6d11;
-          font-weight: 500;
+          font-weight: 800;
         }
 
         /* RAIL */
@@ -1394,6 +1395,8 @@ html {
           background: #fff;
           border-bottom: 0.5px solid #e0dfd8;
           display: flex;
+          justify-content: space-between;
+          gap: 16px;
           align-items: center;
           font-size: 19px;
           font-weight: 650;
@@ -1614,9 +1617,9 @@ html {
 }
 
 .customize-popup-image {
-  width: 100%;
-  height: 440px;
-  object-fit: fill;
+  width: 40%;
+  height: 50%;
+  object-fit: cover;
   object-position: center;
   background: #f8f4f6;
 
@@ -1651,7 +1654,12 @@ html {
 }
 
 .customize-popup-header {
-  padding: 0;
+  padding: 10px;
+}
+.customize-popup-topbar{
+  display:flex;
+  align-items: center;
+  
 }
 
 .customize-popup h2 {
@@ -1754,6 +1762,36 @@ body.modal-open .chat-hint-bubble {
 
 body.modal-open .a11y-trigger {
   right: calc(1.25rem + var(--modal-scrollbar-offset, 0px));
+}
+
+/* NUTRITION STYLES*/
+.nutrition-card {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  background: #fff7f8;
+  border: 1px solid #f0d8dd;
+  border-radius: 16px;
+}
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.nutrition-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #DA1884;
+}
+.nutrition-label {
+  font-size: 0.72rem;
+  color: #8b7078;
+  text-transform: uppercase;
 }
 
 /* High Contrast: Customize Popup */

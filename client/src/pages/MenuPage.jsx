@@ -333,6 +333,7 @@ export default function MenuPage() {
                         {currency(selectedItem.price)}
                       </span>
                     )}
+                    
                   </p>
                   <div className="customize-quantity-row cashier-quantity-row">
                     <span>Quantity</span>
