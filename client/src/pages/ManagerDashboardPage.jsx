@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardChartCard from '../components/DashboardChartCard';
 import ManagerLayout from '../components/ManagerLayout';
 import StatCard from '../components/StatCard';
@@ -20,9 +20,8 @@ export default function ManagerDashboardPage() {
   const [feedback, setFeedback] = useState('Ready.');
   const hasLoadedDashboard = useRef(false);
 
-  const { user, setManagerUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
@@ -54,17 +53,7 @@ export default function ManagerDashboardPage() {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const oauthSuccess = params.get('oauth') === 'success';
-
-    if (oauthSuccess) {
-      setManagerUser();
-      navigate('/manager', { replace: true });
-    }
-
-    const isManager = user?.role === 'manager' || oauthSuccess;
-
-    if (!isManager) {
+    if (!user || user.role !== 'manager') {
       navigate('/', { replace: true });
       return;
     }
@@ -73,7 +62,7 @@ export default function ManagerDashboardPage() {
       hasLoadedDashboard.current = true;
       loadDashboard();
     }
-  }, [location.search, user, setManagerUser, navigate, loadDashboard]);
+  }, [user, navigate, loadDashboard]);
 
   return (
     <ManagerLayout
