@@ -1414,7 +1414,7 @@ html {
           flex: 1;
           min-height: 0;         
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(160px, 200px));
+          grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
           grid-template-rows: repeat(2, 1fr);
           grid-auto-flow: column;
           gap: 12px;
@@ -1430,8 +1430,8 @@ html {
 
         /* TICKETS */
         .ticket {
-          min-width: 160px;
-          max-width: 200px;
+          min-width: 220px;
+          max-width: 260px;
           background: #fff;
           border-radius: 12px;
           border: 0.5px solid #e0dfd8;
@@ -1452,11 +1452,11 @@ html {
           align-items: center;
         }
         .order-num {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 18px;
+          font-weight: 600;
         }
         .elapsed {
-          font-size: 11px;
+          font-size: 14px;
           color: #bbb;
         }
         .ticket-items {
@@ -1472,8 +1472,8 @@ html {
           padding-bottom: 2px;
         }
         .item-name {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 19px;
+          font-weight: 700;
 
         }
         .mods {
@@ -1483,10 +1483,10 @@ html {
           margin-top: 4px;
         }
         .mod-tag {
-          font-size: 11px;
+          font-size: 14px;
           background: #f1efe8;
           color: #666;
-          padding: 2px 6px;
+          padding: 3px 8px;
           border-radius: 4px;
         }
         .ticket-footer {
@@ -1496,8 +1496,9 @@ html {
         }
         .action-btn {
           width: 100%;
-          padding: 10px;
-          font-size: 14px;
+          padding: 12px;
+          font-size: 18px;
+          font-weight: 700;
           border-radius: 8px;
           cursor: pointer;
           border: 0.5px solid #ddd;
@@ -1513,7 +1514,7 @@ html {
           border-color: #f09595;
         }
         .complete-time {
-          font-size: 11px;
+          font-size: 14px;
           color: #3b6d11;
           margin-top: -6px;
         }
@@ -1529,11 +1530,11 @@ html {
           align-items: center;
         }
         .time-label {
-          font-size: 11px;
+          font-size: 14px;
           color: #bbb;
         }
         .time-value {
-          font-size: 11px;
+          font-size: 14px;
           color: #888;
         }
 /*Happy hour for cashier*/
@@ -2741,4 +2742,29 @@ body.modal-open .a11y-trigger {
   justify-content: center;
   color: inherit;
   font-weight: 600;
+}
+
+/* Kitchen page hard-lock sizing overrides */
+.kitchen-dashboard .view-btn {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+
+.kitchen-dashboard .view-btn--active,
+.kitchen-dashboard .view-btn--done {
+  font-weight: 900 !important;
+}
+
+.kitchen-dashboard .rail-header {
+  justify-content: flex-start !important;
+  gap: 36px !important;
+}
+
+.kitchen-dashboard .ticket-count {
+  margin-left: 24px !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #6f6f6f !important;
 }

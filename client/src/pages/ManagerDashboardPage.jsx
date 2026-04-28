@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DashboardChartCard from '../components/DashboardChartCard';
 import ManagerLayout from '../components/ManagerLayout';
@@ -10,31 +10,61 @@ import { formatOrderDate, getBrowserTimeZone } from '../utils/time';
 
 export default function ManagerDashboardPage() {
   const [summary, setSummary] = useState(null);
-  const [insights, setInsights] = useState({ hourlySales: [], categorySales: [], topItems: [] });
+  const [insights, setInsights] = useState({
+    hourlySales: [],
+    categorySales: [],
+    topItems: []
+  });
   const [recentOrders, setRecentOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [feedback, setFeedback] = useState('Loading manager dashboard...');
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState('Ready.');
   const hasLoadedDashboard = useRef(false);
+
   const { user, setManagerUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setFeedback('Loading manager dashboard...');
+
+    try {
+      const timeZone = getBrowserTimeZone();
+
+      const [summaryData, insightData, orderData] = await Promise.all([
+        api.getManagerSummary(timeZone),
+        api.getManagerInsights(timeZone),
+        api.getManagerOrders({ status: 'all', sort: 'newest', timeZone })
+      ]);
+
+      setSummary(summaryData);
+      setInsights({
+        hourlySales: insightData?.hourlySales ?? [],
+        categorySales: insightData?.categorySales ?? [],
+        topItems: insightData?.topItems ?? []
+      });
+      setRecentOrders((orderData ?? []).slice(0, 5));
+      setFeedback('Dashboard updated successfully.');
+    } catch (err) {
+      console.log('manager dashboard failed', err);
+      setFeedback(`Could not refresh dashboard: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const oauth = params.get('oauth');
+    const oauthSuccess = params.get('oauth') === 'success';
 
-    if (oauth === 'success') {
+    if (oauthSuccess) {
       setManagerUser();
-      if (!hasLoadedDashboard.current) {
-        hasLoadedDashboard.current = true;
-        loadDashboard();
-      }
-
       navigate('/manager', { replace: true });
-      return;
     }
 
-    if (!user || user.role !== 'manager') {
+    const isManager = user?.role === 'manager' || oauthSuccess;
+
+    if (!isManager) {
       navigate('/', { replace: true });
       return;
     }
@@ -43,40 +73,21 @@ export default function ManagerDashboardPage() {
       hasLoadedDashboard.current = true;
       loadDashboard();
     }
-  }, [location.search, user, setManagerUser, navigate]);
-
-  async function loadDashboard() {
-    setLoading(true);
-    setFeedback('Loading manager dashboard...');
-    try {
-      const timeZone = getBrowserTimeZone();
-      const [summaryData, insightData, orderData] = await Promise.all([
-        api.getManagerSummary(timeZone),
-        api.getManagerInsights(timeZone),
-        api.getManagerOrders({ status: 'all', sort: 'newest', timeZone })
-      ]);
-      setSummary(summaryData);
-      setInsights({
-        hourlySales: insightData.hourlySales ?? [],
-        categorySales: insightData.categorySales ?? [],
-        topItems: insightData.topItems ?? []
-      });
-      setRecentOrders(orderData.slice(0, 5));
-      setFeedback('Dashboard updated successfully.');
-    } catch (err) {
-      console.log('manager dashboard failed', err);
-      setFeedback(`Could not refresh dashboard: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [location.search, user, setManagerUser, navigate, loadDashboard]);
 
   return (
     <ManagerLayout
       title="Manager Dashboard"
       subtitle="Today's store performance at a glance."
       actions={
-        <button className="secondary-button" onClick={loadDashboard} disabled={loading}>Refresh dashboard</button>
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={loadDashboard}
+          disabled={loading}
+        >
+          {loading ? 'Refreshing...' : 'Refresh dashboard'}
+        </button>
       }
     >
       <div className="manager-page-stack">
@@ -98,8 +109,16 @@ export default function ManagerDashboardPage() {
             valueKey="revenue"
             labelFormatter={(hour) => `${hour}:00`}
           />
-          <DashboardChartCard title="Sales by Category" data={insights.categorySales} valueKey="revenue" />
-          <DashboardChartCard title="Top Items" data={insights.topItems} valueKey="orders" />
+          <DashboardChartCard
+            title="Sales by Category"
+            data={insights.categorySales}
+            valueKey="revenue"
+          />
+          <DashboardChartCard
+            title="Top Items"
+            data={insights.topItems}
+            valueKey="orders"
+          />
         </section>
 
         <section className="manager-dashboard-grid">
@@ -107,26 +126,29 @@ export default function ManagerDashboardPage() {
             <div className="dashboard-card-heading">
               <div>
                 <h2>Recent Orders</h2>
-                {/* <p className="subtle">Newest orders from the order system.</p> */}
               </div>
-              <Link className="ghost-link" to="/manager/orders">View all</Link>
+              <Link className="ghost-link" to="/manager/orders">
+                View all
+              </Link>
             </div>
 
             <div className="recent-order-list">
               {recentOrders.length === 0 ? (
                 <p className="subtle">No recent orders to show.</p>
-              ) : recentOrders.map((order) => (
-                <div className="recent-order-row" key={order.orderNum}>
-                  <div>
-                    <strong>Order #{order.orderNum}</strong>
-                    <span>{formatOrderDate(order.orderTime)}</span>
+              ) : (
+                recentOrders.map((order) => (
+                  <div className="recent-order-row" key={order.orderNum}>
+                    <div>
+                      <strong>Order #{order.orderNum}</strong>
+                      <span>{formatOrderDate(order.orderTime)}</span>
+                    </div>
+                    <span className={`pill ${order.complete ? 'status-completed' : 'status-active'}`}>
+                      {order.complete ? 'Completed' : 'Active'}
+                    </span>
+                    <strong>{currency(order.totalCost || 0)}</strong>
                   </div>
-                  <span className={`pill ${order.complete ? 'status-completed' : 'status-active'}`}>
-                    {order.complete ? 'Completed' : 'Active'}
-                  </span>
-                  <strong>{currency(order.totalCost || 0)}</strong>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </article>
         </section>
