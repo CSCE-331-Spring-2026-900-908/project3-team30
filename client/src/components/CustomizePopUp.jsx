@@ -29,6 +29,7 @@ export default function CustomizePopUp({
   const [isClosing, setIsClosing] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [toppingCounts, setToppingCounts] = useState({});
+  const [quantity, setQuantity] = useState(item.quantity || 1);
 
   const sizeOptions = [
     { name: 'Small', price: 0 },
@@ -77,6 +78,7 @@ export default function CustomizePopUp({
       setSelectedIce(alterations.ice?.[0] ?? null);
       setSelectedSize(sizeOptions[0]);
     }
+    setQuantity(item.quantity || 1);
   }, [item, alterations, toppings, isEdit]);
 
   // const itemPrice = item.price ?? item.basePrice;
@@ -109,8 +111,12 @@ export default function CustomizePopUp({
       ...(selectedIce ? [selectedIce] : []),
     ];
 
-    return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
-  }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce]);
+    //return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+    const singleDrinkTotal =
+      basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+
+    return singleDrinkTotal * quantity;
+  }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce, quantity]);
 
   // const toggleMod = (mod) => {
   //   setSelectedMods((prev) =>
@@ -129,13 +135,16 @@ export default function CustomizePopUp({
       ...(selectedIce ? [selectedIce] : []),
     ];
 
+    const singleDrinkTotal =
+      basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
+
     onAddToCart({
       name: item.name,
       originalPrice: itemPrice,
       basePrice,
       image: item.image,
       modifications: mods,
-      totalPrice: runningTotal,
+      totalPrice: singleDrinkTotal, quantity
     });
   };
 
@@ -242,7 +251,27 @@ export default function CustomizePopUp({
           </div>
           </div>
 
+                <div className="customize-quantity-row">
+              <span>Quantity</span>
 
+              <div className="topping-controls">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                >
+                  -
+                </button>
+
+                <span>{quantity}</span>
+
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
           <div className="customize-scroll">
             <div className="customize-section">
               <h3>Customize Your Drink!</h3>
