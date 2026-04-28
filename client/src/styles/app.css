@@ -1365,21 +1365,22 @@ html {
           cursor: pointer;
           writing-mode: vertical-rl;
           transform: rotate(180deg);
-          font-size: 15px;
+          font-size: 17px;
           color: #999;
-          font-weight: 700;
+          font-weight: 800;
+          letter-spacing: 0.02em;
         }
         .view-btn--active {
           background: #e6f1fb;
           border-color: #378add;
           color: #185fa5;
-          font-weight: 800;
+          font-weight: 900;
         }
         .view-btn--done {
           background: #eaf3de;
           border-color: #639922;
           color: #3b6d11;
-          font-weight: 800;
+          font-weight: 900;
         }
 
         /* RAIL */
@@ -1395,14 +1396,15 @@ html {
           background: #fff;
           border-bottom: 0.5px solid #e0dfd8;
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           gap: 16px;
           align-items: center;
           font-size: 19px;
           font-weight: 650;
         }
         .ticket-count {
-          font-weight: 400;
+          margin-left: 12px;
+          font-weight: 500;
           color: #999;
         }
         .ticket-rail {
