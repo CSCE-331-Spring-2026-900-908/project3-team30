@@ -57,7 +57,7 @@ export default function KitchenDashboardPage() {
 };
 
   return (
-    <div className="board-shell">
+    <div className="board-shell kitchen-dashboard">
       {/* SIDEBAR */}
       <aside className="sidebar">
 
