@@ -49,8 +49,14 @@ public class KitchenService {
             FROM sales s
             JOIN items_purchased i 
                 ON s.transaction_number = i.transaction_number
-            WHERE s.complete = false
-            ORDER BY s.transaction_number ASC
+            WHERE s.transaction_number IN (
+                SELECT transaction_number
+                FROM sales
+                WHERE complete = false
+                ORDER BY order_time DESC
+                LIMIT 36
+            )
+            ORDER BY s.order_time ASC, s.transaction_number ASC
         """;
 
         try (
