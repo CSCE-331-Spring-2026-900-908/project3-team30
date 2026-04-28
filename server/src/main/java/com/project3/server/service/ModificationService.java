@@ -2,15 +2,14 @@ package com.project3.server.service;
 
 import com.project3.server.model.AlterationOptionsResponse;
 import com.project3.server.model.Modification;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 /**
  * Loads modification choices from the database.
@@ -24,18 +23,14 @@ import java.util.List;
  */
 @Service
 public class ModificationService {
+    private final DataSource dataSource;
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
-    @Value("${spring.datasource.username}")
-    private String dbUser;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
+    public ModificationService(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public AlterationOptionsResponse getAlterations() throws Exception {
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        try (Connection conn = dataSource.getConnection()) {
             ensureHotIceOption(conn);
             return new AlterationOptionsResponse(
                     loadByCategory(conn, "toppings", false),

@@ -1,11 +1,9 @@
 package com.project3.server.service;
 
 import com.project3.server.model.ManagerSummary;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.ZoneId;
@@ -14,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 
 /**
  * This is a service that handles the business logic for generating the manager summary in the Dashboard page
@@ -24,14 +23,11 @@ public class DashboardService {
 
     private static final String DEFAULT_MANAGER_TIME_ZONE = "America/Chicago";
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
+    private final DataSource dataSource;
 
-    @Value("${spring.datasource.username}")
-    private String dbUser;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
+    public DashboardService(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Retrieves the manager summary for the dashboard
@@ -41,7 +37,7 @@ public class DashboardService {
     public ManagerSummary getManagerSummary(String timeZone) throws Exception {
         String safeTimeZone = normalizeTimeZone(timeZone);
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        try (Connection conn = dataSource.getConnection()) {
 
             int ordersToday = 0;
             double revenueToday = 0.0;
@@ -135,7 +131,7 @@ public class DashboardService {
     public Map<String, Object> getManagerInsights(String timeZone) throws Exception {
         String safeTimeZone = normalizeTimeZone(timeZone);
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        try (Connection conn = dataSource.getConnection()) {
             Map<String, Object> insights = new LinkedHashMap<>();
             insights.put("hourlySales", loadHourlySales(conn, safeTimeZone));
             insights.put("categorySales", loadCategorySales(conn, safeTimeZone));
@@ -194,7 +190,7 @@ public class DashboardService {
         });
         sql.append(" LIMIT 100");
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {

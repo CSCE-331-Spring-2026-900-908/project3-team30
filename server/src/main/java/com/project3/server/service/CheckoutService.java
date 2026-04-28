@@ -4,20 +4,20 @@ import com.project3.server.model.Drink;
 import com.project3.server.model.Modification;
 import com.project3.server.model.OrderRequest;
 import com.project3.server.model.OrderResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
 
 /**
  * Handles checkout/cancel logic for Project 3.
@@ -29,15 +29,11 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CheckoutService {
+    private final DataSource dataSource;
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
-    @Value("${spring.datasource.username}")
-    private String dbUser;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
+    public CheckoutService(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Processes a completed order:
@@ -49,7 +45,7 @@ public class CheckoutService {
     public OrderResponse processOrder(OrderRequest request) throws Exception {
         validateOrder(request, true);
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
 
             try {
@@ -62,13 +58,14 @@ public class CheckoutService {
 
                 int nextItemId = getNextId(conn, "items_purchased", "id_number");
 
+                Map<String, List<IngredientAmount>> recipeCache = new HashMap<>();
                 for (Drink drink : request.getItems()) {
 
                     String modNotes = drink.getModifications().stream().map(Modification::getName).collect(Collectors.joining(", "));
 
                     String combinedNotes = (orderNotes != null && !orderNotes.trim().isEmpty()) ? orderNotes + ", " + modNotes : modNotes;
                     insertPurchasedItem(conn, nextItemId, transactionNumber, drink, combinedNotes);
-                    insertIngredientsAndUpdateInventory(conn, drink, nextItemId, transactionNumber);
+                    insertIngredientsAndUpdateInventory(conn, drink, nextItemId, transactionNumber, recipeCache);
                     nextItemId++;
                 }
 
@@ -89,7 +86,7 @@ public class CheckoutService {
     public OrderResponse cancelOrder(OrderRequest request) throws Exception {
         validateOrder(request, false);
 
-        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        try (Connection conn = dataSource.getConnection()) {
             int transactionNumber = getNextId(conn, "cancelled_voided", "transaction_number");
             double total = computeTotal(request.getItems());
             String orderNotes = request.getOrderNotes() == null
@@ -221,18 +218,19 @@ public class CheckoutService {
     private void insertIngredientsAndUpdateInventory(Connection conn,
                                                      Drink drink,
                                                      int itemId,
-                                                     int transactionNumber) throws Exception {
+                                                     int transactionNumber,
+                                                     Map<String, List<IngredientAmount>> recipeCache) throws Exception {
 
         Map<String, Double> ingredientUsage = new HashMap<>();
 
         // Add base drink recipe ingredients
-        addIngredientUsage(conn, ingredientUsage, drink.getName());
+        addIngredientUsage(conn, ingredientUsage, drink.getName(), recipeCache);
 
         // Add ingredients contributed by selected modifications
         if (drink.getModifications() != null) {
             for (Modification modification : drink.getModifications()) {
                 if (modification.getName() != null && !modification.getName().isBlank()) {
-                    addIngredientUsage(conn, ingredientUsage, modification.getName());
+                    addIngredientUsage(conn, ingredientUsage, modification.getName(), recipeCache);
                 }
             }
         }
@@ -265,12 +263,15 @@ public class CheckoutService {
                 insertStmt.setInt(3, transactionNumber);
                 insertStmt.setString(4, ingredientName);
                 insertStmt.setDouble(5, quantityUsed);
-                insertStmt.executeUpdate();
+                insertStmt.addBatch();
 
                 updateStmt.setDouble(1, quantityUsed);
                 updateStmt.setString(2, ingredientName);
-                updateStmt.executeUpdate();
+                updateStmt.addBatch();
             }
+
+            insertStmt.executeBatch();
+            updateStmt.executeBatch();
         }
     }
 
@@ -280,24 +281,39 @@ public class CheckoutService {
      */
     private void addIngredientUsage(Connection conn,
                                     Map<String, Double> ingredientUsage,
-                                    String menuItemName) throws Exception {
+                                    String menuItemName,
+                                    Map<String, List<IngredientAmount>> recipeCache) throws Exception {
+        List<IngredientAmount> recipeRows = recipeCache.get(menuItemName);
+        if (recipeRows == null) {
+            recipeRows = loadRecipeRows(conn, menuItemName);
+            recipeCache.put(menuItemName, recipeRows);
+        }
 
+        for (IngredientAmount row : recipeRows) {
+            ingredientUsage.merge(row.ingredient(), row.quantityUsed(), Double::sum);
+        }
+    }
+
+    private List<IngredientAmount> loadRecipeRows(Connection conn, String menuItemName) throws Exception {
         String sql = """
                 SELECT ingredient, quantity_used
                 FROM menu_to_ingredients
                 WHERE menu_item = ?
                 """;
-
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, menuItemName);
-
             try (ResultSet rs = stmt.executeQuery()) {
+                List<IngredientAmount> rows = new ArrayList<>();
                 while (rs.next()) {
-                    String ingredient = rs.getString("ingredient");
-                    double quantity = rs.getDouble("quantity_used");
-                    ingredientUsage.merge(ingredient, quantity, Double::sum);
+                    rows.add(new IngredientAmount(
+                            rs.getString("ingredient"),
+                            rs.getDouble("quantity_used")
+                    ));
                 }
+                return rows;
             }
         }
     }
+
+    private record IngredientAmount(String ingredient, double quantityUsed) {}
 }
