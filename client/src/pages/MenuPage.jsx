@@ -322,7 +322,12 @@ export default function MenuPage() {
                         {currency(selectedItem.price)}
                       </span>
                     )}
+                    
                   </p>
+                  
+                  
+                  
+
                   <FormField label="Size">
                     <select
                       aria-label="Select drink size"

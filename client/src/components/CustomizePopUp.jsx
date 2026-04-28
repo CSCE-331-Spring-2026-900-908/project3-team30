@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { currency } from '../utils/format';
+import NutritionInfo from './NutritionInfo';
 
 function applyDiscount(basePrice, percentOff) {
   if (!percentOff) return basePrice;
@@ -221,6 +222,7 @@ export default function CustomizePopUp({
 
           <div className="customize-popup-header">
             <h2>{getDisplayDrinkName(item.name)}</h2>
+            
 
             <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
@@ -234,6 +236,8 @@ export default function CustomizePopUp({
                   </>
                 )}
             </p>
+            <p>{item.name}</p>
+            <NutritionInfo itemName={item.name} />
           </div>
           </div>
 
@@ -241,7 +245,7 @@ export default function CustomizePopUp({
           <div className="customize-scroll">
             <div className="customize-section">
               <h3>Customize Your Drink!</h3>
-
+                
               <label className="field">
                 <span>Size</span>
                 <select

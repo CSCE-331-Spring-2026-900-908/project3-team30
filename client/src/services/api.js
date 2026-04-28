@@ -591,4 +591,11 @@ export const api = {
     return res.json();
   },
   getNextHappyHour: () => fetch(`${API_BASE_URL}/api/happy-hour/next-happy-hour`).then(r => r.ok ? r.json() : null),
+  async getNutrition(menuItemName) {
+  const res = await fetchWithCredentials(
+    `${API_BASE_URL}/api/nutrition/${encodeURIComponent(menuItemName)}`
+  );
+  if (!res.ok) throw new Error('Failed to load nutrition');
+  return res.json();
+},
 };
