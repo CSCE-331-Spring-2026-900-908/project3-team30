@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DashboardChartCard from '../components/DashboardChartCard';
 import ManagerLayout from '../components/ManagerLayout';
 import StatCard from '../components/StatCard';
-import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
 import { formatOrderDate, getBrowserTimeZone } from '../utils/time';
@@ -20,8 +19,6 @@ export default function ManagerDashboardPage() {
   const [feedback, setFeedback] = useState('Ready.');
   const hasLoadedDashboard = useRef(false);
 
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
@@ -53,16 +50,11 @@ export default function ManagerDashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (!user || user.role !== 'manager') {
-      navigate('/', { replace: true });
-      return;
-    }
-
     if (!hasLoadedDashboard.current) {
       hasLoadedDashboard.current = true;
       loadDashboard();
     }
-  }, [user, navigate, loadDashboard]);
+  }, [loadDashboard]);
 
   return (
     <ManagerLayout
