@@ -8,7 +8,7 @@ const styles = `
     border-radius: 24px;
     max-width: 350px;
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     box-shadow:
       0 0 0 3px #ff69b4,
       0 0 0 6px #ffb6d9,
@@ -73,7 +73,7 @@ const styles = `
 
   .barbie-card-img {
     width: 150px;
-    height: 150px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
     object-position: top;
