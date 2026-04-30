@@ -33,7 +33,15 @@ public class IngredientEditorController {
             @RequestBody Map<String, Object> body) throws Exception {
         
         String ingredientName = (String) body.get("ingredient");
-        double quantityUsed = ((Number) body.get("quantityUsed")).doubleValue();
+        double quantityUsed = 0.0;
+        Object quantityObj = body.get("quantityUsed");
+        if (quantityObj instanceof Number) {
+            quantityUsed = ((Number) quantityObj).doubleValue();
+        } else if (quantityObj instanceof String) {
+            quantityUsed = Double.parseDouble((String) quantityObj);
+        } else if (quantityObj == null) {
+            throw new IllegalArgumentException("Quantity used is required");
+        }
         
         if (ingredientName == null || ingredientName.isEmpty()) {
             throw new IllegalArgumentException("Ingredient name is required");

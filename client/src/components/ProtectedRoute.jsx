@@ -1,25 +1,31 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProtectedRoute({ children, roles }) {
-  const { user } = useAuth();
+  const { user, setManagerUser } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const params = new URLSearchParams(location.search);
-  const oauth = params.get('oauth');
+  const oauthSuccess = params.get('oauth') === 'success';
+  const effectiveUser = oauthSuccess ? { role: 'manager' } : user;
 
-  if (oauth === 'success') {
-    return children;
-  }
+  useEffect(() => {
+    if (oauthSuccess) {
+      setManagerUser();
+      navigate(location.pathname, { replace: true });
+    }
+  }, [oauthSuccess, setManagerUser, navigate, location.pathname]);
 
-  if (!user) {
+  if (!effectiveUser) {
     return <Navigate to="/home" replace state={{ from: location }} />;
   }
 
-  if (roles && !roles.includes(user.role)) {
+  if (roles && !roles.includes(effectiveUser.role)) {
     return (
       <Navigate
-        to={user.role === 'manager' ? '/manager' : '/cashier'}
+        to={effectiveUser.role === 'manager' ? '/manager' : '/cashier'}
         replace
       />
     );

@@ -90,7 +90,7 @@ tr:hover { background: #fff8fa; }
 /* Menu Board Styles */
 .menu-board-wrapper {
   min-height: 100vh;
-  padding: 1.5rem;
+  padding: 1.2rem;
   background: linear-gradient(180deg, #fff7f7 0%, #fff0f2 100%);
 }
 
@@ -104,7 +104,7 @@ tr:hover { background: #fff8fa; }
 .menu-board-left-center {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .menu-board-logo {
@@ -124,27 +124,28 @@ tr:hover { background: #fff8fa; }
 .menu-board-column {
   display: flex;
   flex-direction: column;
-  gap: 0.49rem;
+  gap: 0.3rem;
 }
 
 .menu-board-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .menu-board-category {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   margin: 0 0 0.75rem 0;
   color: #8A497E;
   text-transform: uppercase;
   letter-spacing: 0.05rem;
   border-bottom: 2px solid #f0dfe4;
-  padding-bottom: 0.4rem;
+  padding-bottom: 0.1rem;
 }
 
 .menu-board-items {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  padding: 0;
 }
 
 .menu-board-row {
@@ -152,11 +153,11 @@ tr:hover { background: #fff8fa; }
   grid-template-columns: auto 1fr auto;
   gap: 0.5rem;
   align-items: baseline;
-  padding: 0.2rem 0;
+  padding: 0.1rem 0;
 }
 
 .menu-board-item-name {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   color: #2a2530;
 }
@@ -168,7 +169,7 @@ tr:hover { background: #fff8fa; }
 }
 
 .menu-board-price {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #DA1884;
   white-space: nowrap;
@@ -191,7 +192,7 @@ tr:hover { background: #fff8fa; }
   border-radius: 24px;
   padding: 1.5rem;
   width: 350px;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   box-shadow: 0 10px 30px rgba(121, 84, 96, 0.06);
 }
@@ -225,14 +226,14 @@ tr:hover { background: #fff8fa; }
 /* Menu Item Showcase */
 .menu-item-showcase {
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #f0dfe4;
-  border-radius: 24px;
+  border: 4px solid #DA1884;
+  border-radius: 32px;
   overflow: hidden;
-  min-height: 300px;
-  max-height: 390px;
+  width: 90%;
+  height: 320px;
   position: relative;
   box-shadow: 0 10px 30px rgba(121, 84, 96, 0.06);
-  margin-top: 0;
+  margin: 1rem auto 0;
   transition: opacity 0.5s ease-in-out;
 }
 
@@ -488,7 +489,7 @@ tr:hover { background: #fff8fa; }
 .customize-label {
   border-radius: 999px;
   padding: 0.45rem 0.75rem;
-  background: #C8CEFA;
+  background: #ffd84d;
   color: #8A497E;
   font-size: 0.85rem;
   font-weight: 700;
@@ -1365,21 +1366,25 @@ html {
           cursor: pointer;
           writing-mode: vertical-rl;
           transform: rotate(180deg);
-          font-size: 15px;
+          font-size: 22px;
           color: #999;
-          font-weight: 700;
+          font-weight: 900;
+          letter-spacing: 0.04em;
+          line-height: 1;
         }
         .view-btn--active {
           background: #e6f1fb;
           border-color: #378add;
           color: #185fa5;
-          font-weight: 800;
+          font-weight: 900;
+          text-shadow: 0 0 0.01px currentColor;
         }
         .view-btn--done {
           background: #eaf3de;
           border-color: #639922;
           color: #3b6d11;
-          font-weight: 800;
+          font-weight: 900;
+          text-shadow: 0 0 0.01px currentColor;
         }
 
         /* RAIL */
@@ -1395,21 +1400,22 @@ html {
           background: #fff;
           border-bottom: 0.5px solid #e0dfd8;
           display: flex;
-          justify-content: space-between;
-          gap: 16px;
+          justify-content: flex-start;
+          gap: 28px;
           align-items: center;
           font-size: 19px;
-          font-weight: 650;
+          font-weight: 700;
         }
         .ticket-count {
-          font-weight: 400;
-          color: #999;
+          margin-left: 20px;
+          font-weight: 700;
+          color: #7a7a7a;
         }
         .ticket-rail {
           flex: 1;
           min-height: 0;         
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(160px, 200px));
+          grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
           grid-template-rows: repeat(2, 1fr);
           grid-auto-flow: column;
           gap: 12px;
@@ -1425,8 +1431,8 @@ html {
 
         /* TICKETS */
         .ticket {
-          min-width: 160px;
-          max-width: 200px;
+          min-width: 220px;
+          max-width: 260px;
           background: #fff;
           border-radius: 12px;
           border: 0.5px solid #e0dfd8;
@@ -1447,11 +1453,11 @@ html {
           align-items: center;
         }
         .order-num {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 18px;
+          font-weight: 600;
         }
         .elapsed {
-          font-size: 11px;
+          font-size: 14px;
           color: #bbb;
         }
         .ticket-items {
@@ -1467,8 +1473,8 @@ html {
           padding-bottom: 2px;
         }
         .item-name {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 19px;
+          font-weight: 700;
 
         }
         .mods {
@@ -1478,10 +1484,10 @@ html {
           margin-top: 4px;
         }
         .mod-tag {
-          font-size: 11px;
+          font-size: 14px;
           background: #f1efe8;
           color: #666;
-          padding: 2px 6px;
+          padding: 3px 8px;
           border-radius: 4px;
         }
         .ticket-footer {
@@ -1491,8 +1497,9 @@ html {
         }
         .action-btn {
           width: 100%;
-          padding: 10px;
-          font-size: 14px;
+          padding: 12px;
+          font-size: 18px;
+          font-weight: 700;
           border-radius: 8px;
           cursor: pointer;
           border: 0.5px solid #ddd;
@@ -1508,7 +1515,7 @@ html {
           border-color: #f09595;
         }
         .complete-time {
-          font-size: 11px;
+          font-size: 14px;
           color: #3b6d11;
           margin-top: -6px;
         }
@@ -1524,11 +1531,11 @@ html {
           align-items: center;
         }
         .time-label {
-          font-size: 11px;
+          font-size: 14px;
           color: #bbb;
         }
         .time-value {
-          font-size: 11px;
+          font-size: 14px;
           color: #888;
         }
 /*Happy hour for cashier*/
@@ -1617,8 +1624,8 @@ html {
 }
 
 .customize-popup-image {
-  width: 40%;
-  height: 50%;
+  width: 20%;
+  height: 20%;
   object-fit: cover;
   object-position: center;
   background: #f8f4f6;
@@ -1768,8 +1775,9 @@ body.modal-open .a11y-trigger {
 .nutrition-card {
   margin: 0.75rem 0;
   padding: 0.75rem 1rem;
+  
   background: #fff7f8;
-  border: 1px solid #f0d8dd;
+  border: 1px solid #DA1884;
   border-radius: 16px;
 }
 .nutrition-grid {
@@ -2315,7 +2323,8 @@ body.modal-open .a11y-trigger {
   background: #fff7f9;
   border: 2px solid #DA1884;
   border-radius: 20px;
-  padding: 10px 16px;
+  padding: 6px 16px;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-family: Inter, system-ui, sans-serif;
   box-shadow:
@@ -2328,7 +2337,7 @@ body.modal-open .a11y-trigger {
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #7d4a55;
+  color: #8A497E;
   margin: 0 0 8px;
   text-align: center;
 }
@@ -2356,7 +2365,7 @@ body.modal-open .a11y-trigger {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #c471a0;
+  color: #DA1884;
   margin: 0;
 }
 
@@ -2394,7 +2403,7 @@ body.modal-open .a11y-trigger {
 .hhw-cell-value-light {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #a07080;
+  color: #DA1884;
   margin: 0;
   line-height: 1.4;
 }
@@ -2669,11 +2678,10 @@ body.modal-open .a11y-trigger {
   border-radius: 24px 24px 0 0;
 }
 
-.customize-popup-image {
-  width: 100%;
-  height: 100%;
+ .customize-popup-image {
+  width: 40%;
+  height: 50%;
   object-fit: cover;
-
   object-position: center 100%;
   /* position: absolute; */
 }
@@ -2736,4 +2744,29 @@ body.modal-open .a11y-trigger {
   justify-content: center;
   color: inherit;
   font-weight: 600;
+}
+
+/* Kitchen page hard-lock sizing overrides */
+.kitchen-dashboard .view-btn {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+
+.kitchen-dashboard .view-btn--active,
+.kitchen-dashboard .view-btn--done {
+  font-weight: 900 !important;
+}
+
+.kitchen-dashboard .rail-header {
+  justify-content: flex-start !important;
+  gap: 36px !important;
+}
+
+.kitchen-dashboard .ticket-count {
+  margin-left: 24px !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #6f6f6f !important;
 }
