@@ -24,10 +24,10 @@ export default function WeatherWidget({ latitude, longitude, locationName }) {
     if (code <= 2) return { icon: '/images/partly-cloudy.png', description: 'Partly Cloudy' };
     if (code === 3) return { icon: '/images/cloudy.png', description: 'Cloudy'};
     if (code <= 48) return { icon: '/images/fog.png', description: 'Foggy' };
-    if (code <= 67) return { icon: '/images/rain.png', description: 'Rainy' };
-    if (code <= 77) return { icon: '/images/snow.png', description: 'Snowy' };
-    if (code <= 82) return { icon: '/images/rain.png', description: 'Showers' };
-    if (code <= 86) return { icon: '/images/snow.png', description: 'Snow Showers' };
+    if (code <= 67) return { icon: '/images/rainy.png', description: 'Rainy' };
+    if (code <= 77) return { icon: '/images/snowy.png', description: 'Snowy' };
+    if (code <= 82) return { icon: '/images/rainy.png', description: 'Showers' };
+    if (code <= 86) return { icon: '/images/snowy.png', description: 'Snow Showers' };
     if (code <= 99) return { icon: '/images/storm.png', description: 'Thunderstorm' };
     return { icon: '/images/unknown.png', description: 'Unknown' };
   };

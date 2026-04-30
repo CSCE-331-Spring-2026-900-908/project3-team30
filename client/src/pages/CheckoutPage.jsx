@@ -26,17 +26,40 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [activeHappyHour, setActiveHappyHour] = useState(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  // const processOrder = async (paymentMethod) => {
+  //   const response = await api.processOrder({
+  //     paymentMethod,
+  //     total: subtotal,
+  //     items,
+  //   });
+
+  //   setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
+  //   clearCart();
+  //   setShowModal(true);
+  // };
 
   const processOrder = async (paymentMethod) => {
-    const response = await api.processOrder({
-      paymentMethod,
-      total: subtotal,
-      items,
-    });
-
-    setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
-    clearCart();
+    setMessage(`Processing ${paymentMethod} payment...`);
     setShowModal(true);
+    setIsProcessingPayment(true);
+
+    try {
+      const response = await api.processOrder({
+        paymentMethod,
+        total: subtotal,
+        items,
+      });
+
+      setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber % 600}`);
+      clearCart();
+    } catch (err) {
+      console.error(err);
+      setMessage('Payment failed. Please try again.');
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const cancelOrder = async () => {
@@ -149,13 +172,13 @@ export default function CheckoutPage() {
         </div>
 
         <div className="checkout-buttons">
-          <button className="secondary-button" disabled={!items.length} onClick={cancelOrder}>
+          <button className="secondary-button" disabled={!items.length || isProcessingPayment} onClick={cancelOrder}>
             Cancel Order
           </button>
 
           <button
             className="primary-button inline"
-            disabled={!items.length}
+            disabled={!items.length || isProcessingPayment}
             onClick={() => processOrder('Cash')}
           >
             Cash
@@ -163,7 +186,7 @@ export default function CheckoutPage() {
 
           <button
             className="primary-button inline"
-            disabled={!items.length}
+            disabled={!items.length || isProcessingPayment}
             onClick={() => processOrder('Card')}
           >
             Process Card Payment
@@ -173,9 +196,11 @@ export default function CheckoutPage() {
 
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <p className="modal-message">{message}</p>
-        <button className="primary-button" onClick={handleCloseModal}>
-          Back to menu
-        </button>
+        {!isProcessingPayment && (
+          <button className="primary-button" onClick={handleCloseModal}>
+            Back to menu
+          </button>
+        )}
       </Modal>
 
       {editingItem && (
