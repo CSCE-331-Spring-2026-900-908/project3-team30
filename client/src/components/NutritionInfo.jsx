@@ -40,7 +40,7 @@ export default function NutritionInfo({ itemName, selectedSize }) {
 
   return (
     <div className="nutrition-card">
-      <h4>📊 Estimated Nutrition</h4>
+      <h4>Estimated Nutrition</h4>
       <p className="nutrition-size-label">
         {selectedSize?.name ?? 'Small'} size
       </p>
