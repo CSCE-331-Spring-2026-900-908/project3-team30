@@ -19,6 +19,7 @@ public class Drink {
     //karla 
     private boolean available = true; 
     private boolean complete;
+    private int quantity = 1;
     private List<Modification> modifications = new ArrayList<>();
 
     /**
@@ -79,6 +80,21 @@ public class Drink {
      */
     public void setModifications(List<Modification> modifications) {
         this.modifications = modifications != null ? modifications : new ArrayList<>();
+    }
+
+    /**
+     * Gets the quantity of this drink in the cart.
+     * Defaults to 1 if no quantity was provided.
+     */
+    public int getQuantity() {
+        return quantity <= 0 ? 1 : quantity;
+    }
+
+    /**
+     * Allows frontend JSON to set quantity.
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     /**
@@ -175,5 +191,9 @@ public class Drink {
      */
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
