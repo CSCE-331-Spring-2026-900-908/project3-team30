@@ -30,7 +30,8 @@ function formatTime(localTime) {
 
 function getDisplayDrinkName(name) {
   return name
-    .replace(/^(Small|Large)\s+/i, '')
+    // .replace(/^(Small|Large)\s+/i, '')
+    .replace(/^(Small|Medium|Large)\s+/i, '')
     .trim();
 }
 
@@ -59,10 +60,56 @@ export default function MenuPage() {
   const [addedItemName, setAddedItemName] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  const sizeOptions = [
-    { name: 'Small', label: 'Small (Default)', price: 0 },
-    { name: 'Large', label: 'Large (+$1.50)', price: 1.5 },
-  ];
+  // const sizeOptions = [
+  //   { name: 'Small', label: 'Small (Default)', price: 0 },
+  //   { name: 'Large', label: 'Large (+$1.50)', price: 1.5 },
+  // ];
+
+  const sizeOrder = ['Small', 'Medium', 'Large'];
+  const getSizeFromName = (name) => {
+    return name.match(/^(Small|Medium|Large)\s+/i)?.[1] ?? null;
+  };
+
+  const getBaseDrinkName = (name) => {
+    return name.replace(/^(Small|Medium|Large)\s+/i, '').trim();
+  };
+
+  const sizeOptions = useMemo(() => {
+    if (!selectedItem) {
+      return [{ name: 'Small', label: 'Small (Default)', price: 0 }];
+    }
+
+    const baseName = getBaseDrinkName(selectedItem.name);
+
+    const matchingSizes = menuItems
+      .filter((item) => getBaseDrinkName(item.name) === baseName)
+      .map((item) => ({
+        size: getSizeFromName(item.name),
+        item,
+      }))
+      .filter((entry) => entry.size);
+
+    const smallItem =
+      matchingSizes.find((entry) => entry.size === 'Small')?.item ?? selectedItem;
+
+    return matchingSizes
+      .sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size))
+      .map(({ size, item }) => {
+        const priceDifference = Number(item.price) - Number(smallItem.price);
+
+        return {
+          name: size,
+          label:
+          size === 'Small'
+            ? `${size} (Default)`
+            : priceDifference === 0
+              ? `${size}`
+              : `${size} (+${currency(priceDifference)})`,
+          price: priceDifference,
+          item,
+        };
+      });
+  }, [selectedItem, menuItems]);
 
   const { addItem, items } = useCart();
   const pollRef = useRef(null);
@@ -119,7 +166,7 @@ export default function MenuPage() {
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
     setQuantity(1);
-  }, [selectedItem, alterations]);
+  }, [selectedItem, alterations, sizeOptions]);
 
   const getItemPrice = (item) =>
     applyDiscount(item.price, activeHappyHour?.percentOff);
@@ -183,7 +230,9 @@ export default function MenuPage() {
       discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
 
     addItem({
-      name: selectedItem.name,
+      name:
+        sizeOptions.find(opt => opt.name === selectedSize.name)?.item?.name
+        ?? selectedItem.name,
       basePrice: discountedBase,
       image: selectedItem.image,
       modifications: mods,
