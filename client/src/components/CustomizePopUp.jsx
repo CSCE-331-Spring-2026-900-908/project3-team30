@@ -23,7 +23,6 @@ export default function CustomizePopUp({
   onAddToCart,
   isEdit = false
 }) {
-  // const [selectedMods, setSelectedMods] = useState([]);
   const [selectedSweetness, setSelectedSweetness] = useState(null);
   const [selectedIce, setSelectedIce] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -33,17 +32,8 @@ export default function CustomizePopUp({
 
   const sizeOptions = [
     { name: 'Small', price: 0 },
-    // { name: 'Medium', price: 0.75 },
     { name: 'Large', price: 1.5 },
   ];
-
-  // useEffect(() => { // this is the reset useEffect
-  //   // setSelectedMods([]);
-  //   setToppingCounts({});
-  //   setSelectedSweetness(alterations.sweetness?.[0] ?? null);
-  //   setSelectedIce(alterations.ice?.[0] ?? null);
-  //   setSelectedSize(sizeOptions[0]);
-  // }, [item, alterations]);
 
   useEffect(() => {
     if (isEdit && item.modifications?.length) {
@@ -81,9 +71,6 @@ export default function CustomizePopUp({
     setQuantity(item.quantity || 1);
   }, [item, alterations, toppings, isEdit]);
 
-  // const itemPrice = item.price ?? item.basePrice;
-  // const basePrice = applyDiscount(itemPrice, activeHappyHour?.percentOff);
-
   const itemPrice = item.price ?? item.originalPrice ?? item.basePrice ?? 0;
 
   const basePrice = isEdit
@@ -95,42 +82,36 @@ export default function CustomizePopUp({
       const topping = toppings.find((t) => t.name === name);
       if (!topping) return [];
 
+      const discountedToppingPrice = applyDiscount(topping.price, activeHappyHour?.percentOff);
+
       return Array.from({ length: count }, () => ({
         name: topping.name,
-        price: topping.price,
+        price: discountedToppingPrice,
       }));
     });
-  }, [toppingCounts, toppings]);
+  }, [toppingCounts, toppings, activeHappyHour]);
 
   const runningTotal = useMemo(() => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
-      // ...selectedMods,
       ...toppingMods,
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
 
-    //return basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
     const singleDrinkTotal =
       basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
 
     return singleDrinkTotal * quantity;
   }, [basePrice, selectedSize, toppingMods, selectedSweetness, selectedIce, quantity]);
 
-  // const toggleMod = (mod) => {
-  //   setSelectedMods((prev) =>
-  //     prev.some((entry) => entry.name === mod.name)
-  //       ? prev.filter((entry) => entry.name !== mod.name)
-  //       : [...prev, mod]
-  //   );
-  // };
-
   const handleAdd = () => {
     const mods = [
       ...(selectedSize ? [selectedSize] : []),
-      // ...selectedMods,
-      ...toppingMods,
+      ...toppingMods.map((mod) => ({
+        ...mod,
+        originalPrice: toppings.find((t) => t.name === mod.name)?.price ?? mod.price,
+      })),
       ...(selectedSweetness ? [selectedSweetness] : []),
       ...(selectedIce ? [selectedIce] : []),
     ];
@@ -144,15 +125,15 @@ export default function CustomizePopUp({
       basePrice,
       image: item.image,
       modifications: mods,
-      totalPrice: singleDrinkTotal, quantity
+      totalPrice: singleDrinkTotal,
+      quantity,
     });
   };
 
   const closeWithAnimation = () => {
     setIsClosing(true);
-
     setTimeout(() => {
-        onClose();
+      onClose();
     }, 220);
   };
 
@@ -179,7 +160,7 @@ export default function CustomizePopUp({
 
   useEffect(() => {
     const handleKey = (e) => {
-        if (e.key === 'Escape') closeWithAnimation();
+      if (e.key === 'Escape') closeWithAnimation();
     };
 
     window.addEventListener('keydown', handleKey);
@@ -189,52 +170,46 @@ export default function CustomizePopUp({
   useEffect(() => {
     const scrollY = window.scrollY;
     const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
+      window.innerWidth - document.documentElement.clientWidth;
 
     document.body.classList.add('modal-open');
     document.body.style.top = `-${scrollY}px`;
     document.body.style.paddingRight = `${scrollbarWidth}px`;
 
     document.documentElement.style.setProperty(
-        '--modal-scrollbar-offset',
-        `${scrollbarWidth}px`
+      '--modal-scrollbar-offset',
+      `${scrollbarWidth}px`
     );
 
-    
-
     return () => {
-        document.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
 
-        const y = parseInt(document.body.style.top || '0') * -1;
+      const y = parseInt(document.body.style.top || '0') * -1;
 
-        document.body.style.top = '';
-        document.body.style.paddingRight = '';
+      document.body.style.top = '';
+      document.body.style.paddingRight = '';
 
-        document.documentElement.style.removeProperty('--modal-scrollbar-offset');
+      document.documentElement.style.removeProperty('--modal-scrollbar-offset');
 
-        window.scrollTo(0, y);
+      window.scrollTo(0, y);
     };
   }, []);
 
-  
   return (
     <div className="customize-backdrop" role="dialog" aria-modal="true" onClick={closeWithAnimation}>
       <div className={`customize-popup ${isClosing ? 'popup-closing' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="customize-popup-scroll">
-          <div className = "customize-popup-topbar">
+          <div className="customize-popup-topbar">
+            <img
+              src={item.image}
+              alt={`${getDisplayDrinkName(item.name)} drink`}
+              className="customize-popup-image"
+            />
 
-          
-          <img
-            src={item.image}
-            alt={`${getDisplayDrinkName(item.name)} drink`}
-            className="customize-popup-image"
-          />
+            <div className="customize-popup-header">
+              <h2>{getDisplayDrinkName(item.name)}</h2>
 
-          <div className="customize-popup-header">
-            <h2>{getDisplayDrinkName(item.name)}</h2>
-            
-
-            <p className="customize-popup-price">
+              <p className="customize-popup-price">
                 <span className="sale-price">{currency(basePrice)}</span>
 
                 {activeHappyHour && itemPrice !== basePrice && (
@@ -245,37 +220,38 @@ export default function CustomizePopUp({
                     </span>
                   </>
                 )}
-            </p>
-            <p></p>
-            <NutritionInfo itemName={item.name} />
-          </div>
-          </div>
-
-                <div className="customize-quantity-row">
-              <span>Quantity</span>
-
-              <div className="topping-controls">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                >
-                  -
-                </button>
-
-                <span>{quantity}</span>
-
-                <button
-                  type="button"
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                >
-                  +
-                </button>
-              </div>
+              </p>
+              <p></p>
+              <NutritionInfo itemName={item.name} />
             </div>
+          </div>
+
+          <div className="customize-quantity-row">
+            <span>Quantity</span>
+
+            <div className="topping-controls">
+              <button
+                type="button"
+                onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+              >
+                -
+              </button>
+
+              <span>{quantity}</span>
+
+              <button
+                type="button"
+                onClick={() => setQuantity((prev) => prev + 1)}
+              >
+                +
+              </button>
+            </div>
+          </div>
+
           <div className="customize-scroll">
             <div className="customize-section">
               <h3>Customize Your Drink!</h3>
-                
+
               <label className="field">
                 <span>Size</span>
                 <select
@@ -307,15 +283,15 @@ export default function CustomizePopUp({
                   }
                 >
                   {[...(alterations.sweetness ?? [])]
-                  .sort((a, b) => {
-                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                    return getPercent(a.name) - getPercent(b.name);
-                  })
-                  .map((option) => (
-                    <option key={option.name} value={option.name}>
-                      {option.name}
-                    </option>
-                  ))}
+                    .sort((a, b) => {
+                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                      return getPercent(a.name) - getPercent(b.name);
+                    })
+                    .map((option) => (
+                      <option key={option.name} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
                 </select>
               </label>
 
@@ -332,15 +308,15 @@ export default function CustomizePopUp({
                   }
                 >
                   {[...(alterations.ice ?? [])]
-                  .sort((a, b) => {
-                    const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
-                    return getPercent(a.name) - getPercent(b.name);
-                  })
-                  .map((option) => (
-                    <option key={option.name} value={option.name}>
-                      {option.name}
-                    </option>
-                  ))}
+                    .sort((a, b) => {
+                      const getPercent = (str) => parseInt(str.match(/\d+/)?.[0] ?? 0);
+                      return getPercent(a.name) - getPercent(b.name);
+                    })
+                    .map((option) => (
+                      <option key={option.name} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
                 </select>
               </label>
             </div>
@@ -351,12 +327,23 @@ export default function CustomizePopUp({
               <div className="topping-list">
                 {toppings.map((topping) => {
                   const count = toppingCounts[topping.name] || 0;
+                  const discountedToppingPrice = applyDiscount(topping.price, activeHappyHour?.percentOff);
+                  const isToppingDiscounted = activeHappyHour && discountedToppingPrice !== topping.price;
 
                   return (
                     <div key={topping.name} className="topping-row">
                       <div className="topping-info">
                         <span className="topping-name">{topping.name}</span>
-                        <span className="topping-price">{currency(topping.price)} ea.</span>
+                        <span className="topping-price">
+                          {isToppingDiscounted ? (
+                            <>
+                              <span className="sale-price">{currency(discountedToppingPrice)} ea. </span>
+                              <span className="original-price">{currency(topping.price)}</span>
+                            </>
+                          ) : (
+                            <>{currency(topping.price)} ea.</>
+                          )}
+                        </span>
                       </div>
 
                       <div className="topping-controls">
@@ -386,21 +373,21 @@ export default function CustomizePopUp({
           <div className="customize-popup-footer">
             <strong>Total: {currency(runningTotal)}</strong>
             <div className="button-group">
-                <button
+              <button
                 className="secondary-button inline"
                 type="button"
                 onClick={closeWithAnimation}
                 aria-label="Cancel Drink Order"
-                >
-                Cancel  
-                </button>
-                <button
+              >
+                Cancel
+              </button>
+              <button
                 className="primary-button inline"
                 type="button"
                 onClick={handleAdd}
-                >
+              >
                 {isEdit ? 'Save Changes' : 'Add to Cart'}
-                </button>
+              </button>
             </div>
           </div>
         </div>
