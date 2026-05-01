@@ -1802,6 +1802,14 @@ body.modal-open .a11y-trigger {
   text-transform: uppercase;
 }
 
+.nutrition-size-label {
+  font-size: 0.75rem;
+  color: #8b7078;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
 /* High Contrast: Customize Popup */
 .accessibility-high-contrast .customize-backdrop {
   background: rgba(0, 0, 0, 0.75) !important;
