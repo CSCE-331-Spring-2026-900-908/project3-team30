@@ -23,7 +23,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .primary-button, .secondary-button, .ghost-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.85rem 1.2rem; border-radius: 999px; }
 .primary-button { background: #DA1884; color: white; }
 .secondary-button { background: #C8CEFA; color: white; }
-.ghost-link { background: transparent; color: #7d4a55; }
+.ghost-link { background: transparent; color: #8A497E; }
 .primary-button.inline, .secondary-button.inline { width: auto; }
 .primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -32,7 +32,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .topbar > div { width: 100%; }
 .topbar h1 { margin: 0; }
 .topbar-right { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-.eyebrow { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08rem; color: #b17584; }
+.eyebrow { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08rem; color: #DA1884; }
 .subtle { color: #7e6b72; }
 .error-text { color: #b00020; }
 .success-text { color: #1a7f4b; }
@@ -49,7 +49,7 @@ input, select { width: 100%; padding: 0.8rem 0.9rem; border-radius: 12px; border
 .split-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; align-items: start; }
 .menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.75rem; justify-content: space-between;}
 .menu-item { background: #fff7f8; border: 1px solid #f0d8dd; border-radius: 18px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; text-align: left; flex-direction: column; height: 100%; }
-.menu-item.selected { outline: 2px solid #d36a6a; }
+.menu-item.selected { outline: 2px solid #DA1884; }
 .checkbox-list { display: grid; gap: 0.6rem; margin: 1rem 0; }
 .checkbox-row { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; }
 .cart-list { display: grid; gap: 0.8rem; }
@@ -164,8 +164,8 @@ tr:hover { background: #fff8fa; }
 
 .menu-board-dots {
   border-bottom: 2px dotted #ddb8c1;
-  margin: 0 0.5rem;
-  min-width: 2rem;
+  margin: 0 0.15rem;
+  min-width: 0.1rem;
 }
 
 .menu-board-price {
@@ -408,7 +408,7 @@ tr:hover { background: #fff8fa; }
 
 .portal-icon {
   font-size: 2.2rem;
-  color: #b86a6a;
+  color: #DA1884;
 }
 /* for customer menu */
 .menu-item {
@@ -1009,17 +1009,17 @@ html {
 
 .cashier-menu .menu-item strong {
   white-space: nowrap;
-  color: #7d4a55;
+  color: #8A497E;
 }
 
 .cashier-menu .menu-item:hover {
-  border-color: #d36a6a;
+  border-color: #DA1884;
   background: #fff0f3;
 }
 
 .cashier-menu .menu-item.selected {
-  background: #d36a6a;
-  border-color: #d36a6a;
+  background: #DA1884;
+  border-color: #DA1884;
   color: white;
 }
 
@@ -1055,7 +1055,7 @@ html {
   align-items: center;
   justify-content: center;
 
-  background: #d36a6a;
+  background: #DA1884;
   color: white;
   box-shadow: 0 0.625rem 1.5rem rgba(121, 84, 96, 0.18);
 }
@@ -1172,7 +1172,7 @@ html {
   align-self: flex-end;
   margin-left: auto;
   border-bottom-right-radius: 6px;
-  background: #d36a6a;
+  background: #DA1884;
   color: white;
   text-align: left;
   transform-origin: bottom right;
@@ -1436,7 +1436,7 @@ html {
           background: #fff;
           border-radius: 12px;
           border: 0.5px solid #e0dfd8;
-          border-top: 3px solid #378add;
+          border-top: 3px solid #9ba6fb;
           padding: 12px;
           display: flex;
           flex-direction: column;
@@ -2017,7 +2017,7 @@ body.modal-open .a11y-trigger {
 }
 
 .manager-page-title {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #2a2530;
@@ -2055,7 +2055,7 @@ body.modal-open .a11y-trigger {
 .manager-nav a:focus,
 .manager-nav a.active {
   background: #fff0f3;
-  color: #7d4a55;
+  color: #8A497E;
   outline: none;
 }
 
@@ -2081,10 +2081,10 @@ body.modal-open .a11y-trigger {
 .feedback-banner {
   background: #fff;
   border: 1px solid #edd8df;
-  border-left: 6px solid #d36a6a;
+  border-left: 6px solid #DA1884;
   border-radius: 16px;
   padding: 0.85rem 1rem;
-  color: #7d4a55;
+  color: #8A497E;
   font-weight: 600;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
 }
@@ -2240,7 +2240,7 @@ body.modal-open .a11y-trigger {
 .mini-chart-bar {
   min-height: 14px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #e7a0a0, #d36a6a);
+  background: linear-gradient(90deg, #e7a0a0, #DA1884);
 }
 
 .mini-chart-value {
