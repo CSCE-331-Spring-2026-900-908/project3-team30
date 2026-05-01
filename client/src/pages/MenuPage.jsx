@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import FormField from '../components/FormField';
-import Modal from '../components/Modal';
 import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { currency } from '../utils/format';
@@ -55,8 +54,7 @@ export default function MenuPage() {
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [addedItemName, setAddedItemName] = useState('');
+  const [message, setMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   const sizeOptions = [
@@ -67,7 +65,6 @@ export default function MenuPage() {
   const { addItem, items } = useCart();
   const pollRef = useRef(null);
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadData() {
@@ -120,6 +117,16 @@ export default function MenuPage() {
     setSelectedIce(alterations.ice?.[0] ?? null);
     setQuantity(1);
   }, [selectedItem, alterations]);
+
+  useEffect(() => {
+  if (message) {
+    const timer = setTimeout(() => {
+      setMessage('');
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }
+}, [message]);
 
   const getItemPrice = (item) =>
     applyDiscount(item.price, activeHappyHour?.percentOff);
@@ -190,22 +197,13 @@ export default function MenuPage() {
       totalPrice: singleDrinkTotal,
       quantity,
     });
-    setAddedItemName(getDisplayDrinkName(selectedItem.name));
-    setShowModal(true);
+    
+    setMessage(`${getDisplayDrinkName(selectedItem.name)} added to cart`);
     setToppingCounts({});
     setSelectedSize(sizeOptions[0]);
     setSelectedSweetness(alterations.sweetness?.[0] ?? null);
     setSelectedIce(alterations.ice?.[0] ?? null);
     setQuantity(1);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const handleViewCart = () => {
-    setShowModal(false);
-    navigate('/cashier/checkout');
   };
 
   const categories = useMemo(() => {
@@ -454,22 +452,11 @@ export default function MenuPage() {
                   </div>
                 </>
               )}
+              {message ? <p className="success-text">{message}</p> : null}
             </div>
           </div>
         </div>
       )}
-
-      <Modal isOpen={showModal} onClose={handleCloseModal}>
-        <p className="modal-message">{addedItemName} added to cart</p>
-        <div className="modal-actions">
-          <button className="secondary-button" onClick={handleCloseModal}>
-            Back to menu
-          </button>
-          <button className="primary-button" onClick={handleViewCart}>
-            View cart
-          </button>
-        </div>
-      </Modal>
     </PageShell>
   );
 }
