@@ -60,13 +60,23 @@ public class CheckoutService {
 
                 Map<String, List<IngredientAmount>> recipeCache = new HashMap<>();
                 for (Drink drink : request.getItems()) {
+                    int quantity = Math.max(1, drink.getQuantity());
 
-                    String modNotes = drink.getModifications().stream().map(Modification::getName).collect(Collectors.joining(", "));
+                    String modNotes = drink.getModifications() == null
+                            ? ""
+                            : drink.getModifications().stream()
+                                .map(Modification::getName)
+                                .collect(Collectors.joining(", "));
 
-                    String combinedNotes = (orderNotes != null && !orderNotes.trim().isEmpty()) ? orderNotes + ", " + modNotes : modNotes;
-                    insertPurchasedItem(conn, nextItemId, transactionNumber, drink, combinedNotes);
-                    insertIngredientsAndUpdateInventory(conn, drink, nextItemId, transactionNumber, recipeCache);
-                    nextItemId++;
+                    String combinedNotes = (orderNotes != null && !orderNotes.trim().isEmpty())
+                            ? orderNotes + (modNotes.isEmpty() ? "" : ", " + modNotes)
+                            : modNotes;
+
+                    for (int i = 0; i < quantity; i++) {
+                        insertPurchasedItem(conn, nextItemId, transactionNumber, drink, combinedNotes);
+                        insertIngredientsAndUpdateInventory(conn, drink, nextItemId, transactionNumber, recipeCache);
+                        nextItemId++;
+                    }
                 }
 
                 conn.commit();
@@ -143,7 +153,9 @@ public class CheckoutService {
      * Recomputes total on the backend.
      */
     private double computeTotal(List<Drink> items) {
-        return items.stream().mapToDouble(Drink::getTotalPrice).sum();
+        return items.stream()
+                .mapToDouble(drink -> drink.getTotalPrice() * Math.max(1, drink.getQuantity()))
+                .sum();
     }
 
     /**
