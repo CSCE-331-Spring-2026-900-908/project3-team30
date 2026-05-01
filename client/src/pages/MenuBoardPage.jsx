@@ -51,11 +51,11 @@ const groupedItems = menuItems.reduce((acc, item) => {
     acc[item.category] = [];
   }
   
-  // Check if item starts with "Small" or "Large"
-  const startsWithSize = item.name.startsWith('Small ') || item.name.startsWith('Large ');
+  // Check if item starts with "Small" "Medium" or "Large"
+  const startsWithSize = item.name.startsWith('Small ') || item.name.startsWith('Medium ') || item.name.startsWith('Large ');
   
   if (startsWithSize) {
-    const size = item.name.split(' ')[0]; // "Small" or "Large"
+    const size = item.name.split(' ')[0]; // "Small" "Medium" or "Large"
     const baseName = item.name.substring(size.length + 1); // Everything after "Small " or "Large "
     
     // Find if we already have this base item
@@ -65,6 +65,8 @@ const groupedItems = menuItems.reduce((acc, item) => {
       // Add this size to existing item
       if (size === 'Small') {
         existingItem.smallPrice = item.price;
+      } else if (size === 'Medium') {
+        existingItem.mediumPrice = item.price;
       } else {
         existingItem.largePrice = item.price;
       }
@@ -74,6 +76,7 @@ const groupedItems = menuItems.reduce((acc, item) => {
         baseName: baseName,
         name: baseName,
         smallPrice: size === 'Small' ? item.price : null,
+        mediumPrice: size === 'Medium' ? item.price : null,
         largePrice: size === 'Large' ? item.price : null
       };
       acc[item.category].push(newItem);
@@ -156,10 +159,18 @@ const groupedItems = menuItems.reduce((acc, item) => {
                           <span className="menu-board-item-name">{item.name}</span>
                           <span className="menu-board-dots"></span>
                           <span className="menu-board-price">
-                            {item.smallPrice && item.largePrice ? (
+                            {item.smallPrice && item.mediumPrice && item.largePrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | M: ${item.mediumPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.smallPrice && item.mediumPrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | M: ${item.mediumPrice.toFixed(2)}</>
+                            ) : item.smallPrice && item.largePrice ? (
                               <>S: ${item.smallPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.mediumPrice && item.largePrice ? (
+                              <>M: ${item.mediumPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
                             ) : item.smallPrice ? (
                               <>S: ${item.smallPrice.toFixed(2)}</>
+                            ) : item.mediumPrice ? (
+                              <>M: ${item.mediumPrice.toFixed(2)}</>
                             ) : item.largePrice ? (
                               <>L: ${item.largePrice.toFixed(2)}</>
                             ) : (
@@ -185,10 +196,18 @@ const groupedItems = menuItems.reduce((acc, item) => {
                           <span className="menu-board-item-name">{item.name}</span>
                           <span className="menu-board-dots"></span>
                           <span className="menu-board-price">
-                            {item.smallPrice && item.largePrice ? (
+                            {item.smallPrice && item.mediumPrice && item.largePrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | M: ${item.mediumPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.smallPrice && item.mediumPrice ? (
+                              <>S: ${item.smallPrice.toFixed(2)} | M: ${item.mediumPrice.toFixed(2)}</>
+                            ) : item.smallPrice && item.largePrice ? (
                               <>S: ${item.smallPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
+                            ) : item.mediumPrice && item.largePrice ? (
+                              <>M: ${item.mediumPrice.toFixed(2)} | L: ${item.largePrice.toFixed(2)}</>
                             ) : item.smallPrice ? (
                               <>S: ${item.smallPrice.toFixed(2)}</>
+                            ) : item.mediumPrice ? (
+                              <>M: ${item.mediumPrice.toFixed(2)}</>
                             ) : item.largePrice ? (
                               <>L: ${item.largePrice.toFixed(2)}</>
                             ) : (
