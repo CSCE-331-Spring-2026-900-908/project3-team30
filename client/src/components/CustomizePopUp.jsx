@@ -10,12 +10,14 @@ function applyDiscount(basePrice, percentOff) {
 
 function getDisplayDrinkName(name) {
   return name
-    .replace(/^(Small|Large)\s+/i, '')
+    // .replace(/^(Small|Large)\s+/i, '')
+    .replace(/^(Small|Medium|Large)\s+/i, '')
     .trim();
 }
 
 export default function CustomizePopUp({
   item,
+  menuItems = [],
   toppings = [],
   alterations,
   activeHappyHour,
@@ -31,11 +33,62 @@ export default function CustomizePopUp({
   const [toppingCounts, setToppingCounts] = useState({});
   const [quantity, setQuantity] = useState(item.quantity || 1);
 
-  const sizeOptions = [
-    { name: 'Small', price: 0 },
-    // { name: 'Medium', price: 0.75 },
-    { name: 'Large', price: 1.5 },
-  ];
+  // const sizeOptions = [
+  //   { name: 'Small', price: 0 },
+  //   // { name: 'Medium', price: 0.75 },
+  //   { name: 'Medium', price: 0.75 },
+  //   { name: 'Large', price: 1.5 },
+  // ];
+
+  const sizeOrder = ['Small', 'Medium', 'Large'];
+  const getSizeFromName = (name) => {
+    return name.match(/^(Small|Medium|Large)\s+/i)?.[1] ?? null;
+  };
+
+  const getBaseDrinkName = (name) => {
+    return name.replace(/^(Small|Medium|Large)\s+/i, '').trim();
+  };
+
+  const sizeOptions = useMemo(() => {
+    if (!item) {
+      return [{ name: 'Small', label: 'Small (Default)', price: 0 }];
+    }
+
+    const baseName = getBaseDrinkName(item.name);
+
+    const matchingSizes = menuItems
+      .filter((menuItem) => getBaseDrinkName(menuItem.name) === baseName)
+      .map((menuItem) => ({
+        size: getSizeFromName(menuItem.name),
+        item: menuItem,
+      }))
+      .filter((entry) => entry.size);
+
+    if (matchingSizes.length === 0) {
+      return [{ name: 'Small', label: 'Small (Default)', price: 0, item }];
+    }
+
+    const smallItem =
+      matchingSizes.find((entry) => entry.size === 'Small')?.item ?? item;
+
+    return matchingSizes
+      .sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size))
+      .map(({ size, item: sizeItem }) => {
+        const priceDifference = Number(sizeItem.price) - Number(smallItem.price);
+
+        return {
+          name: size,
+          label:
+            size === 'Small'
+              ? `${size} (Default)`
+              : priceDifference === 0
+                ? `${size}`
+                : `${size} (+${currency(priceDifference)})`,
+          price: priceDifference,
+          item: sizeItem,
+        };
+      });
+  }, [item, menuItems]);
 
   // useEffect(() => { // this is the reset useEffect
   //   // setSelectedMods([]);
@@ -79,7 +132,7 @@ export default function CustomizePopUp({
       setSelectedSize(sizeOptions[0]);
     }
     setQuantity(item.quantity || 1);
-  }, [item, alterations, toppings, isEdit]);
+  }, [item, alterations, toppings, isEdit, sizeOptions]);
 
   // const itemPrice = item.price ?? item.basePrice;
   // const basePrice = applyDiscount(itemPrice, activeHappyHour?.percentOff);
@@ -139,12 +192,13 @@ export default function CustomizePopUp({
       basePrice + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0);
 
     onAddToCart({
-      name: item.name,
+      name: selectedSize?.item?.name ?? item.name,
       originalPrice: itemPrice,
       basePrice,
       image: item.image,
       modifications: mods,
-      totalPrice: singleDrinkTotal, quantity
+      totalPrice: singleDrinkTotal, 
+      quantity
     });
   };
 
@@ -247,7 +301,8 @@ export default function CustomizePopUp({
                 )}
             </p>
             <p></p>
-            <NutritionInfo itemName={item.name} selectedSize={selectedSize}/>
+            <NutritionInfo itemName={item.name} 
+            selectedSize={selectedSize}/>
           </div>
           </div>
 
@@ -288,7 +343,7 @@ export default function CustomizePopUp({
                 >
                   {sizeOptions.map((option) => (
                     <option key={option.name} value={option.name}>
-                      {option.name} {option.price ? `(${currency(option.price)})` : ''}
+                      {option.label}
                     </option>
                   ))}
                 </select>
