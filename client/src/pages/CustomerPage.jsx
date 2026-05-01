@@ -33,7 +33,8 @@ function formatTime(localTime) {
 
 function getDisplayDrinkName(name) {
   return name
-    .replace(/^(Small|Large)\s+/i, '')
+    // .replace(/^(Small|Large)\s+/i, '')
+    .replace(/^(Small|Medium|Large)\s+/i, '')
     .trim();
 }
 
@@ -104,28 +105,30 @@ useEffect(() => {
     );
   };
 
-  const addToOrder = () => {
-    if (!selectedItem) return;
+  // const addToOrder = () => {
+  //   if (!selectedItem) return;
 
-    const mods = [
-      ...selectedMods,
-      { name: selectedSweetness, price: 0 },
-      { name: selectedIce, price: 0 }
-    ];
+  //   const mods = [
+  //     ...selectedMods,
+  //     { name: selectedSweetness, price: 0 },
+  //     { name: selectedIce, price: 0 }
+  //   ];
 
-    const discountedBase = applyDiscount(selectedItem.price, activeHappyHour?.percentOff);
+  //   const discountedBase = applyDiscount(selectedItem.price, activeHappyHour?.percentOff);
 
-    addItem({
-      name: selectedItem.name,
-      basePrice: discountedBase,
-      modifications: mods,
-      totalPrice: discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0)
-    });
+  //   addItem({
+  //     name:
+  //       sizeOptions.find(opt => opt.name === selectedSize.name)?.item?.name
+  //       ?? selectedItem.name,
+  //     basePrice: discountedBase,
+  //     modifications: mods,
+  //     totalPrice: discountedBase + mods.reduce((sum, mod) => sum + Number(mod.price || 0), 0)
+  //   });
 
-    setSelectedMods([]);
-    setSelectedSweetness('100% Sugar');
-    setSelectedIce('100% Ice');
-  };
+  //   setSelectedMods([]);
+  //   setSelectedSweetness('100% Sugar');
+  //   setSelectedIce('100% Ice');
+  // };
 
   const categories = useMemo(() => {
     const smallDrinks = menuItems.filter(isSmallDrink);
@@ -273,6 +276,7 @@ useEffect(() => {
           {selectedItem && (
             <CustomizePopUp
               item={selectedItem}
+              menuItems={menuItems}
               toppings={alterations.default ?? []}
               alterations={alterations}
               activeHappyHour={activeHappyHour}
