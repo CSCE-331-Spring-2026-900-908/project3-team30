@@ -5,8 +5,8 @@ import Modal from '../components/Modal';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
 import { currency } from '../utils/format';
-import { useNavigate } from 'react-router-dom';
 import CustomizePopUp from '../components/CustomizePopUp';
+import { useNavigate } from 'react-router-dom';
 
 function summarizeModifications(modifications = []) {
   const counts = modifications.reduce((acc, mod) => {
@@ -25,23 +25,9 @@ export default function CheckoutPage() {
   const { items, clearCart, removeItem, updateItem, increaseQuantity, decreaseQuantity, subtotal } = useCart();
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
   const [activeHappyHour, setActiveHappyHour] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editingItem, setEditingItem] = useState(null);
-  const [processingPayment, setProcessingPayment] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  
-  // const processOrder = async (paymentMethod) => {
-  //   const response = await api.processOrder({
-  //     paymentMethod,
-  //     total: subtotal,
-  //     items,
-  //   });
-  //   setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
-  //   clearCart();
-  //   setShowModal(true);
-  // };
+  const [menuItems, setMenuItems] = useState([]);
 
   const processOrder = async (paymentMethod) => {
     setMessage(`Processing ${paymentMethod} payment...`);
@@ -71,36 +57,32 @@ export default function CheckoutPage() {
       items,
       orderNotes: 'Cancelled from checkout page',
     });
-    setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
+
+    setMessage(`Order cancelled · confirmation #${response.confirmationNumber % 600}`);
     clearCart();
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    navigate('/customer');
-  };
-
   const [alterations, setAlterations] = useState({
-    defaults: [],
+    default: [],
     sweetness: [],
     ice: [],
     toppings: []
   });
 
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+
   useEffect(() => {
+    api.getMenuItems().then(setMenuItems).catch(console.error);
     api.getAlterations()
       .then((alterationData) => {
-        // console.log("alterationData:", alterationData);
         setAlterations({
           ...alterationData,
           toppings: alterationData.default ?? []
         });
       })
       .catch(console.error);
-  }, []);
-
-  useEffect(() => {
     api.getActiveHappyHour()
       .then(setActiveHappyHour)
       .catch(console.error);
@@ -110,19 +92,25 @@ export default function CheckoutPage() {
     ? alterations.toppings
     : alterations.default ?? [];
 
+  const navigate = useNavigate();
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/cashier/menu');
+  };
+
   return (
     <PageShell
       title="Checkout"
-      actions={<Link className="ghost-link" to="/customer">Back to menu</Link>}
+      actions={<Link className="ghost-link" to="/cashier/menu" aria-label="Back to cashier menu">Back to menu</Link>}
     >
       <div className="card checkout-cart-card">
         <h2>Current Cart</h2>
         {items.length === 0 ? (
           <p className="subtle">No items in cart.</p>
         ) : (
-          <div className="cart-list">
+          <div className="cart-list" role="list" aria-label="Current cart items">
             {items.map((item, index) => (
-              <div className="cart-item" key={`${item.name}-${index}`}>
+              <div className="cart-item" key={`${item.name}-${index}`} role="listitem">
                 <div>
                   <strong>{item.name}</strong>
                   <p className="subtle">
@@ -161,6 +149,7 @@ export default function CheckoutPage() {
           </div>
         )}
       </div>
+
       <div className="checkout-actions">
         <div className="checkout-subtotal">
           <span>Subtotal</span>
@@ -202,6 +191,7 @@ export default function CheckoutPage() {
       {editingItem && (
         <CustomizePopUp
           item={editingItem}
+          menuItems={menuItems}
           toppings={toppingOptions}
           alterations={alterations}
           activeHappyHour={activeHappyHour}

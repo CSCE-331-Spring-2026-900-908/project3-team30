@@ -182,12 +182,14 @@ export default function MenuPage() {
     return Object.entries(toppingCounts).flatMap(([name, count]) => {
       const topping = alterations.default.find((toppingOption) => toppingOption.name === name);
       if (!topping) return [];
+      const discountedPrice = applyDiscount(topping.price, activeHappyHour?.percentOff);
       return Array.from({ length: count }, () => ({
-        name: topping.name,
-        price: topping.price,
+      name: topping.name,
+      price: discountedPrice,
       }));
     });
-  }, [toppingCounts, alterations.default]);
+  }, [toppingCounts, alterations.default, activeHappyHour]);
+
 
   const runningTotal = useMemo(() => {
     if (!selectedItem) return 0;
@@ -374,8 +376,7 @@ export default function MenuPage() {
               ) : (
                 <>
                   <p>
-                    <strong>{getDisplayDrinkName(selectedItem.name)}</strong> · {currency(getItemPrice(selectedItem))}
-                    {activeHappyHour && (
+                      <strong>{getDisplayDrinkName(selectedItem.name)}</strong> · <span className={activeHappyHour ? 'sale-price' : ''}>{currency(getItemPrice(selectedItem))}</span>                    {activeHappyHour && (
                       <span className="subtle" style={{ marginLeft: '0.5rem', textDecoration: 'line-through' }}>
                         {currency(selectedItem.price)}
                       </span>
@@ -467,8 +468,21 @@ export default function MenuPage() {
                           <div key={topping.name} className="topping-row">
                             <div className="topping-info">
                               <span className="topping-name">{topping.name}</span>
-                              <span className="topping-price">{currency(topping.price)} ea.</span>
-                            </div>
+                              <span className="topping-price" style={{ fontSize: '0.85rem' }}>
+                              {(() => {
+                                const discounted = applyDiscount(topping.price, activeHappyHour?.percentOff);
+                                const isDiscounted = activeHappyHour && discounted !== topping.price;
+                                return isDiscounted ? (
+                                  <>
+                                    <span className="sale-price">{currency(discounted)} ea. </span>
+                                    <span className="original-price">{currency(topping.price)}</span>
+                                  </>
+                                ) : (
+                                  <>{currency(topping.price)} ea.</>
+                                );
+                              })()}
+                            </span>                            
+                              </div>
                             <div className="topping-controls">
                               <button type="button" onClick={() => decreaseTopping(topping)}>-</button>
                               <span>{count}</span>

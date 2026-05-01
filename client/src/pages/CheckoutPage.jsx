@@ -27,18 +27,7 @@ export default function CheckoutPage() {
   const [showModal, setShowModal] = useState(false);
   const [activeHappyHour, setActiveHappyHour] = useState(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-
-  // const processOrder = async (paymentMethod) => {
-  //   const response = await api.processOrder({
-  //     paymentMethod,
-  //     total: subtotal,
-  //     items,
-  //   });
-
-  //   setMessage(`Processed ${paymentMethod} payment · confirmation #${response.confirmationNumber%600}`);
-  //   clearCart();
-  //   setShowModal(true);
-  // };
+  const [menuItems, setMenuItems] = useState([]);
 
   const processOrder = async (paymentMethod) => {
     setMessage(`Processing ${paymentMethod} payment...`);
@@ -69,12 +58,10 @@ export default function CheckoutPage() {
       orderNotes: 'Cancelled from checkout page',
     });
 
-    setMessage(`Order cancelled · confirmation #${response.confirmationNumber%600}`);
+    setMessage(`Order cancelled · confirmation #${response.confirmationNumber % 600}`);
     clearCart();
     setShowModal(true);
   };
-
-
 
   const [alterations, setAlterations] = useState({
     default: [],
@@ -87,6 +74,7 @@ export default function CheckoutPage() {
   const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
+    api.getMenuItems().then(setMenuItems).catch(console.error);
     api.getAlterations()
       .then((alterationData) => {
         setAlterations({
@@ -95,9 +83,6 @@ export default function CheckoutPage() {
         });
       })
       .catch(console.error);
-  }, []);
-
-  useEffect(() => {
     api.getActiveHappyHour()
       .then(setActiveHappyHour)
       .catch(console.error);
@@ -109,9 +94,9 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
   const handleCloseModal = () => {
-  setShowModal(false);
-  navigate('/cashier/menu');
-};
+    setShowModal(false);
+    navigate('/cashier/menu');
+  };
 
   return (
     <PageShell
@@ -206,6 +191,7 @@ export default function CheckoutPage() {
       {editingItem && (
         <CustomizePopUp
           item={editingItem}
+          menuItems={menuItems}
           toppings={toppingOptions}
           alterations={alterations}
           activeHappyHour={activeHappyHour}
